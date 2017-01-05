@@ -45,22 +45,23 @@ def seleccionar():
 		return redirect(url_for('index'))
 
 # FALTA HACER UN ALERT PARA CONFIRMAR!
-@app.route('/agregar')
-def agregar(): 
-	return render_template("agregar_ano.html")
-
-
-#Cuando agrego un ano llamo a este enlace para guardarlo en la BD
-@app.route('/agregar_post', methods=['POST'])
-def agregarpost():
-	inicio = request.form['inicial']
-	final = request.form['final']
-	con = mysql.connect()
-	cursor = con.cursor()
-	cursor.execute("""INSERT INTO anos_escolares (inicial, final) VALUES (%s, %s)""", (inicio,final))
-	con.commit()
-	session['logged_in'] = "newform" 
-	return redirect(url_for('seleccionar'))
+@app.route('/agregar', methods=['GET','POST'])
+def agregar():
+	if request.method == 'POST': 
+		inicio = request.form['inicial']
+		final = request.form['final']
+		con = mysql.connect()
+		cursor = con.cursor()
+		if (inicio[0] == '2') and (inicio[1] == '0') and (final[0] == '2') and (final[1] == '0') and (len(final)==4) and (len(inicio)==4):
+			cursor.execute("""INSERT INTO anos_escolares (inicial, final) VALUES (%s, %s)""", (inicio,final))
+			con.commit()
+			session['logged_in'] = "newform" 
+			return redirect(url_for('seleccionar'))
+		else:
+			error="Año invalido"
+			return render_template("agregar_ano.html", error=error)
+	else:
+		return render_template("agregar_ano.html")
 
 # Al darle a seleccionar busco todos los anos y los mando al html
 @app.route('/seleccionar')
@@ -74,4 +75,4 @@ def seleccion_ano():
 
 
 if __name__ == "__main__":
-	app.run(debug=True, host="192.168.0.108", port=80)
+	app.run(debug=True, host="192.168.0.106", port=80)

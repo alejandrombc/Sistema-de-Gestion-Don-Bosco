@@ -9,35 +9,61 @@
   <link rel='stylesheet prefetch' href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css'>
   <link rel="icon" type="image/png" href="{{ url_for('static', filename='imagenes/favicon.png') }}" sizes="32x32">
 
+  <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+  <script src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
   <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/agregar.css') }}">
 
+  <script src="{{ url_for('static', filename='js/modal.js') }}"></script>
 
-  
+
 </head>
-
 <body>
+<!-- MODAL -->
+<div id="myModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Confirmación</h4>
+            </div>
+            <div class="modal-body">
+                <p id="confir"></p>
+                <p class="text-warning"><small>Asegúrese de estar seguro antes de realizar esta acción</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                <button type="button" id="realSumbit" class="btn btn-primary">Agregar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END MODAL -->
+
+
 <div class="container">  
 <center><img id="toplogo" align="top" src="{{ url_for('static', filename='imagenes/Logo_DonBosco.png') }}"></center>
-  <form id="contact" action="\agregar_post" method="post">
+  <form id="contact" action="\agregar" method="post">
     <h3>Añadir año escolar</h3>
     <h4>Formato: AAAA-AAAA | Ejemplo: 2016-2017</h4>
     <fieldset>
-      <input placeholder="Año inicial" name="inicial" type="text" tabindex="1" required autofocus>
+      <input placeholder="Año inicial" name="inicial" type="text" tabindex="1" id="inicial" required autofocus>
     </fieldset>
     <fieldset>
-      <input placeholder="Año final" name="final" type="text" tabindex="3" required>
+      <input placeholder="Año final" name="final" type="text" tabindex="3" id="final" required>
     </fieldset>
     <fieldset>
-      <button name="submit" type="submit" id="contact-submit" data-submit="...Sending">Añadir</button>
+    <button type="button" id="abrirModal">Añadir</button>
     </fieldset><br>
+    {% if error %}
+    <b><p class="copyright">{{error}}</p></b>
+    {% endif %}
     <b><p class="copyright">Escuela Técnica Popular Don Bosco © - 2017</p></b>
   </form>
 </div>
-
-
-<script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
-<script src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
 
   
 </body>
