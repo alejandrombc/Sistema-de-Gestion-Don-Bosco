@@ -1,0 +1,14 @@
+Python 3.4
+Flask (con url_for, redirect, session, render template, etc)
+mysql flask (no me acuerdo exactamente cual)
+hashlib (para el sha256)
+
+
+Para hacer que el vbs se ejecute al iniciar escribir en windows gpedit.msc y ahi seleccionar "Configuracion del equipo"->"Configuracion de Windows"->"Scrips"->"Inicio" y ahi agregar el .vbs y listo
+
+
+
+El .bat contiene el nombre del archivo .py, si se llega a modificar dicho nombre se debe modificar la info del .bat
+
+
+Para quitar el proceso de vbs (porque queremos parar el servidor) abrimos el Task manager y eliminamos "cmd.exe" y "python.exe". El servidor se deberia cerrar con eso

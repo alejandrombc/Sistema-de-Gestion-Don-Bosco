@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Añadir año - Don Bosco</title>
+  
+  
+  <link rel='stylesheet prefetch' href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css'>
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='imagenes/favicon.png') }}" sizes="32x32">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/agregar.css') }}">
+
+
+  
+</head>
+
+<body>
+<div class="container">  
+<center><img id="toplogo" align="top" src="{{ url_for('static', filename='imagenes/Logo_DonBosco.png') }}"></center>
+  <form id="contact" action="\agregar_post" method="post">
+    <h3>Añadir año escolar</h3>
+    <h4>Formato: AAAA-AAAA | Ejemplo: 2016-2017</h4>
+    <fieldset>
+      <input placeholder="Año inicial" name="inicial" type="text" tabindex="1" required autofocus>
+    </fieldset>
+    <fieldset>
+      <input placeholder="Año final" name="final" type="text" tabindex="3" required>
+    </fieldset>
+    <fieldset>
+      <button name="submit" type="submit" id="contact-submit" data-submit="...Sending">Añadir</button>
+    </fieldset><br>
+    <b><p class="copyright">Escuela Técnica Popular Don Bosco © - 2017</p></b>
+  </form>
+</div>
+
+
+<script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+<script src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+
+  
+</body>
+</html>

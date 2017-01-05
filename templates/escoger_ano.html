@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="height=device-height,initial-scale=1">
+  <title>Selección - Escuela Técnica Popular Don Bosco</title>
+  
+  <link rel='stylesheet prefetch' href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css'>
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='imagenes/favicon.png') }}" sizes="32x32">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style_escoger.css') }}">
+
+  
+</head>
+
+<body>
+{% if datos %}
+<center><h1 style="color:white;">Porfavor, escoja el año escolar que desea:</h1></center><br>
+  {% for ano in datos %}
+    <figure class="snip1566">
+    <img src="{{ url_for('static', filename='imagenes/Logo_DonBosco.png') }}" alt="sq-sample14" />
+    <figcaption><h2 class="headertext">{{ano[0]}}-{{ano[1]}}</h2></figcaption>
+    <a href="#"></a>
+    </figure>
+  {% endfor %}
+{% else %}
+<center><h1 style="color:white;">Actualmente no tiene ningun año escolar</h1></center><br>
+{% endif %}
+</body>
+
+</html>

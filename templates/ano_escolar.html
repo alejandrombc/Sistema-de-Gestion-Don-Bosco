@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Año Escolar - Don Bosco</title>
+  
+  
+  <link rel='stylesheet prefetch' href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css'>
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='imagenes/favicon.png') }}" sizes="32x32">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+  <!-- <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet"> -->
+
+  
+</head><br>
+<body>
+<center><img id="toplogo" src="{{ url_for('static', filename='imagenes/Logo_DonBosco.png') }}"></center><br>
+<center>
+  <div class="btn gridcontainer clearfix">
+  <div class="row">
+  <div class="col-md-4" id="prueba">
+      <div class="grid_3">
+        <div class="fmcircle_out">
+          <a href="#seleccion">
+            <div class="fmcircle_border">
+              <div class="fmcircle_in fmcircle_blue">
+                <span style="margin-left:6px;">Seleccionar Año</span><img src="https://cdn3.iconfinder.com/data/icons/othericons-3-0/50/mouse_pointer-512.png" alt="" />
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="grid_3">
+        <div class="fmcircle_out">
+          <a href="/agregar">
+            <div class="fmcircle_border">
+              <div class="fmcircle_in fmcircle_green">
+                <span style="margin-left:6px;">Añadir Año</span><img src="http://www.freeiconspng.com/uploads/plus-icon-black-2.png" alt="" />
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+  <div class="col-md-4">
+    <div class="grid_3">
+      <div class="fmcircle_out">
+        <a href="#eliminar">
+          <div class="fmcircle_border">
+            <div class="fmcircle_in fmcircle_red">
+              <span style="margin-left:6px;">Eliminar Año</span><img src="https://cdn2.iconfinder.com/data/icons/flat-ui-icons-24-px/24/cross-24-512.png" alt="" />
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    </div>
+
+    </div>
+</center>
+<br>
+<center>
+  <footer>
+    <b><p>Escuela Técnica Popular Don Bosco © - 2017</p></b>
+  </footer>
+</center>
+<!-- <div id="error"><img src="https://dl.dropboxusercontent.com/u/23299152/Delete-icon.png" /> Your caps-lock is on.</div> -->  
+</body>
+</html>
