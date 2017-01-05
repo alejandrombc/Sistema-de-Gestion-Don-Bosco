@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Añadir año - Don Bosco</title>
-  
-  
+
+
   <link rel='stylesheet prefetch' href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css'>
   <link rel="icon" type="image/png" href="{{ url_for('static', filename='imagenes/favicon.png') }}" sizes="32x32">
 
@@ -17,7 +17,36 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/agregar.css') }}">
 
-  <script src="{{ url_for('static', filename='js/modal.js') }}"></script>
+  <script type="text/javascript">
+
+    $(document).ready(function() {
+      
+        $("#abrirModal").on('click', function() {
+          if($("#inicial").val() != "" && $("#final").val() != "")
+            if (validateForm()) $("#myModal").modal('show');
+            $("#confir").text("¿Está seguro de agregar el año escolar "+ $("#inicial").val() + " - " + $("#final").val() + "?");
+        
+
+        $("#realSumbit").on('click', function(){
+          $("#contact").submit();
+        });
+
+        });
+
+    });
+    
+    function validateForm() {
+
+      var inicio = document.getElementById("inicial").value;
+      var final = document.getElementById("final").value;
+      if ((inicio[0] == '2') && (inicio[1] == '0') && (final[0] == '2') && (final[1] == '0') && (final.length == 4) && (inicio.length == 4) && (final > inicio))
+        return true;
+      return false;
+
+    }
+
+
+  </script>
 
 
 </head>
@@ -32,7 +61,7 @@
             </div>
             <div class="modal-body">
                 <p id="confir"></p>
-                <p class="text-warning"><small>Asegúrese de estar seguro antes de realizar esta acción</small></p>
+                <p class="text-warning"><small>Asegúrese al realizar esta acción.</small></p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
