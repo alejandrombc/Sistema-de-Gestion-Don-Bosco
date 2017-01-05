@@ -1,19 +1,10 @@
-# encoding=utf-8
-import sys  
-
-reload(sys)  
-sys.setdefaultencoding('utf8')
-
 from flask import Flask, render_template, request, url_for, redirect, session
 from flaskext.mysql import MySQL
 import hashlib
 
 app = Flask(__name__)
 mysql = MySQL()
-app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = '123'
-app.config['MYSQL_DATABASE_DB'] = 'don_bosco'
-app.config['MYSQL_DATABASE_HOST'] = 'localhost'
+
 mysql.init_app(app)
 
 app.secret_key = "Estodeberiaserandom"
