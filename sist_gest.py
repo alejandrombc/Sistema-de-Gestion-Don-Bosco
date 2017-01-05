@@ -1,3 +1,9 @@
+# encoding=utf-8
+import sys  
+
+reload(sys)  
+sys.setdefaultencoding('utf8')
+
 from flask import Flask, render_template, request, url_for, redirect, session
 from flaskext.mysql import MySQL
 import hashlib
@@ -22,7 +28,7 @@ def index():
 		#Si entra un usuario comun
 		print (hashinput_password)
 		if ("b20b0f63ce2ed361e8845d6bf2e59811aaa06ec96bcdb92f9bc0c5a25e83c9a6" != hashinput_user) or ("a280f9c1266fc6a4aea482b8206f367bbd96a76a075140cd67ef4e92c01e3142" != hashinput_password) :
-			error = "Usuario o contraseña erroneos. Porfavor, intente de nuevo."
+			error = "Usuario o contraseña erróneos. Por favor, intente de nuevo."
 		else:
 			session['logged_in'] = request.form['username']
 			return redirect(url_for('seleccionar'))
@@ -52,7 +58,7 @@ def agregar():
 		final = request.form['final']
 		con = mysql.connect()
 		cursor = con.cursor()
-		if (inicio[0] == '2') and (inicio[1] == '0') and (final[0] == '2') and (final[1] == '0') and (len(final)==4) and (len(inicio)==4):
+		if (inicio[0] == '2') and (inicio[1] == '0') and (final[0] == '2') and (final[1] == '0') and (len(final)==4) and (len(inicio)==4) and (final > inicio):
 			cursor.execute("""INSERT INTO anos_escolares (inicial, final) VALUES (%s, %s)""", (inicio,final))
 			con.commit()
 			session['logged_in'] = "newform" 
@@ -75,4 +81,4 @@ def seleccion_ano():
 
 
 if __name__ == "__main__":
-	app.run(debug=True, host="192.168.0.106", port=80)
+	app.run()
