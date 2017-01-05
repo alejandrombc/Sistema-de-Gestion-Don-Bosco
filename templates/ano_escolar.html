@@ -5,8 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Año Escolar - Don Bosco</title>
   
-  
-  <link rel='stylesheet prefetch' href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css'>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery-ui.css') }}">
   <link rel="icon" type="image/png" href="{{ url_for('static', filename='imagenes/favicon.png') }}" sizes="32x32">
 
   <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
@@ -27,7 +26,7 @@
           <a href="/seleccionar">
             <div class="fmcircle_border">
               <div class="fmcircle_in fmcircle_blue">
-                <span style="margin-left:6px;">Seleccionar Año</span><img src="https://cdn3.iconfinder.com/data/icons/othericons-3-0/50/mouse_pointer-512.png" alt="" />
+                <span style="margin-left:6px;">Seleccionar Año</span><img src="{{ url_for('static', filename='imagenes/mouse_pointer-512.png') }}" alt="" />
               </div>
             </div>
           </a>
@@ -41,7 +40,7 @@
           <a href="/agregar">
             <div class="fmcircle_border">
               <div class="fmcircle_in fmcircle_green">
-                <span style="margin-left:6px;">Añadir Año</span><img src="http://www.freeiconspng.com/uploads/plus-icon-black-2.png" alt="" />
+                <span style="margin-left:6px;">Añadir Año</span><img src="{{ url_for('static', filename='imagenes/plus-icon-black-2.png') }}" alt="" />
               </div>
             </div>
           </a>
@@ -55,7 +54,7 @@
         <a href="#eliminar">
           <div class="fmcircle_border">
             <div class="fmcircle_in fmcircle_red">
-              <span style="margin-left:6px;">Eliminar Año</span><img src="https://cdn2.iconfinder.com/data/icons/flat-ui-icons-24-px/24/cross-24-512.png" alt="" />
+              <span style="margin-left:6px;">Eliminar Año</span><img src="{{ url_for('static', filename='imagenes/cross-24-512.png') }}" alt="" />
             </div>
           </div>
         </a>
