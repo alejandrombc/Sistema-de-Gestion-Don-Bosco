@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="height=device-height,initial-scale=1">
+  <title>Recuperar - Escuela Técnica Popular Don Bosco</title>
+  
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery-ui.css') }}">
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='imagenes/favicon.png') }}" sizes="32x32">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style_eliminar.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+
+
+  <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/jquery-ui.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/modal.js') }}"></script>
+
+
+  
+</head>
+
+<body>
+<!-- MODAL -->
+<div id="myModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Confirmación de recuperación</h4>
+            </div>
+            <div class="modal-body">
+                <p id="confir"></p>
+                <p class="text-warning"><small>Asegúrese al realizar esta acción.</small></p>
+                <p class="text-warning"><small>Recuerde que puede eliminar el año escolar nuevamente.</small></p>
+            </div>
+            <div class="modal-footer">
+                  <form id="contact" method="post" action="/recuperar_ano">
+                    <input id="id_ano" name="real_id" hidden>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Recuperar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END MODAL -->
+
+
+
+<div id="wrapper">
+
+        <div id="container">
+
+            <a id="button" href="/seleccion"><span class="glyphicon glyphicon-circle-arrow-left"></span></a>
+
+        </div>
+
+    </div>
+<br><br>
+
+{% if datos %}
+<center><h1 style="color:white;">Por favor, escoja el año escolar que desea recuperar:</h1></center><br>
+  {% for ano in datos %}
+      <figure class="snip1566">
+        <img src="{{ url_for('static', filename='imagenes/Logo_DonBosco.png') }}" alt="sq-sample14" />
+        <figcaption><h2 class="headertext">{{ano[1]}}-{{ano[2]}}</h2></figcaption>
+        <a onclick="openModal_Rec({{ano[1]}},{{ano[2]}}, {{ano[0]}})" href="#"></a>
+      </figure>
+    
+  {% endfor %}
+{% else %}
+<center><h1 style="color:white;">Actualmente no tiene ningun año escolar que recuperar</h1></center><br>
+{% endif %}
+
+<br><br>
+  <div class="footer">
+  <form method="get" action="/eliminar">
+    <button hretype="button" type="submit" class="btn btn-info">Volver a eliminar</button>
+  </form>  
+  </div>
+
+</body>
+
+</html>

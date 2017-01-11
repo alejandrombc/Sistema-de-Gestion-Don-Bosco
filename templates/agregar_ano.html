@@ -12,39 +12,11 @@
   <script src="{{ url_for('static', filename='js/jquery-ui.min.js') }}"></script>
 
   <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/modal.js') }}"></script>
 
   <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/agregar.css') }}">
 
-  <script type="text/javascript">
-
-    $(document).ready(function() {
-
-        $("#abrirModal").on('click', function() {
-          if($("#inicial").val() != "" && $("#final").val() != "")
-            if (validateForm()) $("#myModal").modal('show');
-            $("#confir").text("¿Está seguro de agregar el año escolar "+ $("#inicial").val() + " - " + $("#final").val() + "?");
-        
-        $("#realSumbit").on('click', function(){
-          $("#contact").submit();
-        });
-
-        });
-
-    });
-    
-    function validateForm() {
-
-      var inicio = document.getElementById("inicial").value;
-      var final = document.getElementById("final").value;
-      if ((inicio[0] == '2') && (inicio[1] == '0') && (final[0] == '2') && (final[1] == '0') && (final.length == 4) && (inicio.length == 4) && (final > inicio))
-        return true;
-      return false;
-
-    }
-
-
-  </script>
 
 
 </head>
