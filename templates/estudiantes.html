@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html >
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Estudiantes - Don Bosco</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery-ui.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='imagenes/favicon.png') }}" sizes="32x32">
+
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery-ui.min.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/estudiantes.js') }}"></script>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/agregar.css') }}">
+
+<style>
+
+    .ui-tabs-vertical > .ui-tabs-nav {
+        padding: .2em .1em .2em .2em;
+        width: 12em;
+    }
+    .ui-tabs-vertical > .ui-tabs-nav li {
+        width: 100%;
+        border-bottom-width: 1px !important;
+        border-right-width: 0 !important;
+        margin: 0 -1px .2em 0;
+    }
+    .ui-tabs-vertical > .ui-tabs-nav > li > a {
+        display:block;
+
+    }
+    .ui-tabs-vertical > .ui-tabs-nav > li.ui-tabs-active {
+        padding-bottom: 0;
+        padding-right: .1em; 
+        width: 100%;  
+        float: right;     
+        border-right-width: 1px;
+    }
+
+</style>
+
+</head>
+<body>
+
+<nav style="background-color: #008CBA; border-color: #008CBA;" class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>                        
+      </button>
+      <img class="pull-left" width="50px" style="margin-right: 5px;" src="{{ url_for('static', filename='imagenes/Logo_DonBosco.png') }}"><a class="navbar-brand hidden-xs" style="color:white;" href="#">Escuela Técnica Popular Don Bosco</a>
+      <form class="navbar-form navbar-left hidden-xs">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Buscar alumno">
+            <div class="input-group-btn">
+                <button class="btn btn-default" type="submit">
+                    <i class="glyphicon glyphicon-search"></i>
+                </button>
+            </div>
+        </div>
+       </form>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav navbar-right">
+        <li><a class="otravaina" href="#"><span class="glyphicon glyphicon-envelope"></span> Enviar correo</a></li>
+        <li class="dropdown">
+          <a class="dropdown-toggle otravaina" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-plus"></span> Añadir <span class="caret"></span></a>
+          <ul style="background-color: #9B9B9C" class="dropdown-menu">
+            <li><a id="anadir1" href="#">Añadir estudiantes</a></li>
+            <li><a id="anadir2" href="#">Añadir seccion</a></li>
+          </ul>
+        </li>
+      </ul>
+        <form class="navbar-form navbar-left visible-xs">
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Buscar alumno">
+            <div class="input-group-btn">
+              <button class="btn btn-default" type="submit">
+                <i class="glyphicon glyphicon-search"></i>
+              </button>
+            </div>
+          </div>
+        </form>
+    </div>
+  </div>
+</nav>
+<div id="SUPERparche" hidden>
+    <br><br><br><br>
+</div>
+<div class="container-fluid">
+<div class="row">
+
+<div class="col-md-2">
+
+    <div id="tocheck" class="btn-group dropup btn-group-vertical" style="width: 100%;">
+    <br>
+    <h4 style="text-align: center; color:white;">Curso</h4>                             
+                <button id="curso_actual" class="btn btn-default">
+                    Gráfica
+                </button> 
+                <button id="parchesito" data-toggle="dropdown" class="btn btn-default dropdown-toggle">
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" style="width: 100%; text-align: center;">
+                    <li>
+                        <a onclick="cambiarValor('Contabilidad')" >Contabilidad</a>
+                    </li>
+                    <li>
+                        <a onclick="cambiarValor('Electricidad')">Electricidad</a>
+                    </li>
+                    <li>
+                        <a onclick="cambiarValor('Diseño Gráfico')">Diseño Gráfico</a>
+                    </li>
+                </ul>
+    </div>
+    <br>
+    <br>
+    <h4 style="text-align: center; color:white;">Ano</h4>
+    <div class="btn-group btn-group-vertical" style="width: 100%;">                         
+        <button id="4to" onclick="newActive('4to')" class="btn btn-default active" type="button">
+            4to
+        </button> 
+        <button id="5to" onclick="newActive('5to')" class="btn btn-default" type="button">
+            5to
+        </button> 
+        <button id="6to" onclick="newActive('6to')" class="btn btn-default" type="button">
+            6to
+        </button>
+    </div>
+</div>
+
+<div class="col-md-10"> 
+<h3 style="color:white;">Estudiantes</h3>               
+<div id="vertical" style="width: 100%">
+    <div id="4to">
+        <div id="internasA">
+            <ul>
+                <li><a href="#4toA">Sección A</a>
+                </li>
+                <li><a href="#4toB">Sección B</a>
+                </li>
+                <li><a href="#4toC">Sección C</a>
+                </li>
+            </ul>
+            <div id="4toA" style="overflow-x: scroll;">
+                <table class="table">
+                    <thead>
+                        <tr class="success">
+                            <th>
+                                Cédula
+                            </th>
+                            <th>
+                                Apellidos
+                            </th>
+                            <th>
+                                Nombres
+                            </th>
+                            <th>
+                                E-mail
+                            </th>
+                            <th>
+                                Inasistencias
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="active"> 
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Rincón Hernández 
+                            </td>
+                            <td>
+                                Tomás Eduardo
+                            </td>
+                            <td>
+                                estoyenlajuve@gmail.com
+                            </td>
+                            <td>
+                                2
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                        <tr class="active">
+                            
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Rincón Hernández
+                            </td>
+                            <td>
+                                Tomás Eduardo
+                            </td>
+                            <td>
+                                estoyenlajuve@gmail.com
+                            </td>
+                            <td>
+                                2
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+
+                        </tr>
+                        <tr class="active">
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Rincón Hernández 
+                            </td>
+                            <td>
+                                Tomás Eduardo
+                            </td>
+                            <td>
+                                estoyenlajuve@gmail.com
+                            </td>
+                            <td>
+                                2
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                        <tr class="active">
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Rincón Hernández 
+                            </td>
+                            <td>
+                                Tomás Eduardo
+                            </td>
+                            <td>
+                                estoyenlajuve@gmail.com
+                            </td>
+                            <td>
+                                2
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                        <tr class="active">
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Rincón Hernández 
+                            </td>
+                            <td>
+                                Tomás Eduardo
+                            </td>
+                            <td>
+                                estoyenlajuve@gmail.com
+                            </td>
+                            <td>
+                                2
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="4toB" style="overflow-x: scroll;">
+                <table class="table">
+                    <thead>
+                        <tr class="success">
+                            <th>
+                                Cédula
+                            </th>
+                            <th>
+                                Apellidos
+                            </th>
+                            <th>
+                                Nombres
+                            </th>
+                            <th>
+                                E-mail
+                            </th>
+                            <th>
+                                Inasistencias
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="active"> 
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Vizcarrondo Araujo 
+                            </td>
+                            <td>
+                                Oswaldo Augusto
+                            </td>
+                            <td>
+                                vizca@gmail.com
+                            </td>
+                            <td>
+                                69
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                        <tr class="active">
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Vizcarrondo Araujo 
+                            </td>
+                            <td>
+                                Oswaldo Augusto
+                            </td>
+                            <td>
+                                vizca@gmail.com
+                            </td>
+                            <td>
+                                69
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                        <tr class="active">
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Vizcarrondo Araujo 
+                            </td>
+                            <td>
+                                Oswaldo Augusto
+                            </td>
+                            <td>
+                                vizca@gmail.com
+                            </td>
+                            <td>
+                                69
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                        <tr class="active">
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Vizcarrondo Araujo 
+                            </td>
+                            <td>
+                                Oswaldo Augusto
+                            </td>
+                            <td>
+                                vizca@gmail.com
+                            </td>
+                            <td>
+                                69
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                        <tr class="active">
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Vizcarrondo Araujo 
+                            </td>
+                            <td>
+                                Oswaldo Augusto
+                            </td>
+                            <td>
+                                vizca@gmail.com
+                            </td>
+                            <td>
+                                69
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="4toC" style="overflow-x: scroll;">
+                <table class="table">
+                    <thead>
+                        <tr class="success">
+                            <th>
+                                Cédula
+                            </th>
+                            <th>
+                                Apellidos
+                            </th>
+                            <th>
+                                Nombres
+                            </th>
+                            <th>
+                                E-mail
+                            </th>
+                            <th>
+                                Inasistencias
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="active"> 
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Rincón Hernández 
+                            </td>
+                            <td>
+                                Tomás Eduardo
+                            </td>
+                            <td>
+                                estoyenlajuve@gmail.com
+                            </td>
+                            <td>
+                                2
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                        <tr class="active">
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Rincón Hernández 
+                            </td>
+                            <td>
+                                Tomás Eduardo
+                            </td>
+                            <td>
+                                estoyenlajuve@gmail.com
+                            </td>
+                            <td>
+                                2
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                        <tr class="active">
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Rincón Hernández 
+                            </td>
+                            <td>
+                                Tomás Eduardo
+                            </td>
+                            <td>
+                                estoyenlajuve@gmail.com
+                            </td>
+                            <td>
+                                2
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                        <tr class="active">
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Rincón Hernández 
+                            </td>
+                            <td>
+                                Tomás Eduardo
+                            </td>
+                            <td>
+                                estoyenlajuve@gmail.com
+                            </td>
+                            <td>
+                                2
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                        <tr class="active">
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Rincón Hernández 
+                            </td>
+                            <td>
+                                Tomás Eduardo
+                            </td>
+                            <td>
+                                estoyenlajuve@gmail.com
+                            </td>
+                            <td>
+                                2
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="5to" style="display: none;">
+         <div id="internasB">
+            <ul>
+                <li><a href="#5toA">Sección A</a>
+                </li>
+                <li><a href="#5toB">Sección B</a>
+                </li>
+                <li><a href="#5toC">Sección C</a>
+                </li>
+            </ul>
+            <div id="5toA" style="overflow-x: scroll;">
+                <table class="table">
+                    <thead>
+                        <tr class="success">
+                            <th>
+                                Cédula
+                            </th>
+                            <th>
+                                Apellidos
+                            </th>
+                            <th>
+                                Nombres
+                            </th>
+                            <th>
+                                E-mail
+                            </th>
+                            <th>
+                                Inasistencias
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="active"> 
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Rincón Hernández 
+                            </td>
+                            <td>
+                                Tomás Eduardo
+                            </td>
+                            <td>
+                                estoyenlajuve@gmail.com
+                            </td>
+                            <td>
+                                2
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                        <tr class="active">
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Rincón Hernández 
+                            </td>
+                            <td>
+                                Tomás Eduardo
+                            </td>
+                            <td>
+                                estoyenlajuve@gmail.com
+                            </td>
+                            <td>
+                                2
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                        <tr class="active">
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Rincón Hernández 
+                            </td>
+                            <td>
+                                Tomás Eduardo
+                            </td>
+                            <td>
+                                estoyenlajuve@gmail.com
+                            </td>
+                            <td>
+                                2
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                        <tr class="active">
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Rincón Hernández 
+                            </td>
+                            <td>
+                                Tomás Eduardo
+                            </td>
+                            <td>
+                                estoyenlajuve@gmail.com
+                            </td>
+                            <td>
+                                2
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                        <tr class="active">
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Rincón Hernández 
+                            </td>
+                            <td>
+                                Tomás Eduardo
+                            </td>
+                            <td>
+                                estoyenlajuve@gmail.com
+                            </td>
+                            <td>
+                                2
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="5toB" style="overflow-x: scroll;">
+                <table class="table">
+                    <thead>
+                        <tr class="success">
+                            <th>
+                                Cédula
+                            </th>
+                            <th>
+                                Apellidos
+                            </th>
+                            <th>
+                                Nombres
+                            </th>
+                            <th>
+                                E-mail
+                            </th>
+                            <th>
+                                Inasistencias
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="active"> 
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Vizcarrondo Araujo 
+                            </td>
+                            <td>
+                                Oswaldo Augusto
+                            </td>
+                            <td>
+                                vizca@gmail.com
+                            </td>
+                            <td>
+                                69
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                        <tr class="active">
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Vizcarrondo Araujo 
+                            </td>
+                            <td>
+                                Oswaldo Augusto
+                            </td>
+                            <td>
+                                vizca@gmail.com
+                            </td>
+                            <td>
+                                69
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                        <tr class="active">
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Vizcarrondo Araujo 
+                            </td>
+                            <td>
+                                Oswaldo Augusto
+                            </td>
+                            <td>
+                                vizca@gmail.com
+                            </td>
+                            <td>
+                                69
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                        <tr class="active">
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Vizcarrondo Araujo 
+                            </td>
+                            <td>
+                                Oswaldo Augusto
+                            </td>
+                            <td>
+                                vizca@gmail.com
+                            </td>
+                            <td>
+                                69
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                        <tr class="active">
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Vizcarrondo Araujo 
+                            </td>
+                            <td>
+                                Oswaldo Augusto
+                            </td>
+                            <td>
+                                vizca@gmail.com
+                            </td>
+                            <td>
+                                69
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="5toC" style="overflow-x: scroll;">
+                <table class="table">
+                    <thead>
+                        <tr class="success">
+                            <th>
+                                Cédula
+                            </th>
+                            <th>
+                                Apellidos
+                            </th>
+                            <th>
+                                Nombres
+                            </th>
+                            <th>
+                                E-mail
+                            </th>
+                            <th>
+                                Inasistencias
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="active"> 
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Rincón Hernández 
+                            </td>
+                            <td>
+                                Tomás Eduardo
+                            </td>
+                            <td>
+                                estoyenlajuve@gmail.com
+                            </td>
+                            <td>
+                                2
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                        <tr class="active">
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Rincón Hernández 
+                            </td>
+                            <td>
+                                Tomás Eduardo
+                            </td>
+                            <td>
+                                estoyenlajuve@gmail.com
+                            </td>
+                            <td>
+                                2
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                        <tr class="active">
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Rincón Hernández 
+                            </td>
+                            <td>
+                                Tomás Eduardo
+                            </td>
+                            <td>
+                                estoyenlajuve@gmail.com
+                            </td>
+                            <td>
+                                2
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                        <tr class="active">
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Rincón Hernández 
+                            </td>
+                            <td>
+                                Tomás Eduardo
+                            </td>
+                            <td>
+                                estoyenlajuve@gmail.com
+                            </td>
+                            <td>
+                                2
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                        <tr class="active">
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Rincón Hernández 
+                            </td>
+                            <td>
+                                Tomás Eduardo
+                            </td>
+                            <td>
+                                estoyenlajuve@gmail.com
+                            </td>
+                            <td>
+                                2
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="6to" style="display: none;">
+        <div id="internasC">
+            <ul>
+                <li><a href="#6toA">Sección A</a>
+                </li>
+                <li><a href="#6toB">Sección B</a>
+                </li>
+                <li><a href="#6toC">Sección C</a>
+                </li>
+            </ul>
+            <div id="6toA" style="overflow-x: scroll;">
+                <table class="table">
+                    <thead>
+                        <tr class="success">
+                            <th>
+                                Cédula
+                            </th>
+                            <th>
+                                Apellidos
+                            </th>
+                            <th>
+                                Nombres
+                            </th>
+                            <th>
+                                E-mail
+                            </th>
+                            <th>
+                                Inasistencias
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="active"> 
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Rincón Hernández 
+                            </td>
+                            <td>
+                                Tomás Eduardo
+                            </td>
+                            <td>
+                                estoyenlajuve@gmail.com
+                            </td>
+                            <td>
+                                2
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                        <tr class="active">
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Rincón Hernández 
+                            </td>
+                            <td>
+                                Tomás Eduardo
+                            </td>
+                            <td>
+                                estoyenlajuve@gmail.com
+                            </td>
+                            <td>
+                                2
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                        <tr class="active">
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Rincón Hernández 
+                            </td>
+                            <td>
+                                Tomás Eduardo
+                            </td>
+                            <td>
+                                estoyenlajuve@gmail.com
+                            </td>
+                            <td>
+                                2
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                        <tr class="active">
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Rincón Hernández 
+                            </td>
+                            <td>
+                                Tomás Eduardo
+                            </td>
+                            <td>
+                                estoyenlajuve@gmail.com
+                            </td>
+                            <td>
+                                2
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                        <tr class="active">
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Rincón Hernández 
+                            </td>
+                            <td>
+                                Tomás Eduardo
+                            </td>
+                            <td>
+                                estoyenlajuve@gmail.com
+                            </td>
+                            <td>
+                                2
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="6toB" style="overflow-x: scroll;">
+                <table class="table">
+                    <thead>
+                        <tr class="success">
+                            <th>
+                                Cédula
+                            </th>
+                            <th>
+                                Apellidos
+                            </th>
+                            <th>
+                                Nombres
+                            </th>
+                            <th>
+                                E-mail
+                            </th>
+                            <th>
+                                Inasistencias
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="active"> 
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Vizcarrondo Araujo 
+                            </td>
+                            <td>
+                                Oswaldo Augusto
+                            </td>
+                            <td>
+                                vizca@gmail.com
+                            </td>
+                            <td>
+                                69
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                        <tr class="active">
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Vizcarrondo Araujo 
+                            </td>
+                            <td>
+                                Oswaldo Augusto
+                            </td>
+                            <td>
+                                vizca@gmail.com
+                            </td>
+                            <td>
+                                69
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                        <tr class="active">
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Vizcarrondo Araujo 
+                            </td>
+                            <td>
+                                Oswaldo Augusto
+                            </td>
+                            <td>
+                                vizca@gmail.com
+                            </td>
+                            <td>
+                                69
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                        <tr class="active">
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Vizcarrondo Araujo 
+                            </td>
+                            <td>
+                                Oswaldo Augusto
+                            </td>
+                            <td>
+                                vizca@gmail.com
+                            </td>
+                            <td>
+                                69
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                        <tr class="active">
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Vizcarrondo Araujo 
+                            </td>
+                            <td>
+                                Oswaldo Augusto
+                            </td>
+                            <td>
+                                vizca@gmail.com
+                            </td>
+                            <td>
+                                69
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="6toC" style="overflow-x: scroll;">
+                <table class="table">
+                    <thead>
+                        <tr class="success">
+                            <th>
+                                Cédula
+                            </th>
+                            <th>
+                                Apellidos
+                            </th>
+                            <th>
+                                Nombres
+                            </th>
+                            <th>
+                                E-mail
+                            </th>
+                            <th>
+                                Inasistencias
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="active"> 
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Rincón Hernández 
+                            </td>
+                            <td>
+                                Tomás Eduardo
+                            </td>
+                            <td>
+                                estoyenlajuve@gmail.com
+                            </td>
+                            <td>
+                                2
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                        <tr class="active">
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Rincón Hernández 
+                            </td>
+                            <td>
+                                Tomás Eduardo
+                            </td>
+                            <td>
+                                estoyenlajuve@gmail.com
+                            </td>
+                            <td>
+                                2
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                        <tr class="active">
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Rincón Hernández 
+                            </td>
+                            <td>
+                                Tomás Eduardo
+                            </td>
+                            <td>
+                                estoyenlajuve@gmail.com
+                            </td>
+                            <td>
+                                2
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                        <tr class="active">
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Rincón Hernández 
+                            </td>
+                            <td>
+                                Tomás Eduardo
+                            </td>
+                            <td>
+                                estoyenlajuve@gmail.com
+                            </td>
+                            <td>
+                                2
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                        <tr class="active">
+                            <td>
+                                123456789
+                            </td>
+                            <td>
+                                Rincón Hernández 
+                            </td>
+                            <td>
+                                Tomás Eduardo
+                            </td>
+                            <td>
+                                estoyenlajuve@gmail.com
+                            </td>
+                            <td>
+                                2
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Agregar inasistencia</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>  
+    </div>
+    </div>
+    </div>
+</body>
+</html>
