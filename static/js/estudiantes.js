@@ -42,6 +42,23 @@
                 else $("#SUPERparche").css({ display: "block" });
             });
 
+            var table = $('#example').DataTable({
+                "searching": true,
+                "bPaginate": false,
+                "bLengthChange": false,
+                "bFilter": false,
+                "bInfo": false,
+                "language": {
+                    "sProcessing":     "Procesando...",
+                    "sZeroRecords":    "No se encontraron resultados.",
+                    "sEmptyTable":     "Ningún dato disponible en esta tabla.",
+                    "sLoadingRecords": "Cargando..."
+                }
+            });
+
+            $('#searchBox').keyup(function(){
+                table.search($(this).val()).draw() ;
+            });
 
         });
 
