@@ -42,7 +42,7 @@
                 else $("#SUPERparche").css({ display: "block" });
             });
 
-            var table = $('#example').DataTable({
+            $('#4toA-table, #4toB-table, #4toC-table, #5toA-table, #5toB-table, #5toC-table, #6toA-table, #6toB-table, #6toC-table').DataTable({
                 "searching": true,
                 "bPaginate": false,
                 "bLengthChange": false,
@@ -52,12 +52,10 @@
                     "sProcessing":     "Procesando...",
                     "sZeroRecords":    "No se encontraron resultados.",
                     "sEmptyTable":     "Ningún dato disponible en esta tabla.",
-                    "sLoadingRecords": "Cargando..."
+                    "sLoadingRecords": "Cargando...",
+                    "search": "_INPUT_",
+                    "searchPlaceholder": "Buscar en esta sección."
                 }
-            });
-
-            $('#searchBox').keyup(function(){
-                table.search($(this).val()).draw() ;
             });
 
         });
