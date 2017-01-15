@@ -42,6 +42,21 @@
                 else $("#SUPERparche").css({ display: "block" });
             });
 
+            $('#4toA-table, #4toB-table, #4toC-table, #5toA-table, #5toB-table, #5toC-table, #6toA-table, #6toB-table, #6toC-table').DataTable({
+                "searching": true,
+                "bPaginate": false,
+                "bLengthChange": false,
+                "bFilter": false,
+                "bInfo": false,
+                "language": {
+                    "sProcessing":     "Procesando...",
+                    "sZeroRecords":    "No se encontraron resultados.",
+                    "sEmptyTable":     "Ningún dato disponible en esta tabla.",
+                    "sLoadingRecords": "Cargando...",
+                    "search": "_INPUT_",
+                    "searchPlaceholder": "Buscar en esta sección."
+                }
+            });
 
         });
 
