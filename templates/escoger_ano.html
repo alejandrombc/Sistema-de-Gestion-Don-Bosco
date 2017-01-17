@@ -6,6 +6,7 @@
   <meta name="viewport" content="height=device-height,initial-scale=1">
   <title>Selección - Escuela Técnica Popular Don Bosco</title>
   
+  <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery-ui.css') }}">
   <link rel="icon" type="image/png" href="{{ url_for('static', filename='imagenes/favicon.png') }}" sizes="32x32">
 
@@ -15,18 +16,32 @@
 </head>
 
 <body>
+
+<script type="text/javascript">
+  function funcAno(inicial, final){
+    $("#anos").val(inicial+'-'+final);
+    $("#ano_escolar").submit();
+  }
+</script>
+
+  <form id="ano_escolar" action="/estudiantes_ano" method="post">
+    <input type="text" id="anos" name="ano" hidden>
+  </form>
+
 {% if datos %}
 <center><h1 style="color:white;">Por favor, escoja el año escolar que desea:</h1></center><br>
   {% for ano in datos %}
     <figure class="snip1566">
     <img src="{{ url_for('static', filename='imagenes/Logo_DonBosco.png') }}" alt="sq-sample14" />
-    <figcaption><h2 class="headertext">{{ano[0]}}-{{ano[1]}}</h2></figcaption>
-    <a href="#"></a>
+    <figcaption><h2 class="headertext">{{ano[1]}}-{{ano[2]}}</h2></figcaption>
+    <a onclick="funcAno('{{ano[1]}}','{{ano[2]}}')"></a>
     </figure>
   {% endfor %}
 {% else %}
 <center><h1 style="color:white;">Actualmente no tiene ningun año escolar</h1></center><br>
 {% endif %}
+
+
 </body>
 
 </html>

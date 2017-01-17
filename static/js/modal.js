@@ -7,6 +7,10 @@ $(document).ready(function() {
 
     });
 
+    $("#realSumbit").on('click', function() {
+      $("#contact").submit();
+    });
+
 });
 
 function validateForm() {

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Añadir año - Don Bosco</title>
+  <title>Añadir sección - Don Bosco</title>
 
   <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery-ui.css') }}">
   <link rel="icon" type="image/png" href="{{ url_for('static', filename='imagenes/favicon.png') }}" sizes="32x32">
@@ -15,7 +15,7 @@
   <script src="{{ url_for('static', filename='js/modal.js') }}"></script>
 
   <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/agregar.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/agregar_seccion.css') }}">
 
 
 
@@ -45,23 +45,33 @@
 
 <div class="container">  
 <center><img id="toplogo" align="top" src="{{ url_for('static', filename='imagenes/Logo_DonBosco.png') }}"></center>
-  <form id="contact" action="/agregar" method="post">
-    <h3>Añadir año escolar</h3>
-    <h4>Formato: AAAA-AAAA | Ejemplo: 2016-2017</h4>
-    <fieldset>
-      <input placeholder="Año inicial" name="inicial" type="text" tabindex="1" id="inicial" required autofocus>
-    </fieldset>
-    <fieldset>
-      <input placeholder="Año final" name="final" type="text" tabindex="3" id="final" required>
-    </fieldset>
-    <fieldset>
-    <button type="button" id="abrirModal">Añadir</button>
-    </fieldset><br>
-    {% if error %}
-    <b><p class="copyright">{{error}}</p></b>
-    {% endif %}
-    <b><p class="copyright">Escuela Técnica Popular Don Bosco © - 2017</p></b>
-  </form>
+<br><br>
+<form action="/agregar_seccion" method="post">
+        <br>
+        <h1>Añadir sección</h1>
+        
+        <fieldset>
+          <legend><span class="number">1</span>Escoja el año y el curso que desee:</legend>
+        </fieldset>
+        <fieldset>
+        <label>Año:</label>
+        <select name="ano">
+            <option value="cuarto">4to</option>
+            <option value="quinto">5to</option>
+            <option value="sexto">6to</option>
+        </select>
+        </fieldset>
+        <fieldset>
+        <label>Curso:</label>
+        <select name="curso">
+            <option value="tec_grafica">Tecnología Gráfica</option>
+            <option value="contabilidad">Contabilidad</option>
+            <option value="mecanica">Mecánica</option>
+            <option value="electronica">Electrónica</option>
+        </select>
+        </fieldset>
+        <button type="submit">Añadir</button>
+      </form>
 </div>
 
   
