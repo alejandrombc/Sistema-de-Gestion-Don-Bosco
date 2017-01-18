@@ -1,3 +1,4 @@
+ var confirmacion_real = "";
  $(document).ready(function() {
 
             $("#abrirModal").on('click', function() {
@@ -57,6 +58,29 @@
                     "searchPlaceholder": "Buscar en esta sección."
                 }
             });
+
+            $(".delete_sec").mouseenter(function() {
+                if($(this).closest('li').hasClass('ui-state-active')) $(this).css("color", "#FF2D27"); 
+                
+            }).mouseleave(function() {
+                if($(this).closest('li').hasClass('ui-state-active')) $(this).css("color", "#000");
+            });
+
+             $(".delete_sec").on('click', function(){
+                if($(this).closest('li').hasClass('ui-state-active')){
+                    $("#myModal").modal('show');
+                    $("#confir").text("¿Está seguro de recuperar el año escolar "+ inicial + " - " + final + "?");
+                }
+             });
+
+             $("#confirmacion_real").on('input', function(){
+                confirmacion_real = $("#confirmacion_real").val();
+                if(confirmacion_real == "Deseo eliminar esta seccion"){
+                    $("#realSumbit").removeAttr('disabled');
+                }else{
+                    $("#realSumbit").attr("disabled", "disabled");
+                }
+             });
 
         });
 

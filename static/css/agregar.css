@@ -174,3 +174,9 @@ fieldset {
 
 
 .otravaina:active, .open .otravaina {background-color:#008CBA !important; color: black !important;}
+
+
+
+.delete_sec {
+     cursor:pointer;
+}
