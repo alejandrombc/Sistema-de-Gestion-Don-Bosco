@@ -53,7 +53,7 @@
 </head>
 <body>
 
-<!-- MODAL -->
+<!-- MODAL SECCION-->
 <div id="myModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -62,6 +62,10 @@
                 <h4 class="modal-title">¿Esta seguro que desea eliminar esta sección?</h4>
             </div>
             <div class="modal-body">
+                <form id="seccion_modal">
+                    <input id="seccion_a_eliminar" type="text" name="seccion" hidden>
+                    <button id="submitSecModal" type="submit" hidden></button>
+                </form>
                 <p id="confir">Por favor, escriba textualmente "Deseo eliminar esta seccion":</p>
                 <center><input type="text" style="width:100%" id="confirmacion_real"></center><br>
                 <p class="text-warning"><small>Este cambio es <b>irrecuperable.</b></small></p>
@@ -69,6 +73,33 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                 <button type="button" id="realSumbit" class="btn btn-danger" disabled>Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END MODAL -->
+
+<!-- MODAL ESTUDIANTES -->
+<div id="modal_est" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">¿Esta seguro que desea eliminar este estudiante?</h4>
+            </div>
+            <div class="modal-body">
+                <form id="estudiantes_modal"  action="/borrar_estudiante" method="POST">
+                    <input id="cedula_a_eliminar" type="text" name="cedula" hidden>
+                    <button id="submitEstModal" type="submit" hidden></button>
+                </form>
+                <h5>Cédula del estudiante a eliminar: <b id="texto_est"></b></h5>
+                <p>Por favor, escriba textualmente "Deseo eliminar este estudiante":</p>
+                <center><input type="text" style="width:100%" id="confirmacion_real_est"></center><br>
+                <p class="text-warning"><small>Este cambio es <b>irrecuperable.</b></small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                <button type="button" id="realSumbitEst" class="btn btn-danger" disabled>Eliminar</button>
             </div>
         </div>
     </div>
@@ -130,7 +161,7 @@
 
     <div id="tocheck" class="btn-group dropup btn-group-vertical" style="width: 100%;">
     <br>
-    <h4 style="text-align: center; color:white;">Curso</h4>                             
+    <h4 style="text-align: center; color:white; cursor: pointer;">Curso</h4>                             
                 <button id="curso_actual" class="btn btn-default">
                     Tecnología Gráfica
                 </button> 
@@ -138,14 +169,14 @@
                     <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" style="width: 100%; text-align: center;">
-                    <li>
-                        <a onclick="cambiarValor('Contabilidad')" >Contabilidad</a>
+                    <li style="cursor: pointer;">
+                        <a id="primer_curso" onclick="cambiarValor(this.text, 'primer_curso')" >Contabilidad</a>
                     </li>
-                    <li>
-                        <a onclick="cambiarValor('Electricidad')">Electrónica</a>
+                    <li style="cursor: pointer;">
+                        <a id="segundo_curso" onclick="cambiarValor(this.text, 'segundo_curso')">Electrónica</a>
                     </li>
-                    <li>
-                        <a onclick="cambiarValor('Diseño Gráfico')">Mecánica</a>
+                    <li style="cursor: pointer;">
+                        <a id="tercer_curso" onclick="cambiarValor(this.text, 'tercer_curso')">Mecánica</a>
                     </li>
                 </ul>
     </div>
@@ -171,11 +202,11 @@
     <div id="4to">
         <div>
             <ul id="internasA">
-                <li id="AQUI"><a href="#4toA">Sección A   <span id="A1" class="glyphicon glyphicon-trash delete_sec"></span></a>
+                <li><a href="#4toA">Sección A   <span id="4A" class="glyphicon glyphicon-trash delete_sec"></span></a>
                 </li>
-                <li id="O_AQUI"><a href="#4toB">Sección B   <span id="A2" class="glyphicon glyphicon-trash delete_sec"></span></a>
+                <li><a href="#4toB">Sección B   <span id="4B" class="glyphicon glyphicon-trash delete_sec"></span></a>
                 </li>
-                <li id="TALVES"><a href="#4toC">Sección C   <span id="A3" class="glyphicon glyphicon-trash delete_sec"></span></a>
+                <li><a href="#4toC">Sección C   <span id="4C" class="glyphicon glyphicon-trash delete_sec"></span></a>
                 </li>
             </ul>
             <div id="4toA" style="overflow-x: scroll;">
@@ -198,10 +229,11 @@
                                 Inasistencias
                             </th>
                             <th></th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="active"> 
+                        <tr id="25038805" class="active"> 
                             <td>
                                 25038805
                             </td>
@@ -220,8 +252,11 @@
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
                             </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
+                            </td>
                         </tr>
-                        <tr class="active">
+                        <tr id="123456789" class="active">
                             
                             <td>
                                 123456789
@@ -241,9 +276,12 @@
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
                             </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
+                            </td>
 
                         </tr>
-                        <tr class="active">
+                        <tr id="25038805" class="active">
                             <td>
                                 25038805
                             </td>
@@ -262,8 +300,11 @@
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
                             </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
+                            </td>
                         </tr>
-                        <tr class="active">
+                        <tr id="123456789" class="active">
                             <td>
                                 123456789
                             </td>
@@ -282,8 +323,11 @@
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
                             </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
+                            </td>
                         </tr>
-                        <tr class="active">
+                        <tr id="123456789" class="active">
                             <td>
                                 123456789
                             </td>
@@ -301,6 +345,9 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
                     </tbody>
@@ -326,10 +373,11 @@
                                 Inasistencias
                             </th>
                             <th></th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="active"> 
+                        <tr id="123456789" class="active"> 
                             <td>
                                 123456789
                             </td>
@@ -347,9 +395,12 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
-                        <tr class="active">
+                        <tr id="123456789" class="active">
                             <td>
                                 123456789
                             </td>
@@ -367,9 +418,12 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
-                        <tr class="active">
+                        <tr id="123456789" class="active">
                             <td>
                                 123456789
                             </td>
@@ -387,9 +441,12 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
-                        <tr class="active">
+                        <tr id="123456789" class="active">
                             <td>
                                 123456789
                             </td>
@@ -407,9 +464,12 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
-                        <tr class="active">
+                        <tr id="123456789" class="active">
                             <td>
                                 123456789
                             </td>
@@ -427,6 +487,9 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
                     </tbody>
@@ -452,10 +515,11 @@
                                 Inasistencias
                             </th>
                             <th></th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="active"> 
+                        <tr id="123456789" class="active"> 
                             <td>
                                 123456789
                             </td>
@@ -473,9 +537,12 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
-                        <tr class="active">
+                        <tr id="123456789" class="active">
                             <td>
                                 123456789
                             </td>
@@ -493,9 +560,12 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
-                        <tr class="active">
+                        <tr id="123456789" class="active">
                             <td>
                                 123456789
                             </td>
@@ -513,9 +583,12 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
-                        <tr class="active">
+                        <tr id="123456789" class="active">
                             <td>
                                 123456789
                             </td>
@@ -533,9 +606,12 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
-                        <tr class="active">
+                        <tr id="123456789" class="active">
                             <td>
                                 123456789
                             </td>
@@ -553,6 +629,9 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
                     </tbody>
@@ -563,11 +642,11 @@
     <div id="5to" style="display: none;">
          <div id="internasB">
             <ul>
-                <li><a href="#5toA">Sección A</a>
+                <li><a href="#5toA">Sección A   <span id="5A" class="glyphicon glyphicon-trash delete_sec"></span></a>
                 </li>
-                <li><a href="#5toB">Sección B</a>
+                <li><a href="#5toB">Sección B   <span id="5B" class="glyphicon glyphicon-trash delete_sec"></span></a>
                 </li>
-                <li><a href="#5toC">Sección C</a>
+                <li><a href="#5toC">Sección C   <span id="5C" class="glyphicon glyphicon-trash delete_sec"></span></a>
                 </li>
             </ul>
             <div id="5toA" style="overflow-x: scroll;">
@@ -590,10 +669,11 @@
                                 Inasistencias
                             </th>
                             <th></th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="active"> 
+                        <tr id="123456789" class="active"> 
                             <td>
                                 123456789
                             </td>
@@ -611,9 +691,12 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
-                        <tr class="active">
+                        <tr id="123456789" class="active">
                             <td>
                                 123456789
                             </td>
@@ -631,9 +714,12 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
-                        <tr class="active">
+                        <tr id="123456789" class="active">
                             <td>
                                 123456789
                             </td>
@@ -651,9 +737,12 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
-                        <tr class="active">
+                        <tr id="123456789" class="active">
                             <td>
                                 123456789
                             </td>
@@ -671,9 +760,12 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
-                        <tr class="active">
+                        <tr id="123456789" class="active">
                             <td>
                                 123456789
                             </td>
@@ -691,6 +783,9 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
                     </tbody>
@@ -716,10 +811,11 @@
                                 Inasistencias
                             </th>
                             <th></th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="active"> 
+                        <tr id="123456789" class="active"> 
                             <td>
                                 123456789
                             </td>
@@ -737,9 +833,12 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
-                        <tr class="active">
+                        <tr id="123456789" class="active">
                             <td>
                                 123456789
                             </td>
@@ -757,9 +856,12 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
-                        <tr class="active">
+                        <tr id="123456789" class="active">
                             <td>
                                 123456789
                             </td>
@@ -777,9 +879,12 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
-                        <tr class="active">
+                        <tr id="123456789" class="active">
                             <td>
                                 123456789
                             </td>
@@ -797,9 +902,12 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
-                        <tr class="active">
+                        <tr id="123456789" class="active">
                             <td>
                                 123456789
                             </td>
@@ -817,6 +925,9 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
                     </tbody>
@@ -842,10 +953,11 @@
                                 Inasistencias
                             </th>
                             <th></th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="active"> 
+                        <tr id="123456789" class="active"> 
                             <td>
                                 123456789
                             </td>
@@ -863,9 +975,12 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
-                        <tr class="active">
+                        <tr id="123456789" class="active">
                             <td>
                                 123456789
                             </td>
@@ -883,9 +998,12 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
-                        <tr class="active">
+                        <tr id="123456789" class="active">
                             <td>
                                 123456789
                             </td>
@@ -903,9 +1021,12 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
-                        <tr class="active">
+                        <tr id="123456789" class="active">
                             <td>
                                 123456789
                             </td>
@@ -923,9 +1044,12 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
-                        <tr class="active">
+                        <tr id="123456789" class="active">
                             <td>
                                 123456789
                             </td>
@@ -943,6 +1067,9 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
                     </tbody>
@@ -953,11 +1080,11 @@
     <div id="6to" style="display: none;">
         <div id="internasC">
             <ul>
-                <li><a href="#6toA">Sección A</a>
+                <li><a href="#6toA">Sección A   <span id="6A" class="glyphicon glyphicon-trash delete_sec"></span></a>
                 </li>
-                <li><a href="#6toB">Sección B</a>
+                <li><a href="#6toB">Sección B   <span id="6B" class="glyphicon glyphicon-trash delete_sec"></span></a>
                 </li>
-                <li><a href="#6toC">Sección C</a>
+                <li><a href="#6toC">Sección C   <span id="6C" class="glyphicon glyphicon-trash delete_sec"></span></a>
                 </li>
             </ul>
             <div id="6toA" style="overflow-x: scroll;">
@@ -980,10 +1107,11 @@
                                 Inasistencias
                             </th>
                             <th></th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="active"> 
+                        <tr id="123456789" class="active"> 
                             <td>
                                 123456789
                             </td>
@@ -1001,9 +1129,12 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
-                        <tr class="active">
+                        <tr id="123456789" class="active">
                             <td>
                                 123456789
                             </td>
@@ -1021,9 +1152,12 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
-                        <tr class="active">
+                        <tr id="123456789" class="active">
                             <td>
                                 123456789
                             </td>
@@ -1041,9 +1175,12 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
-                        <tr class="active">
+                        <tr id="123456789" class="active">
                             <td>
                                 123456789
                             </td>
@@ -1061,9 +1198,12 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
-                        <tr class="active">
+                        <tr id="123456789" class="active">
                             <td>
                                 123456789
                             </td>
@@ -1081,6 +1221,9 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
                     </tbody>
@@ -1106,10 +1249,11 @@
                                 Inasistencias
                             </th>
                             <th></th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="active"> 
+                        <tr id="123456789" class="active"> 
                             <td>
                                 123456789
                             </td>
@@ -1127,9 +1271,12 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
-                        <tr class="active">
+                        <tr id="123456789" class="active">
                             <td>
                                 123456789
                             </td>
@@ -1147,9 +1294,12 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
-                        <tr class="active">
+                        <tr id="123456789" class="active">
                             <td>
                                 123456789
                             </td>
@@ -1167,9 +1317,12 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
-                        <tr class="active">
+                        <tr id="123456789" class="active">
                             <td>
                                 123456789
                             </td>
@@ -1187,9 +1340,12 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
-                        <tr class="active">
+                        <tr id="123456789" class="active">
                             <td>
                                 123456789
                             </td>
@@ -1207,6 +1363,9 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
                     </tbody>
@@ -1232,10 +1391,11 @@
                                 Inasistencias
                             </th>
                             <th></th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="active"> 
+                        <tr id="123456789" class="active"> 
                             <td>
                                 123456789
                             </td>
@@ -1253,9 +1413,12 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
-                        <tr class="active">
+                        <tr  id="123456789" class="active">
                             <td>
                                 123456789
                             </td>
@@ -1273,9 +1436,12 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
-                        <tr class="active">
+                        <tr id="123456789" class="active">
                             <td>
                                 123456789
                             </td>
@@ -1293,9 +1459,12 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
-                        <tr class="active">
+                        <tr id="123456789" class="active">
                             <td>
                                 123456789
                             </td>
@@ -1313,9 +1482,12 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
-                        <tr class="active">
+                        <tr id="123456789" class="active">
                             <td>
                                 123456789
                             </td>
@@ -1333,6 +1505,9 @@
                             </td>
                             <td>
                                 <button class="btn btn-warning">Agregar inasistencia</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
                             </td>
                         </tr>
                     </tbody>

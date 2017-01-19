@@ -1,19 +1,5 @@
  var confirmacion_real = "";
  $(document).ready(function() {
-
-            $("#abrirModal").on('click', function() {
-
-                if($("#inicial").val() != "" && $("#final").val() != "")
-
-                if (validateForm()) $("#myModal").modal('show');
-                $("#confir").text("¿Está seguro de agregar el año escolar "+ $("#inicial").val() + " - " + $("#final").val() + "?");
-
-                $("#realSumbit").on('click', function(){
-                  $("#contact").submit();
-                });
-
-            });
-
             $( "#tabs" ).tabs();
             $( ".btn" ).button();
             $("#externas").tabs();
@@ -59,6 +45,7 @@
                 }
             });
 
+            //Basuras de las secciones (para borrarlas)
             $(".delete_sec").mouseenter(function() {
                 if($(this).closest('li').hasClass('ui-state-active')) $(this).css("color", "#FF2D27"); 
                 
@@ -66,13 +53,14 @@
                 if($(this).closest('li').hasClass('ui-state-active')) $(this).css("color", "#000");
             });
 
+            //Cuando hago click en una de las basuras de seccion abro el modal
              $(".delete_sec").on('click', function(){
                 if($(this).closest('li').hasClass('ui-state-active')){
                     $("#myModal").modal('show');
-                    $("#confir").text("¿Está seguro de recuperar el año escolar "+ inicial + " - " + final + "?");
                 }
              });
 
+             //Confirmacion de entrada del modal de seccion
              $("#confirmacion_real").on('input', function(){
                 confirmacion_real = $("#confirmacion_real").val();
                 if(confirmacion_real == "Deseo eliminar esta seccion"){
@@ -81,6 +69,35 @@
                     $("#realSumbit").attr("disabled", "disabled");
                 }
              });
+
+            //Confirmacion de entrada del modal estudiantes
+            $("#confirmacion_real_est").on('input', function(){
+                confirmacion_real = $("#confirmacion_real_est").val();
+                if(confirmacion_real == "Deseo eliminar este estudiante"){
+                    $("#realSumbitEst").removeAttr('disabled');
+                }else{
+                    $("#realSumbitEst").attr("disabled", "disabled");
+                }
+            });
+
+            //Cuando presiono la papelere asociada al estudiante
+             $(".botonDltEst").on('click', function(){
+                 $("#modal_est").modal('show');
+                 var estudiante = $(this).closest('tr').attr('id');
+                 $("#texto_est").text(estudiante);
+                //alert("EL ID: "+$(this).closest('tr').attr('id'));
+             });
+
+             //Cuando presiono el modal de borrar estudiante
+            $("#realSumbitEst").on('click', function(){
+                $('#cedula_a_eliminar').val($("#texto_est").text());
+                $("#estudiantes_modal").submit();
+            });
+
+            //Cuando presiono el modal de borrar seccion
+            $("#realSumbit").on('click', function(){
+                //Submit
+            });
 
         });
 
@@ -94,13 +111,19 @@
 
         }
 
-        function cambiarValor(valor) {
+        function cambiarValor(valor, id) {
             var text = $("#curso_actual").text()
             if(text != valor){
+                $('#'+id).text(text);
                 $("#curso_actual").html(valor);
+                
                 // AQUI HAY QUE CAMBIAR VALORES PORQUE CAMBIO EL TEXTO
             }
 
+        }
+
+        function openModalDesc(){
+            alert("FINO");
         }
 
         function newActive(clase) {
