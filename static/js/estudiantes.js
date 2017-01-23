@@ -127,10 +127,57 @@
         }
 
         function newActive(clase) {
-            $('#4to').removeClass('active')
-            $('#5to').removeClass('active')
-            $('#6to').removeClass('active')
-            $('#'+clase).addClass('active')
+            console.log('klk');
+            alert('hola');
+            $('#4to').removeClass('active');
+            $('#5to').removeClass('active');
+            $('#6to').removeClass('active');
+            $('#'+clase).addClass('active');
+
+            // $.ajax({
+            // type:"GET" ,
+            // url: '/estudiantes_escoger_ano?ano='+clase,
+            // dataType: "text",
+            // error: function (xhr, ajaxOptions, thrownError) {
+            //         alert(xhr.status);
+            //         alert(thrownError);
+            //         alert(ajaxOptions);
+                   
+            //       },
+            // success: function(msg){
+            //   no_mas_reciente = msg[1]
+            //   var index = 1;
+            //   var playlist = ""
+            //   for (var i = 0; i < msg[0].length; i++) {
+            //     if (index == 1) {
+            //       playlist = playlist + "<div class='container-fluid text-center'><br><div style='word-wrap: break-word;'class='row'><div class='col-sm-4 col-sm-offset-1 wrapper'><div class='ribbon-wrapper-green'><div class='ribbon-heart'><i style='color:#DC2424;'class='fa fa-heart fa-lg'></i></div></div><h3>"+msg[0][i].nombre+"</h3><p class='publicado'>Publicado:"+msg[0][i].fecha+" por <strong>"+msg[0][i].user[1]+"</strong></p><div class='row'><div class='col-sm-7'><div class='imageWrapper2'><img src='static/imagenes/"+msg[0][i].user[0]+"/info_playlists/"+msg[0][i].foto+"') class='img-responsive imagen_playlist' title='Portada1'/><a href='/reproducir?id="+msg[0][i]._id+"' class='cornerLinkCover'><i id='playbtn' class='fa fa-play-circle fa-5x'></i></a></div></div><div class='col-sm-5 text-left'><div class='row'><span class='glyphicon glyphicon-heart'> "+msg[0][i].fav+" </span><span class='glyphicon glyphicon-thumbs-up'> "+msg[0][i].likes+"</span><p>Categorias:</p>"
+            //       for (var j =0; j<(msg[0][i].categorias).length ; j++) {
+            //         playlist = playlist + "<span class='tag categoria'>#"+msg[0][i].categorias[j]+"</span>"
+            //       };
+            //         playlist = playlist + "</div><br></div></div></div>"
+            //       index = 2;
+            //     }else{
+            //       playlist = playlist +"<div class='col-sm-4 col-sm-offset-2 wrapper'><div class='ribbon-wrapper-green'><div class='ribbon-heart'><i style='color:#DC2424;'class='fa fa-heart fa-lg'></i></div></div><h3>"+msg[0][i].nombre+"</h3><p class='publicado'>Publicado:"+msg[0][i].fecha+" por <strong>"+msg[0][i].user[1]+"</strong></p><div class='row'><div class='col-sm-7'><div class='imageWrapper2'><img src='static/imagenes/"+msg[0][i].user[0]+"/info_playlists/"+msg[0][i].foto+"') class='img-responsive imagen_playlist' title='Portada1'/><a href='/reproducir?id="+msg[0][i]._id+"' class='cornerLinkCover'><i id='playbtn' class='fa fa-play-circle fa-5x'></i></a></div></div><div class='col-sm-5 text-left'><div class='row'><span class='glyphicon glyphicon-heart'> "+msg[0][i].fav+" </span><span class='glyphicon glyphicon-thumbs-up'> "+msg[0][i].likes+"</span><p>Categorias:</p>"
+            //       for (var j =0; j<(msg[0][i].categorias).length ; j++) {
+            //         playlist = playlist + "<span class='tag categoria'>#"+msg[0][i].categorias[j]+"</span>"
+            //       };
+            //       playlist = playlist + "</div></div></div></div></div></div><br>"
+            //       index = 1;
+            //     }
+            //   };
+            //     if(msg[2] % 2 == 1){
+            //       playlist = playlist + "</div></div><br>"
+            //     }
+            //     $("#pelotas1").remove();
+            //     playlist = playlist + "<center id='pelotas1'><div class='spinner'><div class='bounce1'></div><div class='bounce2'></div><div class='bounce3'></div></div></center>"
+            //     $("#home").append(playlist);
+            //     playlist = "";
+              
+              
+            // }
+
+            // });
+
 
             // AQUI HAY QUE ACTUAlIZAR VALORES PORQUE CAMBIO EL ANO ESCOLAR
         }

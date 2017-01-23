@@ -7,6 +7,7 @@ app = Flask(__name__)
 mysql = MySQL()
 app.config['MYSQL_DATABASE_USER'] = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = '123'
+# app.config['MYSQL_DATABASE_PASSWORD'] = ''
 app.config['MYSQL_DATABASE_DB'] = 'don_bosco'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 mysql.init_app(app)
@@ -77,7 +78,20 @@ def def_estudiantes():
 	# Aqui va el g con el ano escolar
 	if request.method == 'POST': 
 		if request.form['ano'] != None: session['ano_esc'] = request.form['ano']
-	return render_template("estudiantes.html" )
+		cursor = mysql.connect().cursor()
+		
+		cursor.execute("SELECT * from estudiante WHERE periodo_lectivo='"+request.form['ano']+"' ")
+		data = cursor.fetchall()
+
+		cursor.execute("SELECT secciones from secciones WHERE curso='tec_grafica' AND ano='cuarto' AND ano_escolar=%s", (session['ano_esc']))
+		secciones = cursor.fetchall()
+		print(secciones)
+		print(secciones[0][0])
+		cant_secciones = int(secciones[0][0])
+		print(cant_secciones)
+
+		#Falta validar si la data es null o alguna excepcion
+	return render_template("estudiantes.html", datos=data, cant_secciones=cant_secciones )
 
 
 # Al darle a seleccionar busco todos los anos y los mando al html

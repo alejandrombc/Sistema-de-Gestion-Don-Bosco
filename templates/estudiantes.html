@@ -193,8 +193,12 @@
         <button id="6to" onclick="newActive('6to')" class="btn btn-default" type="button">
             6to
         </button>
+
     </div>
 </div>
+
+<p> {{ datos[0] }} </p>
+<p> {{cant_secciones}} </p>
 
 <div class="col-md-10"> 
 <h3 style="color:white;">Estudiantes</h3>               
@@ -202,12 +206,22 @@
     <div id="4to">
         <div>
             <ul id="internasA">
-                <li><a href="#4toA">Sección A   <span id="4A" class="glyphicon glyphicon-trash delete_sec"></span></a>
-                </li>
-                <li><a href="#4toB">Sección B   <span id="4B" class="glyphicon glyphicon-trash delete_sec"></span></a>
-                </li>
-                <li><a href="#4toC">Sección C   <span id="4C" class="glyphicon glyphicon-trash delete_sec"></span></a>
-                </li>
+                {% if cant_secciones == 1 %}
+                    <li><a href="#4toA">Sección A   <span id="4A" class="glyphicon glyphicon-trash delete_sec"></span></a></li>
+                {% endif %}
+                {% if cant_secciones == 2 %}
+                    <li><a href="#4toA">Sección A   <span id="4A" class="glyphicon glyphicon-trash delete_sec"></span></a></li>
+                    <li><a href="#4toB">Sección B   <span id="4B" class="glyphicon glyphicon-trash delete_sec"></span></a></li>
+                {% endif %}
+                {% if cant_secciones == 3 %}
+                    <li><a href="#4toA">Sección A   <span id="4A" class="glyphicon glyphicon-trash delete_sec"></span></a></li>
+                    <li><a href="#4toB">Sección B   <span id="4B" class="glyphicon glyphicon-trash delete_sec"></span></a></li>
+                    <li><a href="#4toC">Sección C   <span id="4C" class="glyphicon glyphicon-trash delete_sec"></span></a></li>
+                {% endif %}
+
+               <!--  <li><a href="#4toA">Sección A   <span id="4A" class="glyphicon glyphicon-trash delete_sec"></span></a></li>
+                <li><a href="#4toB">Sección B   <span id="4B" class="glyphicon glyphicon-trash delete_sec"></span></a></li>
+                <li><a href="#4toC">Sección C   <span id="4C" class="glyphicon glyphicon-trash delete_sec"></span></a></li> -->
             </ul>
             <div id="4toA" style="overflow-x: scroll;">
                 <table id="4toA-table" class="table">
@@ -217,10 +231,7 @@
                                 Cédula
                             </th>
                             <th>
-                                Apellidos
-                            </th>
-                            <th>
-                                Nombres
+                                Nombre
                             </th>
                             <th>
                                 E-mail
@@ -233,127 +244,35 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr id="25038805" class="active"> 
-                            <td>
-                                25038805
-                            </td>
-                            <td>
-                                Alvarez 
-                            </td>
-                            <td>
-                                José Manuel
-                            </td>
-                            <td>
-                                josema@gmail.com
-                            </td>
-                            <td>
-                                2
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                        <tr id="123456789" class="active">
-                            
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Rincón Hernández
-                            </td>
-                            <td>
-                                Tomás Eduardo
-                            </td>
-                            <td>
-                                estoyenlajuve@gmail.com
-                            </td>
-                            <td>
-                                2
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
+                    {% if datos %}
+                        {% for estudiante in datos %}
+                            <tr id='{{estudiante[2]}}' class="active"> 
+                                <td>
+                                    {{estudiante[2]}}
 
-                        </tr>
-                        <tr id="25038805" class="active">
-                            <td>
-                                25038805
-                            </td>
-                            <td>
-                                Alvarez 
-                            </td>
-                            <td>
-                                José Manuel
-                            </td>
-                            <td>
-                                josema@gmail.com
-                            </td>
-                            <td>
-                                2
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                        <tr id="123456789" class="active">
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Rincón Hernández 
-                            </td>
-                            <td>
-                                Tomás Eduardo
-                            </td>
-                            <td>
-                                estoyenlajuve@gmail.com
-                            </td>
-                            <td>
-                                2
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                        <tr id="123456789" class="active">
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Rincón Hernández 
-                            </td>
-                            <td>
-                                Tomás Eduardo
-                            </td>
-                            <td>
-                                estoyenlajuve@gmail.com
-                            </td>
-                            <td>
-                                2
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
+                                </td>
+                                <td>
+                                    {{estudiante[1]}}
+                                </td>
+                                <td>
+                                    {{estudiante[4]}}
+                                </td>
+                                <td>
+                                    {{estudiante[9]}}
+                                </td>
+                                <td>
+                                    <button class="btn btn-warning">Agregar inasistencia</button>
+                                </td>
+                                <td>
+                                    <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
                     </tbody>
                 </table>
             </div>
-            <div id="4toB" style="overflow-x: scroll;">
+            <!-- <div id="4toB" style="overflow-x: scroll;">
                 <table id="4toB-table" class="table">
                     <thead>
                         <tr class="success">
@@ -636,7 +555,7 @@
                         </tr>
                     </tbody>
                 </table>
-            </div>
+            </div> -->
         </div>
     </div>
     <div id="5to" style="display: none;">
