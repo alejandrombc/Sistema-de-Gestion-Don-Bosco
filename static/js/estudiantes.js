@@ -116,7 +116,6 @@
             if(text != valor){
                 $('#'+id).text(text);
                 $("#curso_actual").html(valor);
-                
                 // AQUI HAY QUE CAMBIAR VALORES PORQUE CAMBIO EL TEXTO
             }
 

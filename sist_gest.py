@@ -47,27 +47,34 @@ def agregar():
 		ano = inicio + "-" + final
 		con = mysql.connect()
 		cursor = con.cursor()
+		cursor.execute("SELECT * from anos_escolares WHERE inicial=%s AND final=%s", (inicio,final))
+		data = cursor.fetchone()
+
+		if(data != None):
+			error="Error: Ese año esta repetido, por favor seleccionelo o eliminelo."
+			return render_template("agregar_ano.html", error=error)
+
 		if (inicio[0] == '2') and (inicio[1] == '0') and (final[0] == '2') and (final[1] == '0') and (len(final)==4) and (len(inicio)==4) and (final > inicio):
 			cursor.execute("""INSERT INTO anos_escolares (inicial, final, eliminada) VALUES (%s, %s, '0')""", (inicio,final))
-			cursor.execute("""INSERT INTO secciones ( ano, curso, ano_escolar, secciones ) VALUES ('cuarto', 'tec_grafica', %s, '1')""", (ano))
-			cursor.execute("""INSERT INTO secciones ( ano, curso, ano_escolar, secciones ) VALUES ('cuarto', 'contabilidad', %s, '1')""", (ano))
-			cursor.execute("""INSERT INTO secciones ( ano, curso, ano_escolar, secciones ) VALUES ('cuarto', 'mecanica', %s, '1')""", (ano))
-			cursor.execute("""INSERT INTO secciones ( ano, curso, ano_escolar, secciones ) VALUES ('cuarto', 'electronica', %s, '1')""", (ano))
+			cursor.execute("""INSERT INTO secciones ( ano, curso, ano_escolar, secciones, eliminada ) VALUES ('cuarto', 'tec_grafica', %s, '1', '0')""", (ano))
+			cursor.execute("""INSERT INTO secciones ( ano, curso, ano_escolar, secciones, eliminada ) VALUES ('cuarto', 'contabilidad', %s, '1', '0')""", (ano))
+			cursor.execute("""INSERT INTO secciones ( ano, curso, ano_escolar, secciones, eliminada ) VALUES ('cuarto', 'mecanica', %s, '1', '0')""", (ano))
+			cursor.execute("""INSERT INTO secciones ( ano, curso, ano_escolar, secciones, eliminada ) VALUES ('cuarto', 'electronica', %s, '1', '0')""", (ano))
 
-			cursor.execute("""INSERT INTO secciones ( ano, curso, ano_escolar, secciones ) VALUES ('quinto', 'tec_grafica', %s, '1')""", (ano))
-			cursor.execute("""INSERT INTO secciones ( ano, curso, ano_escolar, secciones ) VALUES ('quinto', 'contabilidad', %s, '1')""", (ano))
-			cursor.execute("""INSERT INTO secciones ( ano, curso, ano_escolar, secciones ) VALUES ('quinto', 'mecanica', %s,'1')""", (ano))
-			cursor.execute("""INSERT INTO secciones ( ano, curso, ano_escolar, secciones ) VALUES ('quinto', 'electronica', %s, '1')""", (ano))
+			cursor.execute("""INSERT INTO secciones ( ano, curso, ano_escolar, secciones, eliminada ) VALUES ('quinto', 'tec_grafica', %s, '1', '0')""", (ano))
+			cursor.execute("""INSERT INTO secciones ( ano, curso, ano_escolar, secciones, eliminada ) VALUES ('quinto', 'contabilidad', %s, '1', '0')""", (ano))
+			cursor.execute("""INSERT INTO secciones ( ano, curso, ano_escolar, secciones, eliminada ) VALUES ('quinto', 'mecanica', %s,'1', '0')""", (ano))
+			cursor.execute("""INSERT INTO secciones ( ano, curso, ano_escolar, secciones, eliminada ) VALUES ('quinto', 'electronica', %s, '1', '0')""", (ano))
 
-			cursor.execute("""INSERT INTO secciones ( ano, curso, ano_escolar, secciones ) VALUES ('sexto', 'tec_grafica', %s, '1')""", (ano))
-			cursor.execute("""INSERT INTO secciones ( ano, curso, ano_escolar, secciones ) VALUES ('sexto', 'contabilidad', %s, '1')""", (ano))
-			cursor.execute("""INSERT INTO secciones ( ano, curso, ano_escolar, secciones ) VALUES ('sexto', 'mecanica', %s, '1')""", (ano))
-			cursor.execute("""INSERT INTO secciones ( ano, curso, ano_escolar, secciones ) VALUES ('sexto', 'electronica', %s, '1')""", (ano))
+			cursor.execute("""INSERT INTO secciones ( ano, curso, ano_escolar, secciones, eliminada ) VALUES ('sexto', 'tec_grafica', %s, '1', '0')""", (ano))
+			cursor.execute("""INSERT INTO secciones ( ano, curso, ano_escolar, secciones, eliminada ) VALUES ('sexto', 'contabilidad', %s, '1', '0')""", (ano))
+			cursor.execute("""INSERT INTO secciones ( ano, curso, ano_escolar, secciones, eliminada ) VALUES ('sexto', 'mecanica', %s, '1', '0')""", (ano))
+			cursor.execute("""INSERT INTO secciones ( ano, curso, ano_escolar, secciones, eliminada ) VALUES ('sexto', 'electronica', %s, '1', '0')""", (ano))
 			con.commit()
 			session['logged_in'] = "newform" 
 			return redirect(url_for('seleccionar'))
 		else:
-			error="Año invalido"
+			error="Error: Año invalido"
 			return render_template("agregar_ano.html", error=error)
 	else:
 		return render_template("agregar_ano.html")
@@ -114,9 +121,11 @@ def eliminar_ano():
 @app.route('/eliminar_ano', methods=['POST'])
 def eliminar_anos():
 	real_id = request.form['real_id']
+	ano = request.form['ano_escolar']
 	conn = mysql.connect()
 	cursor = conn.cursor()
 	cursor.execute("UPDATE anos_escolares SET eliminada = 1 WHERE ID=%s",(int(real_id)))
+	cursor.execute("UPDATE secciones SET eliminada = '1' WHERE ano_escolar=%s",(ano))
 	conn.commit()
 	return redirect(url_for('eliminar_ano'))
 
@@ -132,9 +141,11 @@ def recuperar_ano():
 @app.route('/recuperar_ano', methods=['POST'])
 def recuperar_anos():
 	real_id = request.form['real_id']
+	ano = request.form['ano_escolar']
 	conn = mysql.connect()
 	cursor = conn.cursor()
 	cursor.execute("UPDATE anos_escolares SET eliminada = 0 WHERE ID=%s",(int(real_id)))
+	cursor.execute("UPDATE secciones SET eliminada = '0' WHERE ano_escolar=%s",(ano))
 	conn.commit()
 	return redirect(url_for('recuperar_ano'))
 
@@ -158,4 +169,4 @@ def seccion():
 
 
 if __name__ == "__main__":
-	app.run(debug=True, port=3000)
+	app.run(debug=True, host='127.0.0.1', port=3000)

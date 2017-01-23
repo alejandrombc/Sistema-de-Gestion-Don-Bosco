@@ -25,12 +25,16 @@ function validateForm() {
 function openModal(inicial, final, id) {
   $("#myModal").modal('show');
   $("#id_ano").val(id);
+  var ano_real = inicial +"-"+final; 
+  $("#ano_real").val(ano_real);
   $("#confir").text("¿Está seguro de eliminar el año escolar "+ inicial + " - " + final + "?");
 }
 
 
 function openModal_Rec(inicial, final, id) {
   $("#myModal").modal('show');
+  var ano_real = inicial +"-"+final; 
   $("#id_ano").val(id);
+  $("#ano_real").val(ano_real);
   $("#confir").text("¿Está seguro de recuperar el año escolar "+ inicial + " - " + final + "?");
 }
