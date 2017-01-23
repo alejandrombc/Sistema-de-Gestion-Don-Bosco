@@ -80,6 +80,8 @@ def agregar():
 		return render_template("agregar_ano.html")
 
 
+#--------VISTA ESTUDIANTES--------#
+
 @app.route('/estudiantes_ano', methods=['GET', 'POST'])
 def def_estudiantes():
 	# Aqui va el g con el ano escolar
@@ -99,6 +101,36 @@ def def_estudiantes():
 
 		#Falta validar si la data es null o alguna excepcion
 	return render_template("estudiantes.html", datos=data, cant_secciones=cant_secciones )
+
+@app.route('/estudiantes_escoger_ano', methods=['GET'])
+def escoger_ano_estudiantes():
+	cursor = mysql.connect().cursor()
+	print('ano_esc: ')
+	print (session['ano_esc'])
+	curso_actual = request.args['curso']
+	curso_actual.replace(""," ")
+	print(curso_actual)
+	if curso_actual == 'TecnologiaGrafica':
+		curso_actual = 'tec_grafica'
+	print(curso_actual)
+	
+	if request.args['ano'] == "4to":
+		cursor.execute("SELECT secciones from secciones WHERE curso=%s AND ano='cuarto' AND ano_escolar=%s", (curso_actual, session['ano_esc']))
+	elif request.args['ano'] == "5to":
+		cursor.execute("SELECT secciones from secciones WHERE curso=%s AND ano='quinto' AND ano_escolar=%s", (curso_actual, session['ano_esc']))
+	else:
+		cursor.execute("SELECT secciones from secciones WHERE curso=%s AND ano='sexto' AND ano_escolar=%s", (curso_actual, session['ano_esc']))
+
+	secciones = cursor.fetchall()
+	print(secciones)
+	# print(secciones[0][0])
+	# cant_secciones = int(secciones[0][0])
+	# print(cant_secciones)
+
+	# data = cursor.fetchall()
+	return "hola"
+
+#--------FIN VISTA ESTUDIANTES--------#
 
 
 # Al darle a seleccionar busco todos los anos y los mando al html
