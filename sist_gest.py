@@ -89,7 +89,7 @@ def def_estudiantes():
 		if request.form['ano'] != None: session['ano_esc'] = request.form['ano']
 		cursor = mysql.connect().cursor()
 		
-		cursor.execute("SELECT * from estudiante WHERE periodo_lectivo='"+request.form['ano']+"' ")
+		cursor.execute("SELECT * from estudiante WHERE curso='tec_grafica' AND ano='cuarto' AND periodo_lectivo='"+request.form['ano']+"' ")
 		data = cursor.fetchall()
 
 		cursor.execute("SELECT secciones from secciones WHERE curso='tec_grafica' AND ano='cuarto' AND ano_escolar=%s", (session['ano_esc']))
@@ -102,13 +102,11 @@ def def_estudiantes():
 		#Falta validar si la data es null o alguna excepcion
 	return render_template("estudiantes.html", datos=data, cant_secciones=cant_secciones )
 
+
 @app.route('/estudiantes_escoger_ano', methods=['GET'])
 def escoger_ano_estudiantes():
 	cursor = mysql.connect().cursor()
-	print('ano_esc: ')
-	print (session['ano_esc'])
 	curso_actual = request.args['curso']
-	curso_actual.replace(""," ")
 	print(curso_actual)
 	if curso_actual == 'TecnologiaGrafica':
 		curso_actual = 'tec_grafica'
@@ -116,19 +114,17 @@ def escoger_ano_estudiantes():
 	
 	if request.args['ano'] == "4to":
 		cursor.execute("SELECT secciones from secciones WHERE curso=%s AND ano='cuarto' AND ano_escolar=%s", (curso_actual, session['ano_esc']))
+		secciones = cursor.fetchall()
 	elif request.args['ano'] == "5to":
 		cursor.execute("SELECT secciones from secciones WHERE curso=%s AND ano='quinto' AND ano_escolar=%s", (curso_actual, session['ano_esc']))
+		secciones = cursor.fetchall()
 	else:
 		cursor.execute("SELECT secciones from secciones WHERE curso=%s AND ano='sexto' AND ano_escolar=%s", (curso_actual, session['ano_esc']))
+		secciones = cursor.fetchall()
 
-	secciones = cursor.fetchall()
-	print(secciones)
-	# print(secciones[0][0])
-	# cant_secciones = int(secciones[0][0])
-	# print(cant_secciones)
+	print(secciones[0][0])
 
-	# data = cursor.fetchall()
-	return "hola"
+	return secciones[0][0]
 
 #--------FIN VISTA ESTUDIANTES--------#
 

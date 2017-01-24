@@ -197,34 +197,201 @@
     </div>
 </div>
 
-<p> {{ datos[0] }} </p>
+<!-- <p> {{ datos }} </p>
 <p> {{cant_secciones}} </p>
+
+<p> {{ datos[0][6] }} </p> -->
 
 <div class="col-md-10"> 
 <h3 style="color:white;">Estudiantes</h3>               
 <div id="vertical" style="width: 100%">
-    <div id="4to">
+    
+    <div id="{{ datos[0][6] }}">
         <div>
-            <ul id="internasA">
-                {% if cant_secciones == 1 %}
-                    <li><a href="#4toA">Sección A   <span id="4A" class="glyphicon glyphicon-trash delete_sec"></span></a></li>
-                {% endif %}
-                {% if cant_secciones == 2 %}
-                    <li><a href="#4toA">Sección A   <span id="4A" class="glyphicon glyphicon-trash delete_sec"></span></a></li>
-                    <li><a href="#4toB">Sección B   <span id="4B" class="glyphicon glyphicon-trash delete_sec"></span></a></li>
-                {% endif %}
-                {% if cant_secciones == 3 %}
-                    <li><a href="#4toA">Sección A   <span id="4A" class="glyphicon glyphicon-trash delete_sec"></span></a></li>
-                    <li><a href="#4toB">Sección B   <span id="4B" class="glyphicon glyphicon-trash delete_sec"></span></a></li>
-                    <li><a href="#4toC">Sección C   <span id="4C" class="glyphicon glyphicon-trash delete_sec"></span></a></li>
-                {% endif %}
+            <ul id="internas">
 
-               <!--  <li><a href="#4toA">Sección A   <span id="4A" class="glyphicon glyphicon-trash delete_sec"></span></a></li>
-                <li><a href="#4toB">Sección B   <span id="4B" class="glyphicon glyphicon-trash delete_sec"></span></a></li>
-                <li><a href="#4toC">Sección C   <span id="4C" class="glyphicon glyphicon-trash delete_sec"></span></a></li> -->
+                {% for i in range(1, cant_secciones+1) %}
+                    {% if i == 1 %}
+                        <li><a href="#{{ datos[0][6] }}A">Sección A   <span class="glyphicon glyphicon-trash delete_sec"></span></a></li>
+                    {%elif i == 2 %}
+                        <li><a href="#{{ datos[0][6] }}B">Sección B   <span class="glyphicon glyphicon-trash delete_sec"></span></a></li>
+                    {% else %}
+                        <li><a href="#{{ datos[0][6] }}C">Sección C   <span class="glyphicon glyphicon-trash delete_sec"></span></a></li>
+                    {% endif %}
+                {% endfor %}
+
             </ul>
-            <div id="4toA" style="overflow-x: scroll;">
-                <table id="4toA-table" class="table">
+
+
+            <!-- {% set array = ['A','B','C'] %}  -->
+
+            {% for i in range(1, cant_secciones+1) %}
+                {% if i == 1 %}
+                    <div id="{{ datos[0][6] }}A" style="overflow-x: scroll;">
+                        <table id="{{ datos[0][6] }}A-table" class="table">
+                            <thead>
+                                <tr class="success">
+                                    <th>
+                                        Cédula
+                                    </th>
+                                    <th>
+                                        Nombre
+                                    </th>
+                                    <th>
+                                        E-mail
+                                    </th>
+                                    <th>
+                                        Inasistencias
+                                    </th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% if datos %}
+                                {% for estudiante in datos %}
+                                    {% if estudiante[7] ==  'A'  %}
+
+                                        <tr id='{{estudiante[2]}}' class="active"> 
+                                            <td>
+                                                {{estudiante[2]}}
+                                            </td>
+                                            <td>
+                                                {{estudiante[1]}}
+                                            </td>
+                                            <td>
+                                                {{estudiante[4]}}
+                                            </td>
+                                            <td>
+                                                {{estudiante[9]}}
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-warning">Agregar inasistencia</button>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                {%elif i == 2 %}
+
+                    <div id="{{ datos[0][6] }}B" style="overflow-x: scroll;">
+                        <table id="{{ datos[0][6] }}B-table" class="table">
+                            <thead>
+                                <tr class="success">
+                                    <th>
+                                        Cédula
+                                    </th>
+                                    <th>
+                                        Nombre
+                                    </th>
+                                    <th>
+                                        E-mail
+                                    </th>
+                                    <th>
+                                        Inasistencias
+                                    </th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% if datos %}
+                                {% for estudiante in datos %}
+                                    {% if estudiante[7] == 'B' %}
+                                        <tr id='{{estudiante[2]}}' class="active"> 
+                                            <td>
+                                                {{estudiante[2]}}
+                                            </td>
+                                            <td>
+                                                {{estudiante[1]}}
+                                            </td>
+                                            <td>
+                                                {{estudiante[4]}}
+                                            </td>
+                                            <td>
+                                                {{estudiante[9]}}
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-warning">Agregar inasistencia</button>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                {% else %}
+
+                    <div id="{{ datos[0][6] }}C" style="overflow-x: scroll;">
+                        <table id="{{ datos[0][6] }}C-table" class="table">
+                            <thead>
+                                <tr class="success">
+                                    <th>
+                                        Cédula
+                                    </th>
+                                    <th>
+                                        Nombre
+                                    </th>
+                                    <th>
+                                        E-mail
+                                    </th>
+                                    <th>
+                                        Inasistencias
+                                    </th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% if datos %}
+                                {% for estudiante in datos %}
+                                    {% if estudiante[7] == 'C' %}
+                                        <tr id='{{estudiante[2]}}' class="active"> 
+                                            <td>
+                                                {{estudiante[2]}}
+                                            </td>
+                                            <td>
+                                                {{estudiante[1]}}
+                                            </td>
+                                            <td>
+                                                {{estudiante[4]}}
+                                            </td>
+                                            <td>
+                                                {{estudiante[9]}}
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-warning">Agregar inasistencia</button>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                {% endif %}
+                
+
+            {% endfor %}
+
+            <!-- <div id="{{ datos[0][6] }}{{ datos[0][7] }}" style="overflow-x: scroll;">
+                <table id="{{ datos[0][6] }}{{ datos[0][7] }}-table" class="table">
                     <thead>
                         <tr class="success">
                             <th>
@@ -246,34 +413,35 @@
                     <tbody>
                     {% if datos %}
                         {% for estudiante in datos %}
-                            <tr id='{{estudiante[2]}}' class="active"> 
-                                <td>
-                                    {{estudiante[2]}}
-
-                                </td>
-                                <td>
-                                    {{estudiante[1]}}
-                                </td>
-                                <td>
-                                    {{estudiante[4]}}
-                                </td>
-                                <td>
-                                    {{estudiante[9]}}
-                                </td>
-                                <td>
-                                    <button class="btn btn-warning">Agregar inasistencia</button>
-                                </td>
-                                <td>
-                                    <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                                </td>
-                            </tr>
+                            {% if estudiante[7] == 'A' %}
+                                <tr id='{{estudiante[2]}}' class="active"> 
+                                    <td>
+                                        {{estudiante[2]}}
+                                    </td>
+                                    <td>
+                                        {{estudiante[1]}}
+                                    </td>
+                                    <td>
+                                        {{estudiante[4]}}
+                                    </td>
+                                    <td>
+                                        {{estudiante[9]}}
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-warning">Agregar inasistencia</button>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
+                                    </td>
+                                </tr>
+                            {% endif %}
                         {% endfor %}
                     {% endif %}
                     </tbody>
                 </table>
-            </div>
-            <!-- <div id="4toB" style="overflow-x: scroll;">
-                <table id="4toB-table" class="table">
+            </div> -->
+            <!-- <div id="cuartoB" style="overflow-x: scroll;">
+                <table id="cuartoB-table" class="table">
                     <thead>
                         <tr class="success">
                             <th>
@@ -414,8 +582,8 @@
                     </tbody>
                 </table>
             </div>
-            <div id="4toC" style="overflow-x: scroll;">
-                <table id="4toC-table" class="table">
+            <div id="cuartoC" style="overflow-x: scroll;">
+                <table id="cuartoC-table" class="table">
                     <thead>
                         <tr class="success">
                             <th>

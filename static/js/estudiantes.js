@@ -135,6 +135,8 @@
             curso_actual = curso_actual.replace(/á/gi,"a");
             curso_actual = curso_actual.replace(/é/gi,"e");
             curso_actual = curso_actual.replace(/í/gi,"i");
+            curso_actual = curso_actual.replace(/ó/gi,"o");
+            curso_actual = curso_actual.replace(/ /g,'')
 
             $.ajax({
             type:"GET" ,
@@ -146,11 +148,13 @@
                     alert(ajaxOptions);
                    
                   },
-            success: function(msg){
+            success: function(str_secciones){
               
-              console.log('fue exitoso' + msg);
+                console.log('fue exitoso, el numero de secciones es ' + str_secciones);
+                
+                var cant_secciones = parseInt(str_secciones);
               
-              
+
             }
 
             });
