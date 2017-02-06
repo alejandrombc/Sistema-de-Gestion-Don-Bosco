@@ -1,13 +1,13 @@
 # encoding=utf-8
-from flask import Flask, render_template, request, url_for, redirect, session, g
+from flask import Flask, render_template, request, url_for, redirect, session, g,  json
 from flaskext.mysql import MySQL
 import hashlib
 
 app = Flask(__name__)
 mysql = MySQL()
 app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = '123'
-# app.config['MYSQL_DATABASE_PASSWORD'] = ''
+# app.config['MYSQL_DATABASE_PASSWORD'] = '123'
+app.config['MYSQL_DATABASE_PASSWORD'] = ''
 app.config['MYSQL_DATABASE_DB'] = 'don_bosco'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 mysql.init_app(app)
@@ -94,10 +94,8 @@ def def_estudiantes():
 
 		cursor.execute("SELECT secciones from secciones WHERE curso='tec_grafica' AND ano='cuarto' AND ano_escolar=%s", (session['ano_esc']))
 		secciones = cursor.fetchall()
-		print(secciones)
-		print(secciones[0][0])
+		
 		cant_secciones = int(secciones[0][0])
-		print(cant_secciones)
 
 		#Falta validar si la data es null o alguna excepcion
 	return render_template("estudiantes.html", datos=data, cant_secciones=cant_secciones )
@@ -107,24 +105,51 @@ def def_estudiantes():
 def escoger_ano_estudiantes():
 	cursor = mysql.connect().cursor()
 	curso_actual = request.args['curso']
-	print(curso_actual)
+	
 	if curso_actual == 'TecnologiaGrafica':
 		curso_actual = 'tec_grafica'
-	print(curso_actual)
 	
 	if request.args['ano'] == "4to":
 		cursor.execute("SELECT secciones from secciones WHERE curso=%s AND ano='cuarto' AND ano_escolar=%s", (curso_actual, session['ano_esc']))
 		secciones = cursor.fetchall()
+		cursor.execute("SELECT * from estudiante WHERE curso=%s AND ano='cuarto' AND periodo_lectivo=%s", (curso_actual, session['ano_esc']))
 	elif request.args['ano'] == "5to":
 		cursor.execute("SELECT secciones from secciones WHERE curso=%s AND ano='quinto' AND ano_escolar=%s", (curso_actual, session['ano_esc']))
 		secciones = cursor.fetchall()
+		cursor.execute("SELECT * from estudiante WHERE curso=%s AND ano='quinto' AND periodo_lectivo=%s", (curso_actual, session['ano_esc']))
 	else:
 		cursor.execute("SELECT secciones from secciones WHERE curso=%s AND ano='sexto' AND ano_escolar=%s", (curso_actual, session['ano_esc']))
 		secciones = cursor.fetchall()
+		cursor.execute("SELECT * from estudiante WHERE curso=%s AND ano='sexto' AND periodo_lectivo=%s", (curso_actual, session['ano_esc']))
+		
+	data = json.dumps(list(cursor.fetchall()))
+	print (data)
+	return '{} {}'.format(secciones[0][0], data)
 
-	print(secciones[0][0])
 
-	return secciones[0][0]
+@app.route('/agregarInasistencia', methods=['PUT'])
+def agregarInasistencia():
+	conn = mysql.connect()
+	cursor = conn.cursor()
+	resultado = request.args['resultado']
+	arreglo = resultado.split("-")
+	inasistencias = int(arreglo[1])
+	
+	cursor.execute("UPDATE estudiante SET inasistencias=%s WHERE periodo_lectivo=%s AND cedula=%s", (inasistencias, session['ano_esc'], arreglo[0]))
+	conn.commit()
+
+	return ""
+
+@app.route('/eliminarEstudiante', methods=['DELETE'])
+def eliminarEstudiante():
+	conn = mysql.connect()
+	cursor = conn.cursor()
+	idStudent = request.args['id']
+	
+	cursor.execute("DELETE FROM estudiante WHERE periodo_lectivo=%s AND cedula=%s", (session['ano_esc'], idStudent))
+	conn.commit()
+
+	return ""
 
 #--------FIN VISTA ESTUDIANTES--------#
 

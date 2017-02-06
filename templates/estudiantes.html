@@ -1,1609 +1,265 @@
 <!DOCTYPE html>
 <html >
-<head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>Estudiantes - Don Bosco</title>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Estudiantes - Don Bosco</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery-ui.css') }}">
+        <link rel="icon" type="image/png" href="{{ url_for('static', filename='imagenes/favicon.png') }}" sizes="32x32">
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery-ui.css') }}">
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='imagenes/favicon.png') }}" sizes="32x32">
+        <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/jquery-ui.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/jquery.dataTables.min.js') }}"></script>
+        
 
-    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/jquery-ui.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/jquery.dataTables.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/estudiantes.js') }}"></script>
+
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/agregar.css') }}">
+        
+        <style>
+
+            .ui-tabs-vertical > .ui-tabs-nav {
+                padding: .2em .1em .2em .2em;
+                width: 12em;
+            }
+            .ui-tabs-vertical > .ui-tabs-nav li {
+                width: 100%;
+                border-bottom-width: 1px !important;
+                border-right-width: 0 !important;
+                margin: 0 -1px .2em 0;
+            }
+            .ui-tabs-vertical > .ui-tabs-nav > li > a {
+                display:block;
+
+            }
+            .ui-tabs-vertical > .ui-tabs-nav > li.ui-tabs-active {
+                padding-bottom: 0;
+                padding-right: .1em; 
+                width: 100%;  
+                float: right;     
+                border-right-width: 1px;
+            }
+
+            .dataTables_filter {
+                float: right;
+            } 
+        </style>
     
+    </head>
 
-    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/estudiantes.js') }}"></script>
+    <body>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/agregar.css') }}">
-
-<style>
-
-    .ui-tabs-vertical > .ui-tabs-nav {
-        padding: .2em .1em .2em .2em;
-        width: 12em;
-    }
-    .ui-tabs-vertical > .ui-tabs-nav li {
-        width: 100%;
-        border-bottom-width: 1px !important;
-        border-right-width: 0 !important;
-        margin: 0 -1px .2em 0;
-    }
-    .ui-tabs-vertical > .ui-tabs-nav > li > a {
-        display:block;
-
-    }
-    .ui-tabs-vertical > .ui-tabs-nav > li.ui-tabs-active {
-        padding-bottom: 0;
-        padding-right: .1em; 
-        width: 100%;  
-        float: right;     
-        border-right-width: 1px;
-    }
-
-    .dataTables_filter {
-        float: right;
-    } 
-
-</style>
-
-</head>
-<body>
-
-<!-- MODAL SECCION-->
-<div id="myModal" class="modal fade">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">¿Esta seguro que desea eliminar esta sección?</h4>
-            </div>
-            <div class="modal-body">
-                <form id="seccion_modal">
-                    <input id="seccion_a_eliminar" type="text" name="seccion" hidden>
-                    <button id="submitSecModal" type="submit" hidden></button>
-                </form>
-                <p id="confir">Por favor, escriba textualmente "Deseo eliminar esta seccion":</p>
-                <center><input type="text" style="width:100%" id="confirmacion_real"></center><br>
-                <p class="text-warning"><small>Este cambio es <b>irrecuperable.</b></small></p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                <button type="button" id="realSumbit" class="btn btn-danger" disabled>Eliminar</button>
+        <!-- MODAL SECCION-->
+        <div id="modal_seccion" class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">¿Esta seguro que desea eliminar esta sección?</h4>
+                    </div>
+                    <div class="modal-body">
+                        <!-- <form id="seccion_modal">
+                            <input id="seccion_a_eliminar" type="text" name="seccion" hidden>
+                            <button id="submitSecModal" type="submit" hidden></button>
+                        </form> -->
+                        <p id="confir">Por favor, escriba textualmente "Deseo eliminar esta seccion":</p>
+                        <center><input type="text" style="width:100%" id="confirmacion_real"></center><br>
+                        <p class="text-warning"><small>Este cambio es <b>irrecuperable.</b></small></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <button type="button" id="realSumbit" class="btn btn-danger" disabled>Eliminar</button>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
-<!-- END MODAL -->
+        <!-- END MODAL -->
 
-<!-- MODAL ESTUDIANTES -->
-<div id="modal_est" class="modal fade">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">¿Esta seguro que desea eliminar este estudiante?</h4>
-            </div>
-            <div class="modal-body">
-                <form id="estudiantes_modal"  action="/borrar_estudiante" method="POST">
-                    <input id="cedula_a_eliminar" type="text" name="cedula" hidden>
-                    <button id="submitEstModal" type="submit" hidden></button>
-                </form>
-                <h5>Cédula del estudiante a eliminar: <b id="texto_est"></b></h5>
-                <p>Por favor, escriba textualmente "Deseo eliminar este estudiante":</p>
-                <center><input type="text" style="width:100%" id="confirmacion_real_est"></center><br>
-                <p class="text-warning"><small>Este cambio es <b>irrecuperable.</b></small></p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                <button type="button" id="realSumbitEst" class="btn btn-danger" disabled>Eliminar</button>
+        <!-- MODAL ESTUDIANTES -->
+        <div id="modal_est" class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">¿Esta seguro que desea eliminar este estudiante?</h4>
+                    </div>
+                    <div class="modal-body">
+                        <h5>Cédula del estudiante a eliminar: <b id="texto_est"></b></h5>
+                        <p>Por favor, escriba textualmente "Deseo eliminar este estudiante":</p>
+                        <center><input type="text" style="width:100%" id="confirmacion_real_est"></center><br>
+                        <p class="text-warning"><small>Este cambio es <b>irrecuperable.</b></small></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <button type="button" id="realSumbitEst" class="btn btn-danger" disabled>Eliminar</button>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
-<!-- END MODAL -->
+        <!-- END MODAL -->
 
-
-<nav style="background-color: #008CBA; border-color: #008CBA;" class="navbar navbar-inverse">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>                        
-      </button>
-      <img class="pull-left" width="50px" style="margin-right: 5px;" src="{{ url_for('static', filename='imagenes/Logo_DonBosco.png') }}"><a class="navbar-brand hidden-xs" style="color:white;" href="#">Escuela Técnica Popular Don Bosco</a>
-      <form class="navbar-form navbar-left hidden-xs">
-        <div class="input-group">
-            <input type="text" class="form-control" placeholder="Buscar alumno" autocomplete="off">
-            <div class="input-group-btn">
-                <button class="btn btn-default" type="submit">
-                    <i class="glyphicon glyphicon-search"></i>
-                </button>
-            </div>
-        </div>
-       </form>
-    </div>
-    <div class="collapse navbar-collapse" id="myNavbar">
-      <ul class="nav navbar-nav navbar-right">
-        <li><a class="otravaina" href="#"><span class="glyphicon glyphicon-envelope"></span> Enviar correo</a></li>
-        <li class="dropdown">
-          <a class="dropdown-toggle otravaina" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-plus"></span> Añadir <span class="caret"></span></a>
-          <ul style="background-color: #9B9B9C" class="dropdown-menu">
-            <li><a id="anadir1" href="#">Añadir estudiantes</a></li>
-            <li><a id="anadir2" href="/agregar_seccion">Añadir seccion</a></li>
-          </ul>
-        </li>
-      </ul>
-        <form class="navbar-form navbar-left visible-xs">
-          <div class="input-group">
-            <input type="text" class="form-control" placeholder="Buscar alumno">
-            <div class="input-group-btn">
-              <button class="btn btn-default" type="submit">
-                <i class="glyphicon glyphicon-search"></i>
+        <nav style="background-color: #008CBA; border-color: #008CBA;" class="navbar navbar-inverse">
+          <div class="container-fluid">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>                        
               </button>
+              <img class="pull-left" width="50px" style="margin-right: 5px;" src="{{ url_for('static', filename='imagenes/Logo_DonBosco.png') }}"><a class="navbar-brand hidden-xs" style="color:white;" href="#">Escuela Técnica Popular Don Bosco</a>
+              <form class="navbar-form navbar-left hidden-xs">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Buscar alumno" autocomplete="off">
+                    <div class="input-group-btn">
+                        <button class="btn btn-default" type="submit">
+                            <i class="glyphicon glyphicon-search"></i>
+                        </button>
+                    </div>
+                </div>
+               </form>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+              <ul class="nav navbar-nav navbar-right">
+                <li><a class="otravaina" href="#"><span class="glyphicon glyphicon-envelope"></span> Enviar correo</a></li>
+                <li class="dropdown">
+                  <a class="dropdown-toggle otravaina" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-plus"></span> Añadir <span class="caret"></span></a>
+                  <ul style="background-color: #9B9B9C" class="dropdown-menu">
+                    <li><a id="anadir1" href="#">Añadir estudiantes</a></li>
+                    <li><a id="anadir2" href="/agregar_seccion">Añadir seccion</a></li>
+                  </ul>
+                </li>
+              </ul>
+                <form class="navbar-form navbar-left visible-xs">
+                  <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Buscar alumno">
+                    <div class="input-group-btn">
+                      <button class="btn btn-default" type="submit">
+                        <i class="glyphicon glyphicon-search"></i>
+                      </button>
+                    </div>
+                  </div>
+                </form>
             </div>
           </div>
-        </form>
-    </div>
-  </div>
-</nav>
-<div id="SUPERparche" hidden>
-    <br><br><br><br>
-</div>
-<div class="container-fluid">
-<div class="row">
+        </nav>
+        <div id="SUPERparche" hidden>
+            <br><br><br><br>
+        </div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-2">
+                    <div id="tocheck" class="btn-group dropup btn-group-vertical" style="width: 100%;">
+                    <br>
+                        <h4 style="text-align: center; color:white; cursor: pointer;">Curso</h4>                             
+                                <button id="curso_actual" class="btn btn-default" >
+                                    Tecnología Gráfica
+                                </button> 
+                                <button id="parchesito" data-toggle="dropdown" class="btn btn-default dropdown-toggle">
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" style="width: 100%; text-align: center;">
+                                    <li style="cursor: pointer;">
+                                        <a id="primer_curso" onclick="cambiarValor(this.text, 'primer_curso')" >Contabilidad</a>
+                                    </li>
+                                    <li style="cursor: pointer;">
+                                        <a id="segundo_curso" onclick="cambiarValor(this.text, 'segundo_curso')">Electrónica</a>
+                                    </li>
+                                    <li style="cursor: pointer;">
+                                        <a id="tercer_curso" onclick="cambiarValor(this.text, 'tercer_curso')">Mecánica</a>
+                                    </li>
+                                </ul>
+                    </div>
+                    <br>
+                    <br>
+                        <h4 style="text-align: center; color:white;">Año</h4>
+                        <div class="btn-group btn-group-vertical" style="width: 100%;">                         
+                            <button id="4to" onclick="cambioAnio('4to')" class="btn btn-default active" type="button">
+                                4to
+                            </button> 
+                            <button id="5to" onclick="cambioAnio('5to')" class="btn btn-default" type="button">
+                                5to
+                            </button> 
+                            <button id="6to" onclick="cambioAnio('6to')" class="btn btn-default" type="button">
+                                6to
+                            </button>
+                        </div>
+                </div>
 
-<div class="col-md-2">
-
-    <div id="tocheck" class="btn-group dropup btn-group-vertical" style="width: 100%;">
-    <br>
-    <h4 style="text-align: center; color:white; cursor: pointer;">Curso</h4>                             
-                <button id="curso_actual" class="btn btn-default">
-                    Tecnología Gráfica
-                </button> 
-                <button id="parchesito" data-toggle="dropdown" class="btn btn-default dropdown-toggle">
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" style="width: 100%; text-align: center;">
-                    <li style="cursor: pointer;">
-                        <a id="primer_curso" onclick="cambiarValor(this.text, 'primer_curso')" >Contabilidad</a>
-                    </li>
-                    <li style="cursor: pointer;">
-                        <a id="segundo_curso" onclick="cambiarValor(this.text, 'segundo_curso')">Electrónica</a>
-                    </li>
-                    <li style="cursor: pointer;">
-                        <a id="tercer_curso" onclick="cambiarValor(this.text, 'tercer_curso')">Mecánica</a>
-                    </li>
-                </ul>
-    </div>
-    <br>
-    <br>
-    <h4 style="text-align: center; color:white;">Año</h4>
-    <div class="btn-group btn-group-vertical" style="width: 100%;">                         
-        <button id="4to" onclick="newActive('4to')" class="btn btn-default active" type="button">
-            4to
-        </button> 
-        <button id="5to" onclick="newActive('5to')" class="btn btn-default" type="button">
-            5to
-        </button> 
-        <button id="6to" onclick="newActive('6to')" class="btn btn-default" type="button">
-            6to
-        </button>
-
-    </div>
-</div>
-
-<!-- <p> {{ datos }} </p>
-<p> {{cant_secciones}} </p>
-
-<p> {{ datos[0][6] }} </p> -->
-
-<div class="col-md-10"> 
-<h3 style="color:white;">Estudiantes</h3>               
-<div id="vertical" style="width: 100%">
-    
-    <div id="{{ datos[0][6] }}">
-        <div>
-            <ul id="internas">
-
-                {% for i in range(1, cant_secciones+1) %}
-                    {% if i == 1 %}
-                        <li><a href="#{{ datos[0][6] }}A">Sección A   <span class="glyphicon glyphicon-trash delete_sec"></span></a></li>
-                    {%elif i == 2 %}
-                        <li><a href="#{{ datos[0][6] }}B">Sección B   <span class="glyphicon glyphicon-trash delete_sec"></span></a></li>
-                    {% else %}
-                        <li><a href="#{{ datos[0][6] }}C">Sección C   <span class="glyphicon glyphicon-trash delete_sec"></span></a></li>
-                    {% endif %}
-                {% endfor %}
-
-            </ul>
-
-
-            <!-- {% set array = ['A','B','C'] %}  -->
-
-            {% for i in range(1, cant_secciones+1) %}
-                {% if i == 1 %}
-                    <div id="{{ datos[0][6] }}A" style="overflow-x: scroll;">
-                        <table id="{{ datos[0][6] }}A-table" class="table">
-                            <thead>
-                                <tr class="success">
-                                    <th>
-                                        Cédula
-                                    </th>
-                                    <th>
-                                        Nombre
-                                    </th>
-                                    <th>
-                                        E-mail
-                                    </th>
-                                    <th>
-                                        Inasistencias
-                                    </th>
-                                    <th></th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            {% if datos %}
-                                {% for estudiante in datos %}
-                                    {% if estudiante[7] ==  'A'  %}
-
-                                        <tr id='{{estudiante[2]}}' class="active"> 
-                                            <td>
-                                                {{estudiante[2]}}
-                                            </td>
-                                            <td>
-                                                {{estudiante[1]}}
-                                            </td>
-                                            <td>
-                                                {{estudiante[4]}}
-                                            </td>
-                                            <td>
-                                                {{estudiante[9]}}
-                                            </td>
-                                            <td>
-                                                <button class="btn btn-warning">Agregar inasistencia</button>
-                                            </td>
-                                            <td>
-                                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                                            </td>
-                                        </tr>
+                <div class="col-md-10"> 
+                    <h3 style="color:white;">Estudiantes</h3>               
+                    <div id="vertical" style="width: 100%">  
+                    <div id="ano_select">
+                        <div>
+                            <ul id="internas">
+                                {% set array = ['A','B','C', 'D', 'E', 'F'] %}
+                                {% for i in range(0, 6) %}
+                                    {% if cant_secciones > i %}
+                                        <li><a id="li{{array[i]}}" href="#ano_select{{array[i]}}">Sección {{array[i]}}  <span class="glyphicon glyphicon-trash delete_sec"></span></a></li>
+                                    {% else %}
+                                        <li style="display: none;" ><a href="#ano_select{{array[i]}}">Sección {{array[i]}}  <span class="glyphicon glyphicon-trash delete_sec"></span></a></li>
                                     {% endif %}
                                 {% endfor %}
-                            {% endif %}
-                            </tbody>
-                        </table>
-                    </div>
 
-                {%elif i == 2 %}
+                            </ul>
 
-                    <div id="{{ datos[0][6] }}B" style="overflow-x: scroll;">
-                        <table id="{{ datos[0][6] }}B-table" class="table">
-                            <thead>
-                                <tr class="success">
-                                    <th>
-                                        Cédula
-                                    </th>
-                                    <th>
-                                        Nombre
-                                    </th>
-                                    <th>
-                                        E-mail
-                                    </th>
-                                    <th>
-                                        Inasistencias
-                                    </th>
-                                    <th></th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            {% if datos %}
-                                {% for estudiante in datos %}
-                                    {% if estudiante[7] == 'B' %}
-                                        <tr id='{{estudiante[2]}}' class="active"> 
-                                            <td>
-                                                {{estudiante[2]}}
-                                            </td>
-                                            <td>
-                                                {{estudiante[1]}}
-                                            </td>
-                                            <td>
-                                                {{estudiante[4]}}
-                                            </td>
-                                            <td>
-                                                {{estudiante[9]}}
-                                            </td>
-                                            <td>
-                                                <button class="btn btn-warning">Agregar inasistencia</button>
-                                            </td>
-                                            <td>
-                                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                                            </td>
-                                        </tr>
-                                    {% endif %}
-                                {% endfor %}
-                            {% endif %}
-                            </tbody>
-                        </table>
-                    </div>
-
-                {% else %}
-
-                    <div id="{{ datos[0][6] }}C" style="overflow-x: scroll;">
-                        <table id="{{ datos[0][6] }}C-table" class="table">
-                            <thead>
-                                <tr class="success">
-                                    <th>
-                                        Cédula
-                                    </th>
-                                    <th>
-                                        Nombre
-                                    </th>
-                                    <th>
-                                        E-mail
-                                    </th>
-                                    <th>
-                                        Inasistencias
-                                    </th>
-                                    <th></th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            {% if datos %}
-                                {% for estudiante in datos %}
-                                    {% if estudiante[7] == 'C' %}
-                                        <tr id='{{estudiante[2]}}' class="active"> 
-                                            <td>
-                                                {{estudiante[2]}}
-                                            </td>
-                                            <td>
-                                                {{estudiante[1]}}
-                                            </td>
-                                            <td>
-                                                {{estudiante[4]}}
-                                            </td>
-                                            <td>
-                                                {{estudiante[9]}}
-                                            </td>
-                                            <td>
-                                                <button class="btn btn-warning">Agregar inasistencia</button>
-                                            </td>
-                                            <td>
-                                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                                            </td>
-                                        </tr>
-                                    {% endif %}
-                                {% endfor %}
-                            {% endif %}
-                            </tbody>
-                        </table>
-                    </div>
-
-                {% endif %}
-                
-
-            {% endfor %}
-
-            <!-- <div id="{{ datos[0][6] }}{{ datos[0][7] }}" style="overflow-x: scroll;">
-                <table id="{{ datos[0][6] }}{{ datos[0][7] }}-table" class="table">
-                    <thead>
-                        <tr class="success">
-                            <th>
-                                Cédula
-                            </th>
-                            <th>
-                                Nombre
-                            </th>
-                            <th>
-                                E-mail
-                            </th>
-                            <th>
-                                Inasistencias
-                            </th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {% if datos %}
-                        {% for estudiante in datos %}
-                            {% if estudiante[7] == 'A' %}
-                                <tr id='{{estudiante[2]}}' class="active"> 
-                                    <td>
-                                        {{estudiante[2]}}
-                                    </td>
-                                    <td>
-                                        {{estudiante[1]}}
-                                    </td>
-                                    <td>
-                                        {{estudiante[4]}}
-                                    </td>
-                                    <td>
-                                        {{estudiante[9]}}
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-warning">Agregar inasistencia</button>
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                                    </td>
-                                </tr>
-                            {% endif %}
-                        {% endfor %}
-                    {% endif %}
-                    </tbody>
-                </table>
-            </div> -->
-            <!-- <div id="cuartoB" style="overflow-x: scroll;">
-                <table id="cuartoB-table" class="table">
-                    <thead>
-                        <tr class="success">
-                            <th>
-                                Cédula
-                            </th>
-                            <th>
-                                Apellidos
-                            </th>
-                            <th>
-                                Nombres
-                            </th>
-                            <th>
-                                E-mail
-                            </th>
-                            <th>
-                                Inasistencias
-                            </th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr id="123456789" class="active"> 
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Vizcarrondo Araujo 
-                            </td>
-                            <td>
-                                Oswaldo Augusto
-                            </td>
-                            <td>
-                                vizca@gmail.com
-                            </td>
-                            <td>
-                                69
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                        <tr id="123456789" class="active">
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Vizcarrondo Araujo 
-                            </td>
-                            <td>
-                                Oswaldo Augusto
-                            </td>
-                            <td>
-                                vizca@gmail.com
-                            </td>
-                            <td>
-                                69
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                        <tr id="123456789" class="active">
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Vizcarrondo Araujo 
-                            </td>
-                            <td>
-                                Oswaldo Augusto
-                            </td>
-                            <td>
-                                vizca@gmail.com
-                            </td>
-                            <td>
-                                69
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                        <tr id="123456789" class="active">
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Vizcarrondo Araujo 
-                            </td>
-                            <td>
-                                Oswaldo Augusto
-                            </td>
-                            <td>
-                                vizca@gmail.com
-                            </td>
-                            <td>
-                                69
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                        <tr id="123456789" class="active">
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Vizcarrondo Araujo 
-                            </td>
-                            <td>
-                                Oswaldo Augusto
-                            </td>
-                            <td>
-                                vizca@gmail.com
-                            </td>
-                            <td>
-                                69
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div id="cuartoC" style="overflow-x: scroll;">
-                <table id="cuartoC-table" class="table">
-                    <thead>
-                        <tr class="success">
-                            <th>
-                                Cédula
-                            </th>
-                            <th>
-                                Apellidos
-                            </th>
-                            <th>
-                                Nombres
-                            </th>
-                            <th>
-                                E-mail
-                            </th>
-                            <th>
-                                Inasistencias
-                            </th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr id="123456789" class="active"> 
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Rincón Hernández 
-                            </td>
-                            <td>
-                                Tomás Eduardo
-                            </td>
-                            <td>
-                                estoyenlajuve@gmail.com
-                            </td>
-                            <td>
-                                2
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                        <tr id="123456789" class="active">
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Rincón Hernández 
-                            </td>
-                            <td>
-                                Tomás Eduardo
-                            </td>
-                            <td>
-                                estoyenlajuve@gmail.com
-                            </td>
-                            <td>
-                                2
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                        <tr id="123456789" class="active">
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Rincón Hernández 
-                            </td>
-                            <td>
-                                Tomás Eduardo
-                            </td>
-                            <td>
-                                estoyenlajuve@gmail.com
-                            </td>
-                            <td>
-                                2
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                        <tr id="123456789" class="active">
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Rincón Hernández 
-                            </td>
-                            <td>
-                                Tomás Eduardo
-                            </td>
-                            <td>
-                                estoyenlajuve@gmail.com
-                            </td>
-                            <td>
-                                2
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                        <tr id="123456789" class="active">
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Rincón Hernández 
-                            </td>
-                            <td>
-                                Tomás Eduardo
-                            </td>
-                            <td>
-                                estoyenlajuve@gmail.com
-                            </td>
-                            <td>
-                                2
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div> -->
-        </div>
-    </div>
-    <div id="5to" style="display: none;">
-         <div id="internasB">
-            <ul>
-                <li><a href="#5toA">Sección A   <span id="5A" class="glyphicon glyphicon-trash delete_sec"></span></a>
-                </li>
-                <li><a href="#5toB">Sección B   <span id="5B" class="glyphicon glyphicon-trash delete_sec"></span></a>
-                </li>
-                <li><a href="#5toC">Sección C   <span id="5C" class="glyphicon glyphicon-trash delete_sec"></span></a>
-                </li>
-            </ul>
-            <div id="5toA" style="overflow-x: scroll;">
-                <table id="5toA-table" class="table">
-                    <thead>
-                        <tr class="success">
-                            <th>
-                                Cédula
-                            </th>
-                            <th>
-                                Apellidos
-                            </th>
-                            <th>
-                                Nombres
-                            </th>
-                            <th>
-                                E-mail
-                            </th>
-                            <th>
-                                Inasistencias
-                            </th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr id="123456789" class="active"> 
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Rincón Hernández 
-                            </td>
-                            <td>
-                                Tomás Eduardo
-                            </td>
-                            <td>
-                                estoyenlajuve@gmail.com
-                            </td>
-                            <td>
-                                2
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                        <tr id="123456789" class="active">
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Rincón Hernández 
-                            </td>
-                            <td>
-                                Tomás Eduardo
-                            </td>
-                            <td>
-                                estoyenlajuve@gmail.com
-                            </td>
-                            <td>
-                                2
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                        <tr id="123456789" class="active">
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Rincón Hernández 
-                            </td>
-                            <td>
-                                Tomás Eduardo
-                            </td>
-                            <td>
-                                estoyenlajuve@gmail.com
-                            </td>
-                            <td>
-                                2
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                        <tr id="123456789" class="active">
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Rincón Hernández 
-                            </td>
-                            <td>
-                                Tomás Eduardo
-                            </td>
-                            <td>
-                                estoyenlajuve@gmail.com
-                            </td>
-                            <td>
-                                2
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                        <tr id="123456789" class="active">
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Rincón Hernández 
-                            </td>
-                            <td>
-                                Tomás Eduardo
-                            </td>
-                            <td>
-                                estoyenlajuve@gmail.com
-                            </td>
-                            <td>
-                                2
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div id="5toB" style="overflow-x: scroll;">
-                <table id="5toB-table" class="table">
-                    <thead>
-                        <tr class="success">
-                            <th>
-                                Cédula
-                            </th>
-                            <th>
-                                Apellidos
-                            </th>
-                            <th>
-                                Nombres
-                            </th>
-                            <th>
-                                E-mail
-                            </th>
-                            <th>
-                                Inasistencias
-                            </th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr id="123456789" class="active"> 
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Vizcarrondo Araujo 
-                            </td>
-                            <td>
-                                Oswaldo Augusto
-                            </td>
-                            <td>
-                                vizca@gmail.com
-                            </td>
-                            <td>
-                                69
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                        <tr id="123456789" class="active">
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Vizcarrondo Araujo 
-                            </td>
-                            <td>
-                                Oswaldo Augusto
-                            </td>
-                            <td>
-                                vizca@gmail.com
-                            </td>
-                            <td>
-                                69
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                        <tr id="123456789" class="active">
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Vizcarrondo Araujo 
-                            </td>
-                            <td>
-                                Oswaldo Augusto
-                            </td>
-                            <td>
-                                vizca@gmail.com
-                            </td>
-                            <td>
-                                69
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                        <tr id="123456789" class="active">
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Vizcarrondo Araujo 
-                            </td>
-                            <td>
-                                Oswaldo Augusto
-                            </td>
-                            <td>
-                                vizca@gmail.com
-                            </td>
-                            <td>
-                                69
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                        <tr id="123456789" class="active">
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Vizcarrondo Araujo 
-                            </td>
-                            <td>
-                                Oswaldo Augusto
-                            </td>
-                            <td>
-                                vizca@gmail.com
-                            </td>
-                            <td>
-                                69
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div id="5toC" style="overflow-x: scroll;">
-                <table id="5toC-table" class="table">
-                    <thead>
-                        <tr class="success">
-                            <th>
-                                Cédula
-                            </th>
-                            <th>
-                                Apellidos
-                            </th>
-                            <th>
-                                Nombres
-                            </th>
-                            <th>
-                                E-mail
-                            </th>
-                            <th>
-                                Inasistencias
-                            </th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr id="123456789" class="active"> 
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Rincón Hernández 
-                            </td>
-                            <td>
-                                Tomás Eduardo
-                            </td>
-                            <td>
-                                estoyenlajuve@gmail.com
-                            </td>
-                            <td>
-                                2
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                        <tr id="123456789" class="active">
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Rincón Hernández 
-                            </td>
-                            <td>
-                                Tomás Eduardo
-                            </td>
-                            <td>
-                                estoyenlajuve@gmail.com
-                            </td>
-                            <td>
-                                2
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                        <tr id="123456789" class="active">
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Rincón Hernández 
-                            </td>
-                            <td>
-                                Tomás Eduardo
-                            </td>
-                            <td>
-                                estoyenlajuve@gmail.com
-                            </td>
-                            <td>
-                                2
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                        <tr id="123456789" class="active">
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Rincón Hernández 
-                            </td>
-                            <td>
-                                Tomás Eduardo
-                            </td>
-                            <td>
-                                estoyenlajuve@gmail.com
-                            </td>
-                            <td>
-                                2
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                        <tr id="123456789" class="active">
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Rincón Hernández 
-                            </td>
-                            <td>
-                                Tomás Eduardo
-                            </td>
-                            <td>
-                                estoyenlajuve@gmail.com
-                            </td>
-                            <td>
-                                2
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                            {% for i in range(0, 6) %}
+                                <div id="ano_select{{array[i]}}" style="overflow-x: scroll;">
+                                    <table id="ano_select{{array[i]}}-table" class="table">
+                                        <thead>
+                                            <tr class="success">
+                                                <th>
+                                                    Cédula
+                                                </th>
+                                                <th>
+                                                    Nombre
+                                                </th>
+                                                <th>
+                                                    E-mail
+                                                </th>
+                                                <th>
+                                                    Inasistencias
+                                                </th>
+                                                <th></th>
+                                                <th></th>
+                                                </tr>
+                                        </thead>
+                                        <tbody id='body_select{{array[i]}}'>
+                                            {% if datos %}
+                                                {% for estudiante in datos %}
+                                                    {% if estudiante[7] == array[i]  %}
+                                                        <tr id='{{estudiante[2]}}' class="active"> 
+                                                            <td>
+                                                                {{estudiante[2]}}
+                                                            </td>
+                                                            <td>
+                                                                {{estudiante[1]}}
+                                                            </td>
+                                                            <td>
+                                                                {{estudiante[4]}}
+                                                            </td>
+                                                            <td id="inasistencia{{estudiante[2]}}">
+                                                                {{estudiante[9]}}
+                                                            </td>
+                                                            <td>
+                                                                <button id="add{{estudiante[2]}}" class="btn btn-warning" onclick="agregarInasistencia(this.id)">Agregar inasistencia</button>
+                                                            </td>
+                                                            <td>
+                                                                <button id='del{{estudiante[2]}}' class="btn btn-danger botonDltEst" onclick="mostrarModalEliminarEstudiante(this.id)"><span class="glyphicon glyphicon-trash"></span></button>
+                                                            </td>
+                                                        </tr>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endif %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                            {% endfor %}
+                        </div>
+                </div>
             </div>
         </div>
-    </div>
-    <div id="6to" style="display: none;">
-        <div id="internasC">
-            <ul>
-                <li><a href="#6toA">Sección A   <span id="6A" class="glyphicon glyphicon-trash delete_sec"></span></a>
-                </li>
-                <li><a href="#6toB">Sección B   <span id="6B" class="glyphicon glyphicon-trash delete_sec"></span></a>
-                </li>
-                <li><a href="#6toC">Sección C   <span id="6C" class="glyphicon glyphicon-trash delete_sec"></span></a>
-                </li>
-            </ul>
-            <div id="6toA" style="overflow-x: scroll;">
-                <table id="6toA-table" class="table">
-                    <thead>
-                        <tr class="success">
-                            <th>
-                                Cédula
-                            </th>
-                            <th>
-                                Apellidos
-                            </th>
-                            <th>
-                                Nombres
-                            </th>
-                            <th>
-                                E-mail
-                            </th>
-                            <th>
-                                Inasistencias
-                            </th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr id="123456789" class="active"> 
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Rincón Hernández 
-                            </td>
-                            <td>
-                                Tomás Eduardo
-                            </td>
-                            <td>
-                                estoyenlajuve@gmail.com
-                            </td>
-                            <td>
-                                2
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                        <tr id="123456789" class="active">
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Rincón Hernández 
-                            </td>
-                            <td>
-                                Tomás Eduardo
-                            </td>
-                            <td>
-                                estoyenlajuve@gmail.com
-                            </td>
-                            <td>
-                                2
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                        <tr id="123456789" class="active">
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Rincón Hernández 
-                            </td>
-                            <td>
-                                Tomás Eduardo
-                            </td>
-                            <td>
-                                estoyenlajuve@gmail.com
-                            </td>
-                            <td>
-                                2
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                        <tr id="123456789" class="active">
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Rincón Hernández 
-                            </td>
-                            <td>
-                                Tomás Eduardo
-                            </td>
-                            <td>
-                                estoyenlajuve@gmail.com
-                            </td>
-                            <td>
-                                2
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                        <tr id="123456789" class="active">
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Rincón Hernández 
-                            </td>
-                            <td>
-                                Tomás Eduardo
-                            </td>
-                            <td>
-                                estoyenlajuve@gmail.com
-                            </td>
-                            <td>
-                                2
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div id="6toB" style="overflow-x: scroll;">
-                <table id="6toB-table" class="table">
-                    <thead>
-                        <tr class="success">
-                            <th>
-                                Cédula
-                            </th>
-                            <th>
-                                Apellidos
-                            </th>
-                            <th>
-                                Nombres
-                            </th>
-                            <th>
-                                E-mail
-                            </th>
-                            <th>
-                                Inasistencias
-                            </th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr id="123456789" class="active"> 
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Vizcarrondo Araujo 
-                            </td>
-                            <td>
-                                Oswaldo Augusto
-                            </td>
-                            <td>
-                                vizca@gmail.com
-                            </td>
-                            <td>
-                                69
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                        <tr id="123456789" class="active">
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Vizcarrondo Araujo 
-                            </td>
-                            <td>
-                                Oswaldo Augusto
-                            </td>
-                            <td>
-                                vizca@gmail.com
-                            </td>
-                            <td>
-                                69
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                        <tr id="123456789" class="active">
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Vizcarrondo Araujo 
-                            </td>
-                            <td>
-                                Oswaldo Augusto
-                            </td>
-                            <td>
-                                vizca@gmail.com
-                            </td>
-                            <td>
-                                69
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                        <tr id="123456789" class="active">
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Vizcarrondo Araujo 
-                            </td>
-                            <td>
-                                Oswaldo Augusto
-                            </td>
-                            <td>
-                                vizca@gmail.com
-                            </td>
-                            <td>
-                                69
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                        <tr id="123456789" class="active">
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Vizcarrondo Araujo 
-                            </td>
-                            <td>
-                                Oswaldo Augusto
-                            </td>
-                            <td>
-                                vizca@gmail.com
-                            </td>
-                            <td>
-                                69
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div id="6toC" style="overflow-x: scroll;">
-                <table id="6toC-table" class="table">
-                    <thead>
-                        <tr class="success">
-                            <th>
-                                Cédula
-                            </th>
-                            <th>
-                                Apellidos
-                            </th>
-                            <th>
-                                Nombres
-                            </th>
-                            <th>
-                                E-mail
-                            </th>
-                            <th>
-                                Inasistencias
-                            </th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr id="123456789" class="active"> 
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Rincón Hernández 
-                            </td>
-                            <td>
-                                Tomás Eduardo
-                            </td>
-                            <td>
-                                estoyenlajuve@gmail.com
-                            </td>
-                            <td>
-                                2
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                        <tr  id="123456789" class="active">
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Rincón Hernández 
-                            </td>
-                            <td>
-                                Tomás Eduardo
-                            </td>
-                            <td>
-                                estoyenlajuve@gmail.com
-                            </td>
-                            <td>
-                                2
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                        <tr id="123456789" class="active">
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Rincón Hernández 
-                            </td>
-                            <td>
-                                Tomás Eduardo
-                            </td>
-                            <td>
-                                estoyenlajuve@gmail.com
-                            </td>
-                            <td>
-                                2
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                        <tr id="123456789" class="active">
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Rincón Hernández 
-                            </td>
-                            <td>
-                                Tomás Eduardo
-                            </td>
-                            <td>
-                                estoyenlajuve@gmail.com
-                            </td>
-                            <td>
-                                2
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                        <tr id="123456789" class="active">
-                            <td>
-                                123456789
-                            </td>
-                            <td>
-                                Rincón Hernández 
-                            </td>
-                            <td>
-                                Tomás Eduardo
-                            </td>
-                            <td>
-                                estoyenlajuve@gmail.com
-                            </td>
-                            <td>
-                                2
-                            </td>
-                            <td>
-                                <button class="btn btn-warning">Agregar inasistencia</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger botonDltEst"><span class="glyphicon glyphicon-trash"></span></button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>  
-    </div>
-    </div>
-    </div>
-</body>
+    </body>
 </html>
