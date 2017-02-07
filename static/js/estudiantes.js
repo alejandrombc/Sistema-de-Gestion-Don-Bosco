@@ -2,6 +2,8 @@
  var seccion_borrar = "";
 
  $(document).ready(function() {
+
+
             $( "#tabs" ).tabs();
             $( ".btn" ).button();
             $("#externas").tabs();
@@ -11,11 +13,15 @@
             $("#internasB").tabs();
             $("#internasC").tabs();
 
+
+
             $("body").on('click', function(){
                 if (($("#tocheck").hasClass("open"))) {
                     $("#SUPERparche").css({ display: "none" });
                 }
             });
+
+
 
             $("#parchesito").on('click', function(){
                 if (($("#tocheck").hasClass("open"))) {
@@ -24,12 +30,16 @@
                 else $("#SUPERparche").css({ display: "block" });
             });
 
+
+
             $("#ocultar").on('click', function(){
                 if (($("#tocheck").hasClass("open"))) {
                     $("#SUPERparche").css({ display: "none" });
                 }
                 else $("#SUPERparche").css({ display: "block" });
             });
+
+
 
             $('#4toA-table, #4toB-table, #4toC-table, #5toA-table, #5toB-table, #5toC-table, #6toA-table, #6toB-table, #6toC-table').DataTable({
                 "searching": true,
@@ -47,6 +57,8 @@
                 }
             });
 
+
+
             //Basuras de las secciones (para borrarlas)
             $(".delete_sec").mouseenter(function() {
                 if($(this).closest('li').hasClass('ui-state-active')) $(this).css("color", "#FF2D27"); 
@@ -55,13 +67,17 @@
                 if($(this).closest('li').hasClass('ui-state-active')) $(this).css("color", "#000");
             });
 
-            //Cuando hago click en una de las basuras de seccion abro el modal
+
+
+            //====Cuando hago click en una de las basuras de seccion abro el modal
              $(".delete_sec").on('click', function(){
                 if($(this).closest('li').hasClass('ui-state-active')){
                     $("#modal_seccion").modal('show');
                     seccion_borrar = $(this).parent().attr('id');
                 }
              });
+
+
 
              //Confirmacion de entrada del modal de seccion
              $("#confirmacion_real").on('input', function(){
@@ -73,53 +89,114 @@
                 }
              });
 
-             //Cuando presiono el modal de borrar seccion
+
+
+             //Cuando presiono el boton de borrar seccion dentro del modal====\\
             $("#realSumbit").on('click', function(){
+
+                /*Se borra la lista de estudiantes*/
                 $('#'+seccion_borrar).parent().css('display','none');
+                var seccion = seccion_borrar.substring(seccion_borrar.length-1);
+                var idBody = $('#body_select'+seccion);
 
 
-                var idBody = $('#body_select'+seccion_borrar.substring(seccion_borrar.length-1));
-                idBody.empty();
-                console.log(seccion_borrar.substring(seccion_borrar.length-1));
+                /*Tomo las cedulas de todos los estudiantes de la seccion a borrar y los agrego a una lista*/
+                var lista_cedulas = [];
+                $( '#body_select'+seccion +' td.cedulaEstudiante').each(function() { 
+                    // alert($(this).html()); 
+                    lista_cedulas.push( $(this).html() );
+                });
+                console.log('lista_cedulas = '+lista_cedulas);
 
-                $('#modal_seccion').modal('toggle');
+                /*busco el curso actual*/
+                var curso_actual = $("#curso_actual").text();
+
+                /*Esto podria ser una funcion ya q se usa varias veces*/
+                curso_actual = curso_actual.replace(/á/gi,"a");
+                curso_actual = curso_actual.replace(/é/gi,"e");
+                curso_actual = curso_actual.replace(/í/gi,"i");
+                curso_actual = curso_actual.replace(/ó/gi,"o");
+                curso_actual = curso_actual.replace(/ /g,'');
+                console.log('curso_actual = ' + curso_actual);
 
 
-                    list = document.getElementById("internas");
-                    childList = list.children;
-
-                    console.log(childList);
-
-                    console.log(childList[0].style.display);
-                    var N = childList.length;
-
-                for (var i = 0 ; i < N ; i++) {
-                    console.log(childList[i].style.display);
-                    if (childList[i].style.display != 'none'){
-                        console.log('yes');
-                        console.log(childList[i].firstChild.id);
-                        var li = document.getElementById(childList[i].firstChild.id);
-                        li.click();
-                        break;
-                    }
+                /*busco el ano*/
+                var ano;
+                if ( $('#4to').hasClass('active') ) {
+                    ano = 'cuarto';
+                } else if ( $('#5to').hasClass('active') ) {
+                    ano = 'quinto';
+                } else {
+                    ano = 'sexto';
                 }
+                console.log('anio = ' + ano);
 
-console.log( $( ".delete_sec" ));
 
-// console.log( $( "#internas" ).eq(1).text() ); 
-// console.log( $( "#internas" ).eq(1).eq(0) ); 
-// console.log( $( "#internas" ).eq(1).eq(1) ); 
-// console.log( $( "#internas" ).eq(1).eq(2) ); 
 
-// console.log( $( "#internas" ).eq(2).text() ); 
-// console.log( $( "#internas" ).eq(3).text() ); 
-// console.log( $( "#internas" ).eq(4).text() ); 
-// console.log( $( "#internas" ).eq(5).text() ); 
-// console.log( $( "#internas" ).eq(6).text() ); 
- // $( "#internas" ).first().click();
+                //En el success es que hago todo lo que esta aqui abajo
+
                 
 
+
+                var lista = ['hola', 'adios'];
+                /*Se elimina la seccion de la BD*/
+                $.ajax
+                ({
+                    type:"DELETE" ,
+                    url: '/eliminarSeccion?curso='+curso_actual+'&ano='+ano+'&cedulas='+lista_cedulas,
+                    dataType: "text",
+                    error: function (xhr, ajaxOptions, thrownError){
+                            console.log(xhr.status);
+                            console.log(thrownError);
+                            console.log(ajaxOptions);
+                            alert('Error: No se pudo realizar esta operación.');
+                    },
+                    success: function()
+                    {    
+                        
+                        /*borro todos los estudiantes de la seccion a borrar en el front*/
+                        idBody.empty();
+
+                        /*se esconde el modal*/
+                        $('#modal_seccion').modal('toggle');
+
+                        /*se busca la lista de secciones (Seccion A, Seccion B,..., Seccion N)*/
+                        list = document.getElementById("internas");
+                        childList = list.children;
+                        var N = childList.length;
+
+                        /*Se busca la seccion que este mas a la izquierda para posicionarse en ella*/
+                        for (var i = 0 ; i < N ; i++) 
+                        {
+                            if (childList[i].style.display != 'none'){
+                                var li = document.getElementById(childList[i].firstChild.id);
+                                li.click();
+                                break;
+                            }
+                        }
+
+                    }
+               }); 
+
+                /*Se busca la ultima seccion para agregarle el span de eliminar*/
+                /*for (var i = N-1 ; i >=0 ; i--) {
+                    if (childList[i].style.display != 'none'){
+                        var a = document.getElementById(childList[i].firstChild.id);
+                        console.log(a);
+
+
+
+                        var span = document.createElement('span');
+                        span.setAttribute('class', 'glyphicon glyphicon-trash delete_sec');
+                        a.appendChild(span);
+
+                        break;
+                    }
+                }*/
+
             });
+
+
 
             //Confirmacion de entrada del modal estudiantes
             $("#confirmacion_real_est").on('input', function(){
@@ -132,10 +209,23 @@ console.log( $( ".delete_sec" ));
             });
 
 
+
              //Cuando presiono el modal de borrar estudiante
             $("#realSumbitEst").on('click', function(){
                 eliminarEstudiante( $("#texto_est").text() );
             });
+
+
+
+            //Cuando un modal se esconde, elimino el texto que hay en el input
+            $('#modal_seccion').on('hidden.bs.modal', function() {
+                $('#confirmacion_real').val('');
+            })
+            $('#modal_est').on('hidden.bs.modal', function() {
+                $('#confirmacion_real_est').val('');
+            })
+
+            
 
             
 
@@ -144,7 +234,7 @@ console.log( $( ".delete_sec" ));
     /*Esta funcion es cuando se selecciona otro curso*/
     function cambiarValor(valor, id) 
     {
-        var curso_actual = $("#curso_actual").text()
+        var curso_actual = $("#curso_actual").text();
         var clase;
         if(curso_actual != valor){
             $('#'+id).text(curso_actual);
@@ -195,15 +285,6 @@ console.log( $( ".delete_sec" ));
                 {
                     idBody = $('#body_select' + array[i]);
                     idBody.empty();
-                    // if (idBody.childElementCount > 0) 
-                    // {
-                    //     fc = idBody.firstChild;
-                    //     while(fc) 
-                    //     {
-                    //         idBody.removeChild(fc);
-                    //         fc = idBody.firstChild;
-                    //     }
-                    // }
 
                     cant_estudiantes = new_estudiantes.length;
 
@@ -222,6 +303,7 @@ console.log( $( ".delete_sec" ));
                                 tag.setAttribute('class', ("active"));
                                 
                                 element = document.createElement('td');
+                                element.setAttribute('class', 'cedulaEstudiante');
                                 element.innerHTML = new_estudiantes[j][2];
                                 tag.appendChild(element);
 
@@ -328,15 +410,6 @@ console.log( $( ".delete_sec" ));
                 {
                     idBody = $('#body_select' + array[i]);
                     idBody.empty();
-                    // if (idBody.childElementCount > 0) 
-                    // {
-                    //     fc = idBody.firstChild;
-                    //     while(fc) 
-                    //     {
-                    //         idBody.removeChild(fc);
-                    //         fc = idBody.firstChild;
-                    //     }
-                    // }
 
                     cant_estudiantes = new_estudiantes.length;
 
@@ -355,6 +428,7 @@ console.log( $( ".delete_sec" ));
                                 tag.setAttribute('class', ("active"));
                                 
                                 element = document.createElement('td');
+                                element.setAttribute('class', 'cedulaEstudiante');
                                 element.innerHTML = new_estudiantes[j][2];
                                 tag.appendChild(element);
 
@@ -407,7 +481,6 @@ console.log( $( ".delete_sec" ));
             }
         });
 
-        // AQUI HAY QUE ACTUAlIZAR VALORES PORQUE CAMBIO EL ANO ESCOLAR
     }
 
     function validateForm() 
