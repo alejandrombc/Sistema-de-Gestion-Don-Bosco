@@ -151,6 +151,72 @@ def eliminarEstudiante():
 
 	return ""
 
+@app.route('/eliminarSeccion', methods=['DELETE'])
+def eliminarSeccion():
+	
+	# Se tiene que disminuir en uno la cantidad de secciones dentro de la tabla Secciones, en el caso de que el numero sea cero se borra de la BD ese registro
+	# Se tienen que eliminar a todos los estudiantes de la seccion. 
+	# Los argumentos que tengo que pasarle son: año (cuarto, quinto, sexto), curso, lista de cedulas de los estudiantes
+
+	print('=================================================================================================')
+
+	
+
+	curso_actual = request.args['curso']
+	ano = request.args['ano'] 
+
+	if curso_actual == 'TecnologiaGrafica':
+		curso_actual = 'tec_grafica'
+
+	cedulas = request.args['cedulas'].split(",")
+
+
+	print( curso_actual )
+	print( ano )
+	print( cedulas )
+
+	#Revisar si el numero de secciones es mayor a 1
+	cursor = mysql.connect().cursor()
+		
+	cursor.execute("SELECT secciones from secciones WHERE ano_escolar=%s AND ano=%s AND curso=%s", (session['ano_esc'], ano, curso_actual ) )
+	data = cursor.fetchall()
+	cant_secciones = int(data[0][0])
+
+	print(cant_secciones)
+
+
+	conn = mysql.connect()
+	cursor = conn.cursor()
+
+	if cant_secciones == 1:
+		#se borra el registro
+		cursor.execute("DELETE FROM secciones WHERE ano_escolar=%s AND ano=%s AND curso=%s", (session['ano_esc'], ano, curso_actual ) )
+	else:
+		#se decrementa el numero de secciones
+		print('no')
+		cant_secciones -= 1
+		cursor.execute("UPDATE secciones SET secciones=%s WHERE ano_escolar=%s AND ano=%s AND curso=%s", (cant_secciones, session['ano_esc'], ano, curso_actual ) )
+		#Al hacer esto de arriba y actualizar si borre seccion A, seguira saliendo A y B por ejemplo.. pero se supone q solo se podra borrar la ultima seccion
+
+	conn.commit()
+
+
+	#Borrar estudiantes pertenecientes a ese periodo-curso-ano
+	# for cedula in cedulas:
+	# 	cursor.execute("DELETE FROM estudiante WHERE periodo_lectivo=%s AND cedula=%s", (session['ano_esc'], idStudent))
+		
+
+
+
+
+	print('=================================================================================================')
+
+	return ""
+
+
+
+
+
 #--------FIN VISTA ESTUDIANTES--------#
 
 
@@ -223,3 +289,7 @@ def seccion():
 
 if __name__ == "__main__":
 	app.run(debug=True, host='127.0.0.1', port=3000)
+
+
+#====ACOTACION====#
+# Se deberia tener una opcion para eliminar a todos los estudiantes de algun periodo especifico DE LA BD, ya que con el tiempo se vovleria muy lento por la cantidad de registros.

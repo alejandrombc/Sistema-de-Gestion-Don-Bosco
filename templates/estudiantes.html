@@ -154,37 +154,21 @@
                     <div id="tocheck" class="btn-group dropup btn-group-vertical" style="width: 100%;">
                     <br>
                         <h4 style="text-align: center; color:white; cursor: pointer;">Curso</h4>                             
-                                <button id="curso_actual" class="btn btn-default" >
-                                    Tecnología Gráfica
-                                </button> 
-                                <button id="parchesito" data-toggle="dropdown" class="btn btn-default dropdown-toggle">
-                                    <span class="caret"></span>
-                                </button>
+                                <button id="curso_actual" class="btn btn-default" >Tecnología Gráfica</button> 
+                                <button id="parchesito" data-toggle="dropdown" class="btn btn-default dropdown-toggle"><span class="caret"></span></button>
                                 <ul class="dropdown-menu" style="width: 100%; text-align: center;">
-                                    <li style="cursor: pointer;">
-                                        <a id="primer_curso" onclick="cambiarValor(this.text, 'primer_curso')" >Contabilidad</a>
-                                    </li>
-                                    <li style="cursor: pointer;">
-                                        <a id="segundo_curso" onclick="cambiarValor(this.text, 'segundo_curso')">Electrónica</a>
-                                    </li>
-                                    <li style="cursor: pointer;">
-                                        <a id="tercer_curso" onclick="cambiarValor(this.text, 'tercer_curso')">Mecánica</a>
-                                    </li>
+                                    <li style="cursor: pointer;"><a id="primer_curso" onclick="cambiarValor(this.text, 'primer_curso')" >Contabilidad</a></li>
+                                    <li style="cursor: pointer;"><a id="segundo_curso" onclick="cambiarValor(this.text, 'segundo_curso')">Electrónica</a></li>
+                                    <li style="cursor: pointer;"><a id="tercer_curso" onclick="cambiarValor(this.text, 'tercer_curso')">Mecánica</a></li>
                                 </ul>
                     </div>
                     <br>
                     <br>
                         <h4 style="text-align: center; color:white;">Año</h4>
                         <div class="btn-group btn-group-vertical" style="width: 100%;">                         
-                            <button id="4to" onclick="cambioAnio('4to')" class="btn btn-default active" type="button">
-                                4to
-                            </button> 
-                            <button id="5to" onclick="cambioAnio('5to')" class="btn btn-default" type="button">
-                                5to
-                            </button> 
-                            <button id="6to" onclick="cambioAnio('6to')" class="btn btn-default" type="button">
-                                6to
-                            </button>
+                            <button id="4to" onclick="cambioAnio('4to')" class="btn btn-default active" type="button">4to</button> 
+                            <button id="5to" onclick="cambioAnio('5to')" class="btn btn-default" type="button">5to</button> 
+                            <button id="6to" onclick="cambioAnio('6to')" class="btn btn-default" type="button">6to</button>
                         </div>
                 </div>
 
@@ -231,24 +215,12 @@
                                                 {% for estudiante in datos %}
                                                     {% if estudiante[7] == array[i]  %}
                                                         <tr id='{{estudiante[2]}}' class="active"> 
-                                                            <td>
-                                                                {{estudiante[2]}}
-                                                            </td>
-                                                            <td>
-                                                                {{estudiante[1]}}
-                                                            </td>
-                                                            <td>
-                                                                {{estudiante[4]}}
-                                                            </td>
-                                                            <td id="inasistencia{{estudiante[2]}}">
-                                                                {{estudiante[9]}}
-                                                            </td>
-                                                            <td>
-                                                                <button id="add{{estudiante[2]}}" class="btn btn-warning" onclick="agregarInasistencia(this.id)">Agregar inasistencia</button>
-                                                            </td>
-                                                            <td>
-                                                                <button id='del{{estudiante[2]}}' class="btn btn-danger botonDltEst" onclick="mostrarModalEliminarEstudiante(this.id)"><span class="glyphicon glyphicon-trash"></span></button>
-                                                            </td>
+                                                            <td class='cedulaEstudiante'>{{estudiante[2]}}</td>
+                                                            <td>{{estudiante[1]}}</td>
+                                                            <td>{{estudiante[4]}}</td>
+                                                            <td id="inasistencia{{estudiante[2]}}">{{estudiante[9]}}</td>
+                                                            <td><button id="add{{estudiante[2]}}" class="btn btn-warning" onclick="agregarInasistencia(this.id)">Agregar inasistencia</button></td>
+                                                            <td><button id='del{{estudiante[2]}}' class="btn btn-danger botonDltEst" onclick="mostrarModalEliminarEstudiante(this.id)"><span class="glyphicon glyphicon-trash"></span></button></td>
                                                         </tr>
                                                     {% endif %}
                                                 {% endfor %}
