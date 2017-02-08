@@ -127,7 +127,7 @@
                 <li class="dropdown">
                   <a class="dropdown-toggle otravaina" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-plus"></span> Añadir <span class="caret"></span></a>
                   <ul style="background-color: #9B9B9C" class="dropdown-menu">
-                    <li><a id="anadir1" href="#">Añadir estudiantes</a></li>
+                    <li><a id="anadir1" href="/anadirEstudiante">Añadir estudiantes</a></li>
                     <li><a id="anadir2" href="/agregar_seccion">Añadir seccion</a></li>
                   </ul>
                 </li>
@@ -213,12 +213,12 @@
                                         <tbody id='body_select{{array[i]}}'>
                                             {% if datos %}
                                                 {% for estudiante in datos %}
-                                                    {% if estudiante[7] == array[i]  %}
+                                                    {% if estudiante[9] == array[i]  %}
                                                         <tr id='{{estudiante[2]}}' class="active"> 
-                                                            <td class='cedulaEstudiante'>{{estudiante[2]}}</td>
+                                                            <td class='cedulaEstudiante'>{{estudiante[3]}}</td>
                                                             <td>{{estudiante[1]}}</td>
-                                                            <td>{{estudiante[4]}}</td>
-                                                            <td id="inasistencia{{estudiante[2]}}">{{estudiante[9]}}</td>
+                                                            <td>{{estudiante[6]}}</td>
+                                                            <td id="inasistencia{{estudiante[2]}}">{{estudiante[11]}}</td>
                                                             <td><button id="add{{estudiante[2]}}" class="btn btn-warning" onclick="agregarInasistencia(this.id)">Agregar inasistencia</button></td>
                                                             <td><button id='del{{estudiante[2]}}' class="btn btn-danger botonDltEst" onclick="mostrarModalEliminarEstudiante(this.id)"><span class="glyphicon glyphicon-trash"></span></button></td>
                                                         </tr>
