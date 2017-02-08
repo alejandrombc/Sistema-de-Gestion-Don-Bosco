@@ -103,7 +103,7 @@
                 /*Tomo las cedulas de todos los estudiantes de la seccion a borrar y los agrego a una lista*/
                 var lista_cedulas = [];
                 $( '#body_select'+seccion +' td.cedulaEstudiante').each(function() { 
-                    // alert($(this).html()); 
+                    // console.log($(this).html()); 
                     lista_cedulas.push( $(this).html() );
                 });
                 console.log('lista_cedulas = '+lista_cedulas);
@@ -123,22 +123,15 @@
                 /*busco el ano*/
                 var ano;
                 if ( $('#4to').hasClass('active') ) {
-                    ano = 'cuarto';
+                    ano = 4;
                 } else if ( $('#5to').hasClass('active') ) {
-                    ano = 'quinto';
+                    ano = 5;
                 } else {
-                    ano = 'sexto';
+                    ano = 6;
                 }
                 console.log('anio = ' + ano);
 
 
-
-                //En el success es que hago todo lo que esta aqui abajo
-
-                
-
-
-                var lista = ['hola', 'adios'];
                 /*Se elimina la seccion de la BD*/
                 $.ajax
                 ({
@@ -229,7 +222,7 @@
 
             
 
-});
+}); //fin document.ready
 
     /*Esta funcion es cuando se selecciona otro curso*/
     function cambiarValor(valor, id) 
@@ -262,98 +255,15 @@
                 dataType: "text",
                 error: function (xhr, ajaxOptions, thrownError)
                 {
-                        alert(xhr.status);
-                        alert(thrownError);
-                        alert(ajaxOptions);
+                        console.log(xhr.status);
+                        console.log(thrownError);
+                        console.log(ajaxOptions);
                        
                 },
                 success: function(str_secciones)
                 {    
-                    var li = document.getElementById('liA');
-                    li.click();
-
-                    var list, childList, cant_secciones, new_estudiantes, i, idBody, array, fc, tag;
-
-                    list = document.getElementById("internas");
-                    childList = list.children;
-                    cant_secciones = parseInt(str_secciones[0]);
-                    new_estudiantes = jQuery.parseJSON(str_secciones.substring(2));
-                    array = ['A','B','C', 'D', 'E', 'F'];
-                    var N = childList.length;
-                    var cant_estudiantes;
-                    for (i = 0; i < N; i++) 
-                {
-                    idBody = $('#body_select' + array[i]);
-                    idBody.empty();
-
-                    cant_estudiantes = new_estudiantes.length;
-
-                    if(i < cant_secciones) 
-                        childList[i].style.display = 'block';
-                    else
-                        childList[i].style.display = 'none';
-
-
-                    for (j = 0; j < cant_estudiantes; j++) {
-                            
-                            if (str_secciones.substring(2).length > 2 && array[i] == new_estudiantes[j][7]) 
-                            {
-                                tag = document.createElement('tr');
-                                tag.setAttribute('id', (String(new_estudiantes[j][2])));
-                                tag.setAttribute('class', ("active"));
-                                
-                                element = document.createElement('td');
-                                element.setAttribute('class', 'cedulaEstudiante');
-                                element.innerHTML = new_estudiantes[j][2];
-                                tag.appendChild(element);
-
-                                element = document.createElement('td');
-                                element.innerHTML = new_estudiantes[j][1];
-                                tag.appendChild(element);
-
-                                element = document.createElement('td');
-                                element.innerHTML = new_estudiantes[j][4];
-                                tag.appendChild(element);
-
-                                element = document.createElement('td');
-                                element.setAttribute('id', 'inasistencia'+new_estudiantes[j][2]);
-                                element.innerHTML = new_estudiantes[j][9];
-                                tag.appendChild(element);
-
-                                element = document.createElement('td');
-                                var boton = document.createElement('button');
-                                boton.setAttribute('class', 'btn btn-warning');
-                                boton.setAttribute('id','add'+new_estudiantes[j][2]);
-                                boton.setAttribute('onclick',"agregarInasistencia(this.id)");
-                                boton.innerHTML = 'Agregar inasistencia';
-                                element.appendChild(boton);
-                                tag.appendChild(element);
-
-                                element = document.createElement('td');
-                                var boton = document.createElement('button');
-                                boton.setAttribute('class', 'btn btn-danger botonDltEst');
-                                boton.setAttribute('id','del'+new_estudiantes[j][2]);
-                                boton.setAttribute('onclick',"mostrarModalEliminarEstudiante(this.id)");
-                                
-
-                                var span = document.createElement('span');
-                                span.setAttribute('class', 'glyphicon glyphicon-trash');
-                                boton.appendChild(span);
-
-                                element.appendChild(boton);
-                                tag.appendChild(element);
-                                
-                                idBody.append(tag);
-                            }; 
-                        
-                        
-                    }
-                    
-                }
-
-
-
-                }
+                    mostrarListaEstudiantes(str_secciones); 
+                }//Fin success
             });
         }
     }
@@ -380,112 +290,110 @@
             dataType: "text",
             error: function (xhr, ajaxOptions, thrownError)
             {
-                    alert(xhr.status);
-                    alert(thrownError);
-                    alert(ajaxOptions);
+                    console.log(xhr.status);
+                    console.log(thrownError);
+                    console.log(ajaxOptions);
                    
             },
             success: function(str_secciones)
             {    
-
-                var li = document.getElementById('liA');
-                li.click();
-
-                var list, childList, cant_secciones, new_estudiantes, i, idBody, array, fc, tag;
-
-                list = document.getElementById("internas");
-                childList = list.children;
-                cant_secciones = parseInt(str_secciones[0]);
-                new_estudiantes = jQuery.parseJSON(str_secciones.substring(2));
-                array = ['A','B','C', 'D', 'E', 'F'];
-
-
-
-                var N = childList.length;
-                var cant_estudiantes;
-
-
-
-                for (i = 0; i < N; i++) 
-                {
-                    idBody = $('#body_select' + array[i]);
-                    idBody.empty();
-
-                    cant_estudiantes = new_estudiantes.length;
-
-                    if(i < cant_secciones) 
-                        childList[i].style.display = 'block';
-                    else
-                        childList[i].style.display = 'none';
-
-
-                    for (j = 0; j < cant_estudiantes; j++) {
-                            
-                            if (str_secciones.substring(2).length > 2 && array[i] == new_estudiantes[j][7]) 
-                            {
-                                tag = document.createElement('tr');
-                                tag.setAttribute('id', (String(new_estudiantes[j][2])));
-                                tag.setAttribute('class', ("active"));
-                                
-                                element = document.createElement('td');
-                                element.setAttribute('class', 'cedulaEstudiante');
-                                element.innerHTML = new_estudiantes[j][2];
-                                tag.appendChild(element);
-
-                                element = document.createElement('td');
-                                element.innerHTML = new_estudiantes[j][1];
-                                tag.appendChild(element);
-
-                                element = document.createElement('td');
-                                element.innerHTML = new_estudiantes[j][4];
-                                tag.appendChild(element);
-
-                                element = document.createElement('td');
-                                element.setAttribute('id', 'inasistencia'+new_estudiantes[j][2]);
-                                element.innerHTML = new_estudiantes[j][9];
-                                tag.appendChild(element);
-
-                                element = document.createElement('td');
-                                var boton = document.createElement('button');
-                                boton.setAttribute('class', 'btn btn-warning');
-                                boton.setAttribute('id','add'+new_estudiantes[j][2]);
-                                boton.setAttribute('onclick',"agregarInasistencia(this.id)");
-                                boton.innerHTML = 'Agregar inasistencia';
-                                element.appendChild(boton);
-                                tag.appendChild(element);
-
-                                element = document.createElement('td');
-                                var boton = document.createElement('button');
-                                boton.setAttribute('class', 'btn btn-danger botonDltEst');
-                                boton.setAttribute('id','del'+new_estudiantes[j][2]);
-                                boton.setAttribute('onclick',"mostrarModalEliminarEstudiante(this.id)");
-                                
-
-                                var span = document.createElement('span');
-                                span.setAttribute('class', 'glyphicon glyphicon-trash');
-                                boton.appendChild(span);
-
-                                element.appendChild(boton);
-                                tag.appendChild(element);
-                                
-                                idBody.append(tag);
-                            }; 
-                        
-                        
-                    }
-                    
-                }
-
-
-
-            }
+                mostrarListaEstudiantes(str_secciones); 
+            }//fin success
         });
+    }
 
+    /*Se agrega en pantalla la lista de estudiantes corrrespondiente al año-curso*/
+    function mostrarListaEstudiantes(str_secciones) 
+    {
+
+        var li = document.getElementById('liA');
+        li.click();
+
+        var list, childList, cant_secciones, new_estudiantes, i, idBody, array, fc, tag;
+
+        list = document.getElementById("internas");
+        childList = list.children;
+        cant_secciones = parseInt(str_secciones[0]);
+        new_estudiantes = jQuery.parseJSON(str_secciones.substring(2));
+        array = ['A','B','C', 'D', 'E', 'F'];
+        var N = childList.length;
+        var cant_estudiantes;
+        for (i = 0; i < N; i++) 
+        {
+            idBody = $('#body_select' + array[i]);
+            idBody.empty();
+
+            cant_estudiantes = new_estudiantes.length;
+
+            if(i < cant_secciones) 
+                childList[i].style.display = 'block';
+            else
+                childList[i].style.display = 'none';
+
+
+            for (j = 0; j < cant_estudiantes; j++) {
+                    if (str_secciones.substring(2).length > 2 && array[i] == new_estudiantes[j][9]) 
+                    {   
+                        tag = document.createElement('tr');
+                        tag.setAttribute('id', (String(new_estudiantes[j][3])));
+                        tag.setAttribute('class', ("active"));
+                        
+                        element = document.createElement('td');
+                        element.setAttribute('class', 'cedulaEstudiante');
+                        element.innerHTML = new_estudiantes[j][3];
+                        tag.appendChild(element);
+
+                        element = document.createElement('td');
+                        element.innerHTML = new_estudiantes[j][1];
+                        tag.appendChild(element);
+
+                        element = document.createElement('td');
+                        element.innerHTML = new_estudiantes[j][2];
+                        tag.appendChild(element);
+
+                        element = document.createElement('td');
+                        element.innerHTML = new_estudiantes[j][6];
+                        tag.appendChild(element);
+
+                        element = document.createElement('td');
+                        element.setAttribute('id', 'inasistencia'+new_estudiantes[j][3]);
+                        element.innerHTML = new_estudiantes[j][11];
+                        tag.appendChild(element);
+
+                        element = document.createElement('td');
+                        var boton = document.createElement('button');
+                        boton.setAttribute('class', 'btn btn-warning');
+                        boton.setAttribute('id','add'+new_estudiantes[j][3]);
+                        boton.setAttribute('onclick',"agregarInasistencia(this.id)");
+                        boton.innerHTML = 'Agregar inasistencia';
+                        element.appendChild(boton);
+                        tag.appendChild(element);
+
+                        element = document.createElement('td');
+                        var boton = document.createElement('button');
+                        boton.setAttribute('class', 'btn btn-danger botonDltEst');
+                        boton.setAttribute('id','del'+new_estudiantes[j][3]);
+                        boton.setAttribute('onclick',"mostrarModalEliminarEstudiante(this.id)");
+                        
+
+                        var span = document.createElement('span');
+                        span.setAttribute('class', 'glyphicon glyphicon-trash');
+                        boton.appendChild(span);
+
+                        element.appendChild(boton);
+                        tag.appendChild(element);
+                        
+                        idBody.append(tag);
+                    }; 
+                
+                
+            }
+            
+        }
     }
 
     function validateForm() 
     {
-
         var inicio = document.getElementById("inicial").value;
         var final = document.getElementById("final").value;
         if ((inicio[0] == '2') && (inicio[1] == '0') && (final[0] == '2') && (final[1] == '0') && (final.length == 4) && (inicio.length == 4) && (final > inicio))
@@ -494,7 +402,8 @@
     }
 
     /*Funcion para sumar 1 en la inasistencia de un estudiante*/
-    function agregarInasistencia(id) {
+    function agregarInasistencia(id) 
+    {
 
         id = id.substring(3);
         var inasistencia = $('#inasistencia'+id).text();
@@ -512,9 +421,9 @@
             dataType: "text",
             error: function (xhr, ajaxOptions, thrownError)
             {
-                    alert(xhr.status);
-                    alert(thrownError);
-                    alert(ajaxOptions);
+                    console.log(xhr.status);
+                    console.log(thrownError);
+                    console.log(ajaxOptions);
                    
             },
             success: function()
@@ -524,14 +433,16 @@
     }
 
     /*Funciones para borrar estudiante*/
-    function mostrarModalEliminarEstudiante(id) {
+    function mostrarModalEliminarEstudiante(id) 
+    {
         $("#modal_est").modal('show');
         id = id.substring(3);
         $("#texto_est").text(id);
     }
 
     /*Funcion para eliminar a un estudiante de la lista*/
-    function eliminarEstudiante(id) {
+    function eliminarEstudiante(id) 
+    {
         $('#'+id).remove();
 
         $.ajax
@@ -541,9 +452,9 @@
             dataType: "text",
             error: function (xhr, ajaxOptions, thrownError)
             {
-                    alert(xhr.status);
-                    alert(thrownError);
-                    alert(ajaxOptions);
+                    console.log(xhr.status);
+                    console.log(thrownError);
+                    console.log(ajaxOptions);
                    
             },
             success: function()
@@ -551,5 +462,6 @@
                 $('#modal_est').modal('toggle');
             }
        }); 
-
     }
+
+    

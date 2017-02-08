@@ -8,7 +8,7 @@ app = Flask(__name__)
 mysql = MySQL()
 app.config['MYSQL_DATABASE_USER'] = 'root'
 # app.config['MYSQL_DATABASE_PASSWORD'] = '123'
-app.config['MYSQL_DATABASE_PASSWORD'] = '123'
+app.config['MYSQL_DATABASE_PASSWORD'] = ''
 app.config['MYSQL_DATABASE_DB'] = 'don_bosco'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 mysql.init_app(app)
@@ -112,19 +112,40 @@ def escoger_ano_estudiantes():
 		curso_actual = 'Tecnología Gráfica'
 	
 	if request.args['ano'] == "4to":
-		cursor.execute("SELECT secciones from secciones WHERE curso=%s AND ano='cuarto' AND ano_escolar=%s", (curso_actual, session['ano_esc']))
+		cursor.execute("SELECT secciones from secciones WHERE curso=%s AND ano=4 AND ano_escolar=%s", (curso_actual, session['ano_esc']))
 		secciones = cursor.fetchall()
-		cursor.execute("SELECT * from estudiante WHERE curso=%s AND ano='cuarto' AND periodo_lectivo=%s", (curso_actual, session['ano_esc']))
+		cursor.execute("SELECT * from estudiante WHERE curso=%s AND ano=4 AND periodo_lectivo=%s", (curso_actual, session['ano_esc']))
 	elif request.args['ano'] == "5to":
-		cursor.execute("SELECT secciones from secciones WHERE curso=%s AND ano='quinto' AND ano_escolar=%s", (curso_actual, session['ano_esc']))
+		cursor.execute("SELECT secciones from secciones WHERE curso=%s AND ano=5 AND ano_escolar=%s", (curso_actual, session['ano_esc']))
 		secciones = cursor.fetchall()
-		cursor.execute("SELECT * from estudiante WHERE curso=%s AND ano='quinto' AND periodo_lectivo=%s", (curso_actual, session['ano_esc']))
+		cursor.execute("SELECT * from estudiante WHERE curso=%s AND ano=5 AND periodo_lectivo=%s", (curso_actual, session['ano_esc']))
 	else:
-		cursor.execute("SELECT secciones from secciones WHERE curso=%s AND ano='sexto' AND ano_escolar=%s", (curso_actual, session['ano_esc']))
+		cursor.execute("SELECT secciones from secciones WHERE curso=%s AND ano=6 AND ano_escolar=%s", (curso_actual, session['ano_esc']))
 		secciones = cursor.fetchall()
-		cursor.execute("SELECT * from estudiante WHERE curso=%s AND ano='sexto' AND periodo_lectivo=%s", (curso_actual, session['ano_esc']))
+		cursor.execute("SELECT * from estudiante WHERE curso=%s AND ano=6 AND periodo_lectivo=%s", (curso_actual, session['ano_esc']))
 		
-	data = json.dumps(list(cursor.fetchall()))
+	lista = list(cursor.fetchall())
+	tupla = []
+	lista2 = []
+
+	# print(lista)
+
+	for campo in lista:
+		tupla = []
+		for i in range(0,len(campo)):
+			if (i==4):
+				print( campo[i] )
+				fecha =  campo[i]
+				tupla.append( campo[i].strftime("%d/%m/%y") ) 
+			else:
+				tupla.append( campo[i] )
+		tupla = tuple(tupla)
+		lista2.append(tupla)
+
+	print(lista2)
+
+	# data = json.dumps(lista)
+	data = json.dumps(lista2)
 	print (data)
 	return '{} {}'.format(secciones[0][0], data)
 
