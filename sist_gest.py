@@ -2,12 +2,13 @@
 from flask import Flask, render_template, request, url_for, redirect, session, g,  json
 from flaskext.mysql import MySQL
 import hashlib
+import datetime
 
 app = Flask(__name__)
 mysql = MySQL()
 app.config['MYSQL_DATABASE_USER'] = 'root'
 # app.config['MYSQL_DATABASE_PASSWORD'] = '123'
-app.config['MYSQL_DATABASE_PASSWORD'] = ''
+app.config['MYSQL_DATABASE_PASSWORD'] = '123'
 app.config['MYSQL_DATABASE_DB'] = 'don_bosco'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 mysql.init_app(app)
@@ -56,17 +57,17 @@ def agregar():
 
 		if (inicio[0] == '2') and (inicio[1] == '0') and (final[0] == '2') and (final[1] == '0') and (len(final)==4) and (len(inicio)==4) and (final > inicio):
 			cursor.execute("""INSERT INTO anos_escolares (inicial, final, eliminada) VALUES (%s, %s, '0')""", (inicio,final))
-			cursor.execute("""INSERT INTO secciones ( ano, curso, ano_escolar, secciones, eliminada ) VALUES ('cuarto', 'tec_grafica', %s, '1', '0')""", (ano))
+			cursor.execute("""INSERT INTO secciones ( ano, curso, ano_escolar, secciones, eliminada ) VALUES ('cuarto', 'Tecnología Gráfica', %s, '1', '0')""", (ano))
 			cursor.execute("""INSERT INTO secciones ( ano, curso, ano_escolar, secciones, eliminada ) VALUES ('cuarto', 'contabilidad', %s, '1', '0')""", (ano))
 			cursor.execute("""INSERT INTO secciones ( ano, curso, ano_escolar, secciones, eliminada ) VALUES ('cuarto', 'mecanica', %s, '1', '0')""", (ano))
 			cursor.execute("""INSERT INTO secciones ( ano, curso, ano_escolar, secciones, eliminada ) VALUES ('cuarto', 'electronica', %s, '1', '0')""", (ano))
 
-			cursor.execute("""INSERT INTO secciones ( ano, curso, ano_escolar, secciones, eliminada ) VALUES ('quinto', 'tec_grafica', %s, '1', '0')""", (ano))
+			cursor.execute("""INSERT INTO secciones ( ano, curso, ano_escolar, secciones, eliminada ) VALUES ('quinto', 'Tecnología Gráfica', %s, '1', '0')""", (ano))
 			cursor.execute("""INSERT INTO secciones ( ano, curso, ano_escolar, secciones, eliminada ) VALUES ('quinto', 'contabilidad', %s, '1', '0')""", (ano))
 			cursor.execute("""INSERT INTO secciones ( ano, curso, ano_escolar, secciones, eliminada ) VALUES ('quinto', 'mecanica', %s,'1', '0')""", (ano))
 			cursor.execute("""INSERT INTO secciones ( ano, curso, ano_escolar, secciones, eliminada ) VALUES ('quinto', 'electronica', %s, '1', '0')""", (ano))
 
-			cursor.execute("""INSERT INTO secciones ( ano, curso, ano_escolar, secciones, eliminada ) VALUES ('sexto', 'tec_grafica', %s, '1', '0')""", (ano))
+			cursor.execute("""INSERT INTO secciones ( ano, curso, ano_escolar, secciones, eliminada ) VALUES ('sexto', 'Tecnología Gráfica', %s, '1', '0')""", (ano))
 			cursor.execute("""INSERT INTO secciones ( ano, curso, ano_escolar, secciones, eliminada ) VALUES ('sexto', 'contabilidad', %s, '1', '0')""", (ano))
 			cursor.execute("""INSERT INTO secciones ( ano, curso, ano_escolar, secciones, eliminada ) VALUES ('sexto', 'mecanica', %s, '1', '0')""", (ano))
 			cursor.execute("""INSERT INTO secciones ( ano, curso, ano_escolar, secciones, eliminada ) VALUES ('sexto', 'electronica', %s, '1', '0')""", (ano))
@@ -89,13 +90,14 @@ def def_estudiantes():
 		if request.form['ano'] != None: session['ano_esc'] = request.form['ano']
 		cursor = mysql.connect().cursor()
 		
-		cursor.execute("SELECT * from estudiante WHERE curso='tec_grafica' AND ano='cuarto' AND periodo_lectivo='"+request.form['ano']+"' ")
+		cursor.execute("SELECT * from estudiante WHERE curso='Tecnología Gráfica' AND ano=4 AND periodo_lectivo='"+request.form['ano']+"' ")
 		data = cursor.fetchall()
 
-		cursor.execute("SELECT secciones from secciones WHERE curso='tec_grafica' AND ano='cuarto' AND ano_escolar=%s", (session['ano_esc']))
+		cursor.execute("SELECT secciones from secciones WHERE curso='Tecnología Gráfica' AND ano=4 AND ano_escolar=%s", (session['ano_esc']))
 		secciones = cursor.fetchall()
 		
 		cant_secciones = int(secciones[0][0])
+		print(cant_secciones)
 
 		#Falta validar si la data es null o alguna excepcion
 	return render_template("estudiantes.html", datos=data, cant_secciones=cant_secciones )
@@ -107,7 +109,7 @@ def escoger_ano_estudiantes():
 	curso_actual = request.args['curso']
 	
 	if curso_actual == 'TecnologiaGrafica':
-		curso_actual = 'tec_grafica'
+		curso_actual = 'Tecnología Gráfica'
 	
 	if request.args['ano'] == "4to":
 		cursor.execute("SELECT secciones from secciones WHERE curso=%s AND ano='cuarto' AND ano_escolar=%s", (curso_actual, session['ano_esc']))
@@ -166,7 +168,7 @@ def eliminarSeccion():
 	ano = request.args['ano'] 
 
 	if curso_actual == 'TecnologiaGrafica':
-		curso_actual = 'tec_grafica'
+		curso_actual = 'Tecnología Gráfica'
 
 	cedulas = request.args['cedulas'].split(",")
 
@@ -284,7 +286,48 @@ def seccion():
 		cursor.execute(query)
 		conn.commit()
 		return redirect(url_for('def_estudiantes'))
-	return render_template("agregar_seccion.html")				
+	return render_template("agregar_seccion.html")
+
+@app.route('/anadirEstudiante', methods=['GET', 'POST'])
+def anadirEstudiante():
+	return render_template("estudiante_individual.html")	
+
+@app.route('/registrarEstudiante', methods=['GET', 'POST'])
+def registrarEstudiante():
+	nombres = request.form.get('nombres')
+	apellidos  = request.form.get('apellidos')	
+	cedula = request.form.get('cedula')
+	fechaNac = request.form.get('fechaNac')	
+	dateFechaNac = datetime.datetime.strptime(fechaNac, "%d/%m/%Y").strftime("%Y-%m-%d")
+	curso = request.form.get('curso')	
+	ano = request.form.get('ano')
+	anoInt = 4
+	if ano == '5to':
+		anoInt = 5
+	if ano == '6to':
+		anoInt = 6
+	periodo = '2016-2017'
+	seccion = request.form.get('seccion')
+	correo = request.form.get('correo')
+	direccion = request.form.get('direccion')
+	telefono = request.form.get('telefono')
+	query = "INSERT INTO estudiante (nombres, apellidos, fecha_nacimiento, cedula, telefono, email, direccion, ano, seccion, periodo_lectivo, curso) VALUES ('"+nombres+"', '"+apellidos+"','"+dateFechaNac+"',"+str(cedula)+",'"+telefono+"','"+correo+"','"+direccion+"',"+str(anoInt)+",'"+seccion+"','"+periodo+"','"+curso+"')"
+	conn = mysql.connect()
+	cursor = conn.cursor()
+	cursor.execute(query) 
+	#Se debe validar antes si ese estudiante esta repetido
+	conn.commit()
+		
+	cursor.execute("SELECT * from estudiante WHERE curso='"+curso+"' AND ano="+str(anoInt)+" AND periodo_lectivo='"+periodo+"' ")
+	data = cursor.fetchall()
+
+	cursor.execute("SELECT secciones from secciones WHERE curso='"+curso+"' AND ano="+str(anoInt)+" AND ano_escolar='"+periodo+"'")
+	secciones = cursor.fetchall()
+	
+	cant_secciones = int(secciones[0][0])
+	print(cant_secciones)
+
+	return render_template("estudiantes.html", datos=data, cant_secciones=cant_secciones )
 
 
 if __name__ == "__main__":
