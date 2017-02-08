@@ -193,19 +193,16 @@ def eliminarSeccion():
 		cursor.execute("DELETE FROM secciones WHERE ano_escolar=%s AND ano=%s AND curso=%s", (session['ano_esc'], ano, curso_actual ) )
 	else:
 		#se decrementa el numero de secciones
-		print('no')
 		cant_secciones -= 1
 		cursor.execute("UPDATE secciones SET secciones=%s WHERE ano_escolar=%s AND ano=%s AND curso=%s", (cant_secciones, session['ano_esc'], ano, curso_actual ) )
 		#Al hacer esto de arriba y actualizar si borre seccion A, seguira saliendo A y B por ejemplo.. pero se supone q solo se podra borrar la ultima seccion
 
-	conn.commit()
-
-
 	#Borrar estudiantes pertenecientes a ese periodo-curso-ano
-	# for cedula in cedulas:
-	# 	cursor.execute("DELETE FROM estudiante WHERE periodo_lectivo=%s AND cedula=%s", (session['ano_esc'], idStudent))
+	for cedula in cedulas:
+		print(cedula)
+		cursor.execute("DELETE FROM estudiante WHERE periodo_lectivo=%s AND cedula=%s AND curso=%s AND ano=%s", (session['ano_esc'], cedula, curso_actual, ano))
 		
-
+	conn.commit()
 
 
 
