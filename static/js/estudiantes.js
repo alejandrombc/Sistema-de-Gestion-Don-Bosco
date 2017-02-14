@@ -60,22 +60,22 @@
 
 
             //Basuras de las secciones (para borrarlas)
-            $(".delete_sec").mouseenter(function() {
-                if($(this).closest('li').hasClass('ui-state-active')) $(this).css("color", "#FF2D27"); 
+            // $(".delete_sec").mouseenter(function() {
+            //     if($(this).closest('li').hasClass('ui-state-active')) $(this).css("color", "#FF2D27"); 
                 
-            }).mouseleave(function() {
-                if($(this).closest('li').hasClass('ui-state-active')) $(this).css("color", "#000");
-            });
+            // }).mouseleave(function() {
+            //     if($(this).closest('li').hasClass('ui-state-active')) $(this).css("color", "#000");
+            // });
 
 
 
-            //====Cuando hago click en una de las basuras de seccion abro el modal
-             $(".delete_sec").on('click', function(){
-                if($(this).closest('li').hasClass('ui-state-active')){
-                    $("#modal_seccion").modal('show');
-                    seccion_borrar = $(this).parent().attr('id');
-                }
-             });
+            //==== Cuando hago click en una de las basuras de seccion abro el modal =====\
+             // $(".delete_sec").on('click', function(){
+             //    if($(this).closest('li').hasClass('ui-state-active')){
+             //        $("#modal_seccion").modal('show');
+             //        seccion_borrar = $(this).parent().attr('id');
+             //    }
+             // });
 
 
 
@@ -168,24 +168,26 @@
                             }
                         }
 
+                        /*Se busca la ultima seccion para agregarle el span de eliminar*/
+                        for (var i = N-1 ; i >=0 ; i--) {
+                            if (childList[i].style.display != 'none'){
+                                var a = document.getElementById(childList[i].firstChild.id);
+                                console.log(a);
+
+                                var span = document.createElement('span');
+                                span.setAttribute('class', 'glyphicon glyphicon-trash delete_sec');
+                                a.appendChild(span);
+
+                                break;
+                            }
+                        }
+
+
+
                     }
                }); 
 
-                /*Se busca la ultima seccion para agregarle el span de eliminar*/
-                /*for (var i = N-1 ; i >=0 ; i--) {
-                    if (childList[i].style.display != 'none'){
-                        var a = document.getElementById(childList[i].firstChild.id);
-                        console.log(a);
-
-
-
-                        var span = document.createElement('span');
-                        span.setAttribute('class', 'glyphicon glyphicon-trash delete_sec');
-                        a.appendChild(span);
-
-                        break;
-                    }
-                }*/
+                
 
             });
 
@@ -297,7 +299,7 @@
             },
             success: function(str_secciones)
             {    
-                mostrarListaEstudiantes(str_secciones); 
+                mostrarListaEstudiantes(str_secciones);    
             }//fin success
         });
     }
@@ -390,6 +392,35 @@
             }
             
         }
+
+        /*se busca la lista de secciones (Seccion A, Seccion B,..., Seccion N)*/
+        list = document.getElementById("internas");
+        childList = list.children;
+        var N = childList.length;
+        var x;
+
+        /*Elimino el icono de la papelera de todas las secciones*/
+        for (var i = N-1 ; i >=0 ; i--) {
+            $('#'+childList[i].firstChild.id).find('span').remove();
+        }
+
+        /*Se busca la ultima seccion para agregarle el span de eliminar*/
+        for (var i = N-1 ; i >=0 ; i--) {
+            if (childList[i].style.display != 'none'){
+                var a = document.getElementById(childList[i].firstChild.id);
+                // console.log(a);
+
+                // x = $('#'+childList[i].firstChild.id).find('span');
+
+                var span = document.createElement('span');
+                span.setAttribute('class', 'glyphicon glyphicon-trash delete_sec');
+                span.setAttribute('onmouseover', 'mouseOverTrash(this)');
+                span.setAttribute('onmouseout', 'mouseOutTrash(this)');
+                span.setAttribute('onclick', 'mostrarBorrarSeccion(this)');
+                a.appendChild(span);
+                break;
+            }
+        }
     }
 
     function validateForm() 
@@ -464,4 +495,18 @@
        }); 
     }
 
-    
+
+    function mouseOverTrash(x) {
+        x.style.color =  '#FF2D27' ;
+    }
+
+    function mouseOutTrash(x) {
+        x.style.color =  '#000' ;
+    }
+
+
+    function mostrarBorrarSeccion(x) 
+    {
+        seccion_borrar = x.closest('li').firstChild.id;
+        $("#modal_seccion").modal('show');
+    }

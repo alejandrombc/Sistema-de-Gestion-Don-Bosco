@@ -61,10 +61,6 @@
                         <h4 class="modal-title">¿Esta seguro que desea eliminar esta sección?</h4>
                     </div>
                     <div class="modal-body">
-                        <!-- <form id="seccion_modal">
-                            <input id="seccion_a_eliminar" type="text" name="seccion" hidden>
-                            <button id="submitSecModal" type="submit" hidden></button>
-                        </form> -->
                         <p id="confir">Por favor, escriba textualmente "Deseo eliminar esta seccion":</p>
                         <center><input type="text" style="width:100%" id="confirmacion_real"></center><br>
                         <p class="text-warning"><small>Este cambio es <b>irrecuperable.</b></small></p>
@@ -180,10 +176,14 @@
                             <ul id="internas">
                                 {% set array = ['A','B','C', 'D', 'E', 'F'] %}
                                 {% for i in range(0, 6) %}
-                                    {% if cant_secciones > i %}
-                                        <li><a id="li{{array[i]}}" href="#ano_select{{array[i]}}">Sección {{array[i]}}  <span class="glyphicon glyphicon-trash delete_sec"></span></a></li>
+                                    {% if cant_secciones-1 > i %}
+                                    <li><a id="li{{array[i]}}" href="#ano_select{{array[i]}}">Sección {{array[i]}} </a></li>
+                                        <!-- <li><a id="li{{array[i]}}" href="#ano_select{{array[i]}}">Sección {{array[i]}}  <span class="glyphicon glyphicon-trash delete_sec"></span></a></li> -->
+                                    {% elif cant_secciones-1 == i %}
+                                        <li><a id="li{{array[i]}}" href="#ano_select{{array[i]}}">Sección {{array[i]}}  <span onmouseover="mouseOverTrash(this)" onmouseout="mouseOutTrash(this)" onclick="mostrarBorrarSeccion(this)" class="glyphicon glyphicon-trash delete_sec"></span></a></li>
                                     {% else %}
-                                        <li style="display: none;" ><a href="#ano_select{{array[i]}}">Sección {{array[i]}}  <span class="glyphicon glyphicon-trash delete_sec"></span></a></li>
+                                        <li style="display: none;" ><a href="#ano_select{{array[i]}}">Sección {{array[i]}} </a></li>
+                                        <!-- <li style="display: none;" ><a href="#ano_select{{array[i]}}">Sección {{array[i]}}  <span class="glyphicon glyphicon-trash delete_sec"></span></a></li> -->
                                     {% endif %}
                                 {% endfor %}
 
