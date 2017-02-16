@@ -21,21 +21,28 @@
         
         <style>
 
-            .ui-tabs-vertical > .ui-tabs-nav {
+            .ui-tabs-vertical > .ui-tabs-nav 
+            {
                 padding: .2em .1em .2em .2em;
                 width: 12em;
             }
-            .ui-tabs-vertical > .ui-tabs-nav li {
+
+            .ui-tabs-vertical > .ui-tabs-nav li 
+            {
                 width: 100%;
                 border-bottom-width: 1px !important;
                 border-right-width: 0 !important;
                 margin: 0 -1px .2em 0;
             }
-            .ui-tabs-vertical > .ui-tabs-nav > li > a {
+
+            .ui-tabs-vertical > .ui-tabs-nav > li > a 
+            {
                 display:block;
 
             }
-            .ui-tabs-vertical > .ui-tabs-nav > li.ui-tabs-active {
+
+            .ui-tabs-vertical > .ui-tabs-nav > li.ui-tabs-active 
+            {
                 padding-bottom: 0;
                 padding-right: .1em; 
                 width: 100%;  
@@ -43,9 +50,11 @@
                 border-right-width: 1px;
             }
 
-            .dataTables_filter {
+            .dataTables_filter 
+            {
                 float: right;
-            } 
+            }
+
         </style>
     
     </head>
@@ -141,7 +150,7 @@
             </div>
           </div>
         </nav>
-        <div id="SUPERparche" hidden>
+        <div id="spaces" hidden>
             <br><br><br><br>
         </div>
         <div class="container-fluid">
@@ -151,7 +160,7 @@
                     <br>
                         <h4 style="text-align: center; color:white; cursor: pointer;">Curso</h4>                             
                                 <button id="curso_actual" class="btn btn-default" >Tecnología Gráfica</button> 
-                                <button id="parchesito" data-toggle="dropdown" class="btn btn-default dropdown-toggle"><span class="caret"></span></button>
+                                <button id="space" data-toggle="dropdown" class="btn btn-default dropdown-toggle"><span class="caret"></span></button>
                                 <ul class="dropdown-menu" style="width: 100%; text-align: center;">
                                     <li style="cursor: pointer;"><a id="primer_curso" onclick="cambiarValor(this.text, 'primer_curso')" >Contabilidad</a></li>
                                     <li style="cursor: pointer;"><a id="segundo_curso" onclick="cambiarValor(this.text, 'segundo_curso')">Electrónica</a></li>
@@ -178,15 +187,12 @@
                                 {% for i in range(0, 6) %}
                                     {% if cant_secciones-1 > i %}
                                     <li><a id="li{{array[i]}}" href="#ano_select{{array[i]}}">Sección {{array[i]}} </a></li>
-                                        <!-- <li><a id="li{{array[i]}}" href="#ano_select{{array[i]}}">Sección {{array[i]}}  <span class="glyphicon glyphicon-trash delete_sec"></span></a></li> -->
                                     {% elif cant_secciones-1 == i %}
                                         <li><a id="li{{array[i]}}" href="#ano_select{{array[i]}}">Sección {{array[i]}}  <span onmouseover="mouseOverTrash(this)" onmouseout="mouseOutTrash(this)" onclick="mostrarBorrarSeccion(this)" class="glyphicon glyphicon-trash delete_sec"></span></a></li>
                                     {% else %}
                                         <li style="display: none;" ><a href="#ano_select{{array[i]}}">Sección {{array[i]}} </a></li>
-                                        <!-- <li style="display: none;" ><a href="#ano_select{{array[i]}}">Sección {{array[i]}}  <span class="glyphicon glyphicon-trash delete_sec"></span></a></li> -->
                                     {% endif %}
                                 {% endfor %}
-
                             </ul>
 
                             {% for i in range(0, 6) %}
@@ -217,23 +223,24 @@
                                             {% if datos %}
                                                 {% for estudiante in datos %}
                                                     {% if estudiante[9] == array[i]  %}
-                                                        <tr id='{{estudiante[2]}}' class="active"> 
+                                                        <tr id='{{estudiante[3]}}' class="active"> 
                                                             <td class='cedulaEstudiante'>{{estudiante[3]}}</td>
                                                             <td>{{estudiante[1]}}</td>
                                                             <td>{{estudiante[2]}}</td>
                                                             <td>{{estudiante[6]}}</td>
-                                                            <td id="inasistencia{{estudiante[2]}}">{{estudiante[11]}}</td>
-                                                            <td><button id="add{{estudiante[2]}}" class="btn btn-warning" onclick="agregarInasistencia(this.id)">Agregar inasistencia</button></td>
-                                                            <td><button id='del{{estudiante[2]}}' class="btn btn-danger botonDltEst" onclick="mostrarModalEliminarEstudiante(this.id)"><span class="glyphicon glyphicon-trash"></span></button></td>
+                                                            <td id="inasistencia{{estudiante[3]}}">{{estudiante[11]}}</td>
+                                                            <td><button id="add{{estudiante[3]}}" class="btn btn-warning" onclick="agregarInasistencia(this.id)">Agregar inasistencia</button></td>
+                                                            <td><button id='del{{estudiante[3]}}' class="btn btn-danger botonDltEst" onclick="mostrarModalEliminarEstudiante(this.id)"><span class="glyphicon glyphicon-trash"></span></button></td>
                                                         </tr>
                                                     {% endif %}
                                                 {% endfor %}
                                             {% endif %}
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                        </tbody>
+                                    </table>
+                                </div>
                             {% endfor %}
                         </div>
+                     </div>
                 </div>
             </div>
         </div>
