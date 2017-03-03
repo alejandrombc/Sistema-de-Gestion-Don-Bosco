@@ -18,8 +18,7 @@ body {
   color: #384047;
 }
 
-form {
-  max-width: 300px;
+.formulario_sec {
   margin: 10px auto;
   padding: 10px 20px;
   background: #f4f7f8;
@@ -31,13 +30,11 @@ h1 {
   text-align: center;
 }
 
-input[type="text"],
 input[type="password"],
 input[type="date"],
 input[type="datetime"],
 input[type="email"],
 input[type="number"],
-input[type="search"],
 input[type="tel"],
 input[type="time"],
 input[type="url"],
@@ -68,7 +65,7 @@ select {
   border-radius: 2px;
 }
 
-button {
+#agregar {
   padding: 19px 39px 18px 39px;
   color: #FFF;
   background-color: #4bc970;
@@ -131,3 +128,23 @@ label.light {
     max-width: 120px; 
     max-height: 120px;
 }
+
+
+.otravaina{
+  color: white !important;
+}
+
+#anadir1, #anadir2{
+  color:white !important;
+}
+
+#anadir1:hover, #anadir2:hover{
+  background-color: #0059BA !important; 
+}
+
+.otravaina:hover{
+  color:black !important;
+}
+
+
+.otravaina:active, .open .otravaina {background-color:#008CBA !important; color: black !important;}
