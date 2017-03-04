@@ -91,16 +91,18 @@ def def_estudiantes():
 		cursor = mysql.connect().cursor()
 		
 		cursor.execute("SELECT * from estudiante WHERE curso='Tecnología Gráfica' AND ano=4 AND periodo_lectivo='"+request.form['ano']+"' ")
+		# cursor.execute("SELECT e.id, e.nombres, e.apellidos, e.cedula, e.telefono, e.email, e.direccion, e.ano, e.seccion, e.periodo_lectivo, e.inasistencias, e.curso from estudiante e WHERE curso='Tecnología Gráfica' AND ano=4 AND periodo_lectivo='"+request.form['ano']+"' ")
 		data = cursor.fetchall()
+		print(data)
 
 		cursor.execute("SELECT secciones from secciones WHERE curso='Tecnología Gráfica' AND ano=4 AND ano_escolar=%s", (session['ano_esc']))
 		secciones = cursor.fetchall()
 		
 		cant_secciones = int(secciones[0][0])
-		print(cant_secciones)
+
 
 		#Falta validar si la data es null o alguna excepcion
-	return render_template("estudiantes.html", datos=data, cant_secciones=cant_secciones )
+	return render_template("estudiantes.html", datos=data, cant_secciones=cant_secciones, )
 
 
 @app.route('/estudiantes_escoger_ano', methods=['GET'])
@@ -147,6 +149,7 @@ def escoger_ano_estudiantes():
 	# data = json.dumps(lista)
 	data = json.dumps(lista2)
 	print (data)
+
 	return '{} {}'.format(secciones[0][0], data)
 
 
@@ -233,8 +236,19 @@ def eliminarSeccion():
 
 	return ""
 
+@app.route('/estudiante')
+def getEstudiante():
+	cursor = mysql.connect().cursor()
+	
+	# cursor.execute("SELECT * from estudiante WHERE curso='Tecnología Gráfica' AND ano=4 AND periodo_lectivo='"+request.form['ano']+"' ")
+	cursor.execute("SELECT e.id, e.nombres, e.apellidos, e.cedula, e.telefono, e.email, e.direccion, e.ano, e.seccion, e.periodo_lectivo, e.inasistencias, e.curso from estudiante e WHERE cedula = "+request.args['cedula']+" ")
+	estudiante = cursor.fetchall()
 
-
+	print(estudiante)
+	lista = list(estudiante)
+	print(list(lista[0]))
+	lista = list(lista[0])
+	return '{}'.format(lista)
 
 
 #--------FIN VISTA ESTUDIANTES--------#

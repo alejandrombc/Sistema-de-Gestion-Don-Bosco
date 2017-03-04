@@ -150,6 +150,7 @@
         {
             $('#confirmacion_real_est').val('');
         })
+
     });
 
     function eliminarCaracteres(palabra)
@@ -268,19 +269,26 @@
                     tag.setAttribute('class', ("active"));
                     
                     element = document.createElement('td');
-                    element.setAttribute('class', 'cedulaEstudiante');
+                    element.setAttribute('class', 'cedulaEstudiante editarEstudiante');
+                    element.setAttribute('onclick',"mostrarDetalleEstudiante("+new_estudiantes[j][3]+")");
                     element.innerHTML = new_estudiantes[j][3];
                     tag.appendChild(element);
 
                     element = document.createElement('td');
+                    element.setAttribute('class', 'editarEstudiante');
+                    element.setAttribute('onclick',"mostrarDetalleEstudiante("+new_estudiantes[j][3]+")");
                     element.innerHTML = new_estudiantes[j][1];
                     tag.appendChild(element);
 
                     element = document.createElement('td');
+                    element.setAttribute('class', 'editarEstudiante');
+                    element.setAttribute('onclick',"mostrarDetalleEstudiante("+new_estudiantes[j][3]+")");
                     element.innerHTML = new_estudiantes[j][2];
                     tag.appendChild(element);
 
                     element = document.createElement('td');
+                    element.setAttribute('class', 'editarEstudiante');
+                    element.setAttribute('onclick',"mostrarDetalleEstudiante("+new_estudiantes[j][3]+")");
                     element.innerHTML = new_estudiantes[j][6];
                     tag.appendChild(element);
 
@@ -427,4 +435,62 @@
     {
         seccion_borrar = x.closest('li').firstChild.id;
         $("#modal_seccion").modal('show');
+    }
+
+    function mostrarDetalleEstudiante(cedula) {
+
+        console.log(cedula);
+
+        $.ajax
+            ({
+                type:"GET" ,
+                url: '/estudiante?cedula='+cedula,
+                dataType: "text",
+                error: function (xhr, ajaxOptions, thrownError)
+                {
+                        console.log(xhr.status);
+                        console.log(thrownError);
+                        console.log(ajaxOptions);
+                       
+                },
+                success: function(estudiante)
+                {    
+                    var array = estudiante.split(",");
+
+                    console.log(array);
+                    var nombre = array[1].replace(/'/g,"").replace(/ /g,'');
+                    var apellido = array[2].replace(/'/g,"").replace(/ /g,'');
+                    var telefono = array[4].replace(/'/g,"").replace(/ /g,'');
+                    var direccion = array[6].replace(/'/g,"").replace(/ /,'');
+                    var email = array[5].replace(/'/g,"").replace(/ /g,'');
+                    var curso = array[11].replace(/'/g,"").replace(/ /,'').replace("]","");
+                    var seccion = array[8].replace(/'/g,"").replace(/ /g,'');
+                    var periodo_lectivo = array[9].replace(/'/g,"").replace(/ /g,'');
+                    var ano = array[7].replace(/ /g,'');
+
+                    $('#apellidos').val(apellido);
+                    $('#nombres').val(nombre);
+                    $('#cedula').val(array[3]);
+                    $('#cedula').val(array[3]);
+
+                    $('#curso').val(curso);
+
+                  console.log(ano);
+
+                    $('#periodo_lectivo').val(periodo_lectivo);
+                    $('#ano').val(ano);
+                    $('#seccion').val(seccion);
+                    $('#direccion').val(direccion);
+                    $('#correo').val(email);
+                    $('#telefono').val(telefono);
+
+
+
+
+
+                }
+            });
+
+
+        $("#modal_detalle_est").modal('show');
     }

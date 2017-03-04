@@ -178,5 +178,9 @@ fieldset {
 
 
 .delete_sec {
-     cursor:pointer;
+  cursor:pointer;
+}
+
+.editarEstudiante:hover { 
+  cursor: pointer; 
 }
