@@ -117,72 +117,76 @@
 
                     <div class="modal-body">
 
-                        <div class="col-md-6 form-group">                                   
+                        <form role="form" action="editarEstudiante" method="POST">
 
-                            <label>Apellidos:</label>
-                            <input class="form-control" name="apellidos" id="apellidos" type="text" required="true" autocomplete="off" value="" /><br>
+                            <div class="col-md-6 form-group">                                   
 
-                            <label>Cédula:</label>
-                            <input class="form-control" name="cedula" id="cedula" type="text" required="true" autocomplete="off" pattern="[0-9]{8}" title="Ingrese sólo números" value=""/> 
+                                <label>Apellidos:</label>
+                                <input class="form-control" name="apellidos" id="apellidos" type="text" required="true" autocomplete="off" value="" /><br>
 
-                        </div>
+                                <label>Cédula:</label>
+                                <input class="form-control" name="cedula" id="cedula" type="text" required="true" autocomplete="off" pattern="[0-9]{8}" title="Ingrese sólo números" value=""/> 
 
-                        <div class="col-md-6">                                   
-                            <label>Nombres:</label>
-                            <input class="form-control" name="nombres" id="nombres" type="text" required="true" autocomplete="off" value=""/><br>
+                                <input name="hiddenCedula" id="hiddenCedula" type="hidden" value=""/> 
 
-                            <label>Teléfono Casa:</label>
-                            <input class="form-control" name="telefono" id="telefono" type="text" required="true" autocomplete="off" value="" pattern="[0-9]{11}" title="Ingrese sólo números" placeholder="02120000000"/><br>            
-                        </div>
+                            </div>
 
+                            <div class="col-md-6">                                   
+                                <label>Nombres:</label>
+                                <input class="form-control" name="nombres" id="nombres" type="text" required="true" autocomplete="off" value=""/><br>
 
+                                <label>Teléfono Casa:</label>
+                                <input class="form-control" name="telefono" id="telefono" type="text" required="true" autocomplete="off" value="" pattern="[0-9]{11}" title="Ingrese sólo números" placeholder="02120000000"/><br>            
+                            </div>
 
-                        <div class="col-md-6 form-group">                                   
-                            <label>Curso:</label>
-                            <select class="form-control" name="curso" id="curso" autocomplete="off"/>
-                                <option>Tecnología Gráfica</option>
-                                <option>Contabilidad</option>
-                                <option>Electrónica</option>
-                                <option>Mecánica</option>
-                            </select><br>   
+                            <div class="col-md-6 form-group">                                   
+                                <label>Curso:</label>
+                                <select class="form-control" name="curso" id="curso" autocomplete="off"/>
+                                    <option>Tecnología Gráfica</option>
+                                    <option>Contabilidad</option>
+                                    <option>Electrónica</option>
+                                    <option>Mecánica</option>
+                                </select><br>   
+                                <!-- TRAER ESTO DE BD -->
+                                <label>Año:</label>
+                                <select class="form-control" name="ano" id="ano" autocomplete="off"/>
+                                    <option>4</option>
+                                    <option>5</option>
+                                    <option>6</option>
+                                </select>             
+                            </div>
                             <!-- TRAER ESTO DE BD -->
-                            <label>Año:</label>
-                            <select class="form-control" name="ano" id="ano" autocomplete="off"/>
-                                <option>4</option>
-                                <option>5</option>
-                                <option>6</option>
-                            </select>             
-                        </div>
-                        <!-- TRAER ESTO DE BD -->
-                        <div class="col-md-6">                                   
-                            <label>Período Lectivo:</label>
-                            <input type='text' id="periodo_lectivo" name="periodo_lectivo" class="form-control" required="true" autocomplete="off" value=""/><br> 
-                                
-                            <!-- TRAER ESTO DE BD -->
-                            <label>Sección:</label>
-                            <select class="form-control" name="seccion" id="seccion" autocomplete="off"/>
-                                <option>A</option>
-                                <option>B</option>
-                                <option>C</option>
-                            </select><br>                    
-                        </div>
+                            <div class="col-md-6">                                   
+                                <label>Período Lectivo:</label>
+                                <input type='text' id="periodo_lectivo" name="periodo_lectivo" class="form-control" required="true" autocomplete="off" value=""/><br> 
+                                    
+                                <!-- TRAER ESTO DE BD -->
+                                <label>Sección:</label>
+                                <select class="form-control" name="seccion" id="seccion" autocomplete="off"/>
+                                    <option>A</option>
+                                    <option>B</option>
+                                    <option>C</option>
+                                </select><br>                    
+                            </div>
 
-                        <div class="col-md-12">
-                            <label>Dirección:</label>
-                            <textarea class="form-control" name="direccion" id="direccion" required="true" autocomplete="off"/></textarea><br>
-                        </div>
+                            <div class="col-md-12">
+                                <label>Dirección:</label>
+                                <textarea class="form-control" name="direccion" id="direccion" required="true" autocomplete="off"/></textarea><br>
+                            </div>
 
-                        <div class="col-md-12">                                   
-                            <label>E-Mail:</label>
-                            <input class="form-control" name="correo" id="correo" type="email" required="true" autocomplete="off" value="" placeholder="estudiante@correo.com" /></br>
+                            <div class="col-md-12">                                   
+                                <label>E-Mail:</label>
+                                <input class="form-control" name="correo" id="correo" type="email" required="true" autocomplete="off" value="" placeholder="estudiante@correo.com" /></br>
+                            </div>                       
+
                         </div>
 
-                    </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                            <button type="submit" id="realSumbitEst" class="btn btn-primary">Aceptar</button>
+                        </div>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                        <button type="button" id="realSumbitEst" class="btn btn-primary" disabled>Aceptar</button>
-                    </div>
+                     </form>
                 </div>
             </div>
         </div>

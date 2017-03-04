@@ -7,8 +7,8 @@ import datetime
 app = Flask(__name__)
 mysql = MySQL()
 app.config['MYSQL_DATABASE_USER'] = 'root'
-# app.config['MYSQL_DATABASE_PASSWORD'] = '123'
-app.config['MYSQL_DATABASE_PASSWORD'] = ''
+app.config['MYSQL_DATABASE_PASSWORD'] = '123'
+#app.config['MYSQL_DATABASE_PASSWORD'] = ''
 app.config['MYSQL_DATABASE_DB'] = 'don_bosco'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 mysql.init_app(app)
@@ -102,7 +102,41 @@ def def_estudiantes():
 
 
 		#Falta validar si la data es null o alguna excepcion
-	return render_template("estudiantes.html", datos=data, cant_secciones=cant_secciones, )
+	return render_template("estudiantes.html", datos=data, cant_secciones=cant_secciones)
+
+@app.route('/editarEstudiante', methods=['GET', 'POST'])
+def def_editar_estudiantes():
+
+	if request.method == 'POST': 
+		conn = mysql.connect()
+		cursor = conn.cursor()
+
+		apellidos = request.form['apellidos']
+		hiddenCedula = request.form['hiddenCedula']
+		cedula = request.form['cedula']
+		nombres = request.form['nombres']
+		telefono = request.form['telefono']
+		curso = request.form['curso']
+		ano = request.form['ano']
+		periodo_lectivo = request.form['periodo_lectivo']
+		seccion = request.form['seccion']
+		direccion = request.form['direccion']
+		email = request.form['correo']
+
+		#Se actualizan los datos ingresados 
+		cursor.execute("UPDATE estudiante SET apellidos='"+apellidos+"', cedula='"+cedula+"', nombres='"+nombres+"', telefono='"+telefono+"', curso='"+curso+"', ano='"+ano+"', periodo_lectivo='"+periodo_lectivo+"', seccion='"+seccion+"', direccion='"+direccion+"', email='"+email+"' WHERE cedula="+hiddenCedula+"")
+		#Se obtienen los datos nuevamente		
+		cursor.execute("SELECT * from estudiante WHERE curso='Tecnología Gráfica' AND ano=4 AND periodo_lectivo='"+session['ano_esc']+"' ")
+		# cursor.execute("SELECT e.id, e.nombres, e.apellidos, e.cedula, e.telefono, e.email, e.direccion, e.ano, e.seccion, e.periodo_lectivo, e.inasistencias, e.curso from estudiante e WHERE curso='Tecnología Gráfica' AND ano=4 AND periodo_lectivo='"+request.form['ano']+"' ")
+		data = cursor.fetchall()
+		cursor.execute("SELECT secciones from secciones WHERE curso='Tecnología Gráfica' AND ano=4 AND ano_escolar=%s", (session['ano_esc']))
+		secciones = cursor.fetchall()
+		cant_secciones = int(secciones[0][0])
+
+		conn.commit()
+
+		#Falta validar si la data es null o alguna excepcion
+	return render_template("estudiantes.html", datos=data, cant_secciones=cant_secciones)
 
 
 @app.route('/estudiantes_escoger_ano', methods=['GET'])

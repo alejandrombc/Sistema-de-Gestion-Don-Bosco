@@ -456,10 +456,10 @@
                 success: function(estudiante)
                 {    
                     var array = estudiante.split(",");
-
                     console.log(array);
-                    var nombre = array[1].replace(/'/g,"").replace(/ /g,'');
-                    var apellido = array[2].replace(/'/g,"").replace(/ /g,'');
+                    var nombre = array[1].replace(/'/g,"").replace(" ",'');
+                    var apellido = array[2].replace(/'/g,"").replace(" ",'');
+                    var cedula = array[3].replace(" ",'');
                     var telefono = array[4].replace(/'/g,"").replace(/ /g,'');
                     var direccion = array[6].replace(/'/g,"").replace(/ /,'');
                     var email = array[5].replace(/'/g,"").replace(/ /g,'');
@@ -470,12 +470,10 @@
 
                     $('#apellidos').val(apellido);
                     $('#nombres').val(nombre);
-                    $('#cedula').val(array[3]);
-                    $('#cedula').val(array[3]);
+                    $('#cedula').val(cedula);
+                    $('#hiddenCedula').val(cedula);
 
                     $('#curso').val(curso);
-
-                  console.log(ano);
 
                     $('#periodo_lectivo').val(periodo_lectivo);
                     $('#ano').val(ano);
@@ -483,10 +481,6 @@
                     $('#direccion').val(direccion);
                     $('#correo').val(email);
                     $('#telefono').val(telefono);
-
-
-
-
 
                 }
             });
