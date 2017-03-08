@@ -14,7 +14,7 @@
   text-rendering: optimizeLegibility;
 }
 
-@import url(http://fonts.googleapis.com/css?family=Roboto:400,100);
+@import url("roboto_font.css");
 
 body {
   background: url(/static/imagenes/fondo.jpg) no-repeat center center fixed; 
