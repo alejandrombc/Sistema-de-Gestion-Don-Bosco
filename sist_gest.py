@@ -7,8 +7,8 @@ import datetime
 app = Flask(__name__)
 mysql = MySQL()
 app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = '123'
-#app.config['MYSQL_DATABASE_PASSWORD'] = ''
+# app.config['MYSQL_DATABASE_PASSWORD'] = '123'
+app.config['MYSQL_DATABASE_PASSWORD'] = ''
 app.config['MYSQL_DATABASE_DB'] = 'don_bosco'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 mysql.init_app(app)
@@ -104,13 +104,11 @@ def def_estudiantes():
 		#Falta validar si la data es null o alguna excepcion
 	return render_template("estudiantes.html", datos=data, cant_secciones=cant_secciones)
 
-@app.route('/editarEstudiante', methods=['GET', 'POST'])
+@app.route('/editarEstudiante', methods=[ 'POST'])
 def def_editar_estudiantes():
-
 	if request.method == 'POST': 
 		conn = mysql.connect()
 		cursor = conn.cursor()
-
 		apellidos = request.form['apellidos']
 		hiddenCedula = request.form['hiddenCedula']
 		cedula = request.form['cedula']
@@ -118,13 +116,11 @@ def def_editar_estudiantes():
 		telefono = request.form['telefono']
 		curso = request.form['curso']
 		ano = request.form['ano']
-		periodo_lectivo = request.form['periodo_lectivo']
 		seccion = request.form['seccion']
 		direccion = request.form['direccion']
 		email = request.form['correo']
-
 		#Se actualizan los datos ingresados 
-		cursor.execute("UPDATE estudiante SET apellidos='"+apellidos+"', cedula='"+cedula+"', nombres='"+nombres+"', telefono='"+telefono+"', curso='"+curso+"', ano='"+ano+"', periodo_lectivo='"+periodo_lectivo+"', seccion='"+seccion+"', direccion='"+direccion+"', email='"+email+"' WHERE cedula="+hiddenCedula+"")
+		cursor.execute("UPDATE estudiante SET apellidos='"+apellidos+"', cedula='"+cedula+"', nombres='"+nombres+"', telefono='"+telefono+"', curso='"+curso+"', ano='"+ano+"', periodo_lectivo='"+session['ano_esc']+"', seccion='"+seccion+"', direccion='"+direccion+"', email='"+email+"' WHERE cedula="+hiddenCedula+"")
 		#Se obtienen los datos nuevamente		
 		cursor.execute("SELECT * from estudiante WHERE curso='Tecnología Gráfica' AND ano=4 AND periodo_lectivo='"+session['ano_esc']+"' ")
 		# cursor.execute("SELECT e.id, e.nombres, e.apellidos, e.cedula, e.telefono, e.email, e.direccion, e.ano, e.seccion, e.periodo_lectivo, e.inasistencias, e.curso from estudiante e WHERE curso='Tecnología Gráfica' AND ano=4 AND periodo_lectivo='"+request.form['ano']+"' ")
@@ -136,7 +132,7 @@ def def_editar_estudiantes():
 		conn.commit()
 
 		#Falta validar si la data es null o alguna excepcion
-	return render_template("estudiantes.html", datos=data, cant_secciones=cant_secciones)
+	return render_template("estudiantes.html", datos=data, cant_secciones=cant_secciones, updateado=True)
 
 
 @app.route('/estudiantes_escoger_ano', methods=['GET'])
@@ -284,6 +280,80 @@ def getEstudiante():
 	lista = list(lista[0])
 	return '{}'.format(lista)
 
+@app.route('/registrarEstudiante', methods=['GET', 'POST'])
+def registrarEstudiante():
+	nombres = request.form.get('nombres')
+	apellidos  = request.form.get('apellidos')	
+	cedula = request.form.get('cedula')
+	fechaNac = request.form.get('fechaNac')	
+	dateFechaNac = datetime.datetime.strptime(fechaNac, "%d/%m/%Y").strftime("%Y-%m-%d")
+	curso = request.form.get('curso')	
+	ano = request.form.get('ano')
+	anoInt = 4
+	if ano == '5to':
+		anoInt = 5
+	if ano == '6to':
+		anoInt = 6
+	periodo = session['ano_esc']
+	seccion = request.form.get('seccion')
+	correo = request.form.get('correo')
+	direccion = request.form.get('direccion')
+	telefono = request.form.get('telefono')
+	query = "INSERT INTO estudiante (nombres, apellidos, fecha_nacimiento, cedula, telefono, email, direccion, ano, seccion, periodo_lectivo, curso) VALUES ('"+nombres+"', '"+apellidos+"','"+dateFechaNac+"',"+str(cedula)+",'"+telefono+"','"+correo+"','"+direccion+"',"+str(anoInt)+",'"+seccion+"','"+periodo+"','"+curso+"')"
+	conn = mysql.connect()
+	cursor = conn.cursor()
+	cursor.execute(query) 
+	#Se debe validar antes si ese estudiante esta repetido
+	conn.commit()
+		
+	cursor.execute("SELECT * from estudiante WHERE curso='"+curso+"' AND ano="+str(anoInt)+" AND periodo_lectivo='"+periodo+"' ")
+	data = cursor.fetchall()
+
+	cursor.execute("SELECT secciones from secciones WHERE curso='"+curso+"' AND ano="+str(anoInt)+" AND ano_escolar='"+periodo+"'")
+	secciones = cursor.fetchall()
+	
+	cant_secciones = int(secciones[0][0])
+	print(cant_secciones)
+	return render_template("estudiantes.html", datos=data, cant_secciones=cant_secciones )
+
+@app.route('/cant_secciones')
+def getCantidadSecciones():
+	cursor = mysql.connect().cursor()
+	ano = request.args['ano']
+	curso = request.args['curso']
+
+	cursor.execute("SELECT secciones from secciones WHERE curso=%s AND ano=%s AND ano_escolar=%s", (curso, ano , session['ano_esc']))
+	secciones = cursor.fetchall()
+	
+	print(secciones)
+	cant_secciones = int(secciones[0][0])
+	print(cant_secciones)
+
+	return '{}'.format(cant_secciones)
+
+
+@app.route('/buscarEstudiante', methods=['POST'])
+def buscarEstudiante():
+
+	busqueda = request.form['busqueda']
+	# print(busqueda)
+	cursor = mysql.connect().cursor()
+
+	cursor.execute("SELECT * FROM estudiante WHERE " +
+	"ID LIKE '%"+busqueda+"%' OR nombres LIKE '%"+busqueda+"%' OR apellidos LIKE '%"+busqueda+"%' OR cedula LIKE '%"+busqueda+"%' OR " +
+	"telefono LIKE '%"+busqueda+"%' OR email LIKE '%"+busqueda+"%' OR direccion LIKE '%"+busqueda+"%' OR ano LIKE '%"+busqueda+"%' OR " +
+	"seccion LIKE '%"+busqueda+"%' OR periodo_lectivo LIKE '%"+busqueda+"%'OR inasistencias LIKE '%"+busqueda+"%' OR curso LIKE '%"+busqueda+"%' " )
+	estudiantes = cursor.fetchall()
+
+	print(estudiantes)
+	
+	# print(secciones)
+	# cant_secciones = int(secciones[0][0])
+	# print(cant_secciones)
+
+	return render_template("resultado_busqueda_estudiante.html", datos=estudiantes)
+	# return '{}'.format(estudiantes)
+
 
 #--------FIN VISTA ESTUDIANTES--------#
 
@@ -358,42 +428,6 @@ def seccion():
 def anadirEstudiante():
 	return render_template("estudiante_individual.html")	
 
-@app.route('/registrarEstudiante', methods=['GET', 'POST'])
-def registrarEstudiante():
-	nombres = request.form.get('nombres')
-	apellidos  = request.form.get('apellidos')	
-	cedula = request.form.get('cedula')
-	fechaNac = request.form.get('fechaNac')	
-	dateFechaNac = datetime.datetime.strptime(fechaNac, "%d/%m/%Y").strftime("%Y-%m-%d")
-	curso = request.form.get('curso')	
-	ano = request.form.get('ano')
-	anoInt = 4
-	if ano == '5to':
-		anoInt = 5
-	if ano == '6to':
-		anoInt = 6
-	periodo = '2016-2017'
-	seccion = request.form.get('seccion')
-	correo = request.form.get('correo')
-	direccion = request.form.get('direccion')
-	telefono = request.form.get('telefono')
-	query = "INSERT INTO estudiante (nombres, apellidos, fecha_nacimiento, cedula, telefono, email, direccion, ano, seccion, periodo_lectivo, curso) VALUES ('"+nombres+"', '"+apellidos+"','"+dateFechaNac+"',"+str(cedula)+",'"+telefono+"','"+correo+"','"+direccion+"',"+str(anoInt)+",'"+seccion+"','"+periodo+"','"+curso+"')"
-	conn = mysql.connect()
-	cursor = conn.cursor()
-	cursor.execute(query) 
-	#Se debe validar antes si ese estudiante esta repetido
-	conn.commit()
-		
-	cursor.execute("SELECT * from estudiante WHERE curso='"+curso+"' AND ano="+str(anoInt)+" AND periodo_lectivo='"+periodo+"' ")
-	data = cursor.fetchall()
-
-	cursor.execute("SELECT secciones from secciones WHERE curso='"+curso+"' AND ano="+str(anoInt)+" AND ano_escolar='"+periodo+"'")
-	secciones = cursor.fetchall()
-	
-	cant_secciones = int(secciones[0][0])
-	print(cant_secciones)
-
-	return render_template("estudiantes.html", datos=data, cant_secciones=cant_secciones )
 
 
 if __name__ == "__main__":

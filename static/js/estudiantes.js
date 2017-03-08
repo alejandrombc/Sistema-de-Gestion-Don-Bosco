@@ -123,6 +123,10 @@
                 }
             });   
 
+
+
+
+
         });
 
 
@@ -151,7 +155,59 @@
             $('#confirmacion_real_est').val('');
         })
 
+
+        //se colocan las secciones adecuadas al curso y año actual
+        setCantidadSecciones($('#ano').val()[0], $('#curso').val());
+
+
+        $( "#curso" ).change(function() {
+            setCantidadSecciones($('#ano').val()[0], $('#curso').val());
+        });
+
+
+        
+        if( $('#updateado').val() == "True" ) { 
+            $( "#dialog-message" ).dialog({
+              modal: true,
+              buttons: {
+                Ok: function() {
+                  $( this ).dialog( "close" );
+                }
+              }
+            });
+        }
+
+
     });
+
+    function setCantidadSecciones(ano, curso) {
+        $.ajax
+            ({
+                type:"GET" ,
+                url: '/cant_secciones?ano='+ano+'&curso='+curso,
+                dataType: "text",
+                error: function (xhr, ajaxOptions, thrownError)
+                {
+                        console.log(xhr.status);
+                        console.log(thrownError);
+                        console.log(ajaxOptions);
+                       
+                },
+                success: function(cant_secciones)
+                {    
+                    cant_secciones = parseInt(cant_secciones);
+                    $('#seccion').find('option').remove().end();
+
+                    for (var i=65; i<65+cant_secciones; i++) {
+                        $('#seccion').append($('<option>', {
+                            value: String.fromCharCode(i),
+                            text: String.fromCharCode(i)
+                        }));
+
+                    }
+                }
+            });
+    }
 
     function eliminarCaracteres(palabra)
     {
@@ -439,8 +495,6 @@
 
     function mostrarDetalleEstudiante(cedula) {
 
-        console.log(cedula);
-
         $.ajax
             ({
                 type:"GET" ,
@@ -456,7 +510,6 @@
                 success: function(estudiante)
                 {    
                     var array = estudiante.split(",");
-                    console.log(array);
                     var nombre = array[1].replace(/'/g,"").replace(" ",'');
                     var apellido = array[2].replace(/'/g,"").replace(" ",'');
                     var cedula = array[3].replace(" ",'');
@@ -465,7 +518,7 @@
                     var email = array[5].replace(/'/g,"").replace(/ /g,'');
                     var curso = array[11].replace(/'/g,"").replace(/ /,'').replace("]","");
                     var seccion = array[8].replace(/'/g,"").replace(/ /g,'');
-                    var periodo_lectivo = array[9].replace(/'/g,"").replace(/ /g,'');
+                    // var periodo_lectivo = array[9].replace(/'/g,"").replace(/ /g,'');
                     var ano = array[7].replace(/ /g,'');
 
                     $('#apellidos').val(apellido);
@@ -475,7 +528,7 @@
 
                     $('#curso').val(curso);
 
-                    $('#periodo_lectivo').val(periodo_lectivo);
+                    // $('#periodo_lectivo').val(periodo_lectivo);
                     $('#ano').val(ano);
                     $('#seccion').val(seccion);
                     $('#direccion').val(direccion);

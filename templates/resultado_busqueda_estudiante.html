@@ -61,62 +61,6 @@
 
     <body>
 
-        {% if (updateado) %}
-            <input type="hidden" id="updateado" value="{{updateado}}" >
-        {% endif %}
-
-        <div id="dialog-message" title="Actualización Exitosa!">
-          <p>
-            <span class="ui-icon ui-icon-circle-check" style="float:left; margin:0 7px 50px 0;"></span>
-            El estudiante se ha editado de forma exitosa.
-          </p>
-        </div>
-
-        <!-- MODAL SECCION-->
-        <div id="modal_seccion" class="modal fade">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title">¿Esta seguro que desea eliminar esta sección?</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p id="confir">Por favor, escriba textualmente "Deseo eliminar esta seccion":</p>
-                        <center><input type="text" style="width:100%" id="confirmacion_real"></center><br>
-                        <p class="text-warning"><small>Este cambio es <b>irrecuperable.</b></small></p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                        <button type="button" id="realSumbit" class="btn btn-danger" disabled>Eliminar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- END MODAL -->
-
-        <!-- MODAL ESTUDIANTES -->
-        <div id="modal_est" class="modal fade">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title">¿Esta seguro que desea eliminar este estudiante?</h4>
-                    </div>
-                    <div class="modal-body">
-                        <h5>Cédula del estudiante a eliminar: <b id="texto_est"></b></h5>
-                        <p>Por favor, escriba textualmente "Deseo eliminar este estudiante":</p>
-                        <center><input type="text" style="width:100%" id="confirmacion_real_est"></center><br>
-                        <p class="text-warning"><small>Este cambio es <b>irrecuperable.</b></small></p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                        <button type="button" id="realSumbitEst" class="btn btn-danger" disabled>Eliminar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- END MODAL -->
-
         <!-- MODAL DETALLE ESTUDIANTE -->
         <div id="modal_detalle_est" class="modal fade">
             <div class="modal-dialog">
@@ -190,7 +134,7 @@
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                            <button type="submit" id="realSumbitEst" class="btn btn-primary">Aceptar</button>
+                            <button type="submit" class="btn btn-primary">Aceptar</button>
                         </div>
 
                      </form>
@@ -248,90 +192,44 @@
         </div>
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-2">
-                    <div id="tocheck" class="btn-group dropup btn-group-vertical" style="width: 100%;">
-                    <br>
-                        <h4 style="text-align: center; color:white; cursor: pointer;">Curso</h4>                             
-                                <button id="curso_actual" class="btn btn-default" >Tecnología Gráfica</button> 
-                                <button id="space" data-toggle="dropdown" class="btn btn-default dropdown-toggle"><span class="caret"></span></button>
-                                <ul class="dropdown-menu" style="width: 100%; text-align: center;">
-                                    <li style="cursor: pointer;"><a id="primer_curso" onclick="cambiarValor(this.text, 'primer_curso')" >Contabilidad</a></li>
-                                    <li style="cursor: pointer;"><a id="segundo_curso" onclick="cambiarValor(this.text, 'segundo_curso')">Electrónica</a></li>
-                                    <li style="cursor: pointer;"><a id="tercer_curso" onclick="cambiarValor(this.text, 'tercer_curso')">Mecánica</a></li>
-                                </ul>
-                    </div>
-                    <br>
-                    <br>
-                        <h4 style="text-align: center; color:white;">Año</h4>
-                        <div class="btn-group btn-group-vertical" style="width: 100%;">                         
-                            <button id="4to" onclick="cambioAnio('4to')" class="btn btn-default active" type="button">4to</button> 
-                            <button id="5to" onclick="cambioAnio('5to')" class="btn btn-default" type="button">5to</button> 
-                            <button id="6to" onclick="cambioAnio('6to')" class="btn btn-default" type="button">6to</button>
-                        </div>
-                </div>
 
-                <div class="col-md-10"> 
-                    <h3 style="color:white;">Estudiantes</h3>               
+                <div class="col-md-8 col-md-offset-2"> 
+                    <h3 style="color:white;" align="center">Resultados</h3>               
                     <div id="vertical" style="width: 100%">  
                     <div id="ano_select">
                         <div>
-                            <ul id="internas">
-                                {% set array = ['A','B','C', 'D', 'E', 'F'] %}
-                                {% for i in range(0, 6) %}
-                                    {% if cant_secciones-1 > i %}
-                                    <li><a id="li{{array[i]}}" href="#ano_select{{array[i]}}">Sección {{array[i]}} </a></li>
-                                    {% elif cant_secciones-1 == i %}
-                                        <li><a id="li{{array[i]}}" href="#ano_select{{array[i]}}">Sección {{array[i]}}  <span onmouseover="mouseOverTrash(this)" onmouseout="mouseOutTrash(this)" onclick="mostrarBorrarSeccion(this)" class="glyphicon glyphicon-trash delete_sec"></span></a></li>
-                                    {% else %}
-                                        <li style="display: none;" ><a href="#ano_select{{array[i]}}">Sección {{array[i]}} </a></li>
-                                    {% endif %}
-                                {% endfor %}
-                            </ul>
+                            <table class="table">
+                                <thead>
+                                    <tr class="success">
+                                        <th>
+                                            Cédula
+                                        </th>
+                                        <th>
+                                            Nombre
+                                        </th>
+                                        <th>
+                                            Apellido
+                                        </th>
+                                        <th>
+                                            E-mail
+                                        </th>
 
-                            {% for i in range(0, 6) %}
-                                <div id="ano_select{{array[i]}}" style="overflow-x: scroll;">
-                                    <table id="ano_select{{array[i]}}-table" class="table">
-                                        <thead>
-                                            <tr class="success">
-                                                <th>
-                                                    Cédula
-                                                </th>
-                                                <th>
-                                                    Nombre
-                                                </th>
-                                                <th>
-                                                    Apellido
-                                                </th>
-                                                <th>
-                                                    E-mail
-                                                </th>
-                                                <th>
-                                                    Inasistencias
-                                                </th>
-                                                <th></th>
-                                                <th></th>
+                                        </tr>
+                                </thead>
+                                <tbody>
+                                    {% if datos %}
+                                        {% for estudiante in datos %}
+                                                <tr id='{{estudiante[3]}}' class="active"> 
+                                                    <td class='cedulaEstudiante editarEstudiante ' onclick="mostrarDetalleEstudiante({{estudiante[3]}})">{{estudiante[3]}}</td>
+                                                    <td class='editarEstudiante' onclick="mostrarDetalleEstudiante({{estudiante[3]}})">{{estudiante[1]}}</td>
+                                                    <td class='editarEstudiante' onclick="mostrarDetalleEstudiante({{estudiante[3]}})">{{estudiante[2]}}</td>
+                                                    <td class='editarEstudiante' onclick="mostrarDetalleEstudiante({{estudiante[3]}})">{{estudiante[6]}}</td>
                                                 </tr>
-                                        </thead>
-                                        <tbody id='body_select{{array[i]}}'>
-                                            {% if datos %}
-                                                {% for estudiante in datos %}
-                                                    {% if estudiante[9] == array[i]  %}
-                                                        <tr id='{{estudiante[3]}}' class="active"> 
-                                                            <td class='cedulaEstudiante editarEstudiante ' onclick="mostrarDetalleEstudiante({{estudiante[3]}})">{{estudiante[3]}}</td>
-                                                            <td class='editarEstudiante' onclick="mostrarDetalleEstudiante({{estudiante[3]}})">{{estudiante[1]}}</td>
-                                                            <td class='editarEstudiante' onclick="mostrarDetalleEstudiante({{estudiante[3]}})">{{estudiante[2]}}</td>
-                                                            <td class='editarEstudiante' onclick="mostrarDetalleEstudiante({{estudiante[3]}})">{{estudiante[6]}}</td>
-                                                            <td id="inasistencia{{estudiante[3]}}">{{estudiante[11]}}</td>
-                                                            <td><button id="add{{estudiante[3]}}" class="btn btn-warning" onclick="agregarInasistencia(this.id)">Agregar inasistencia</button></td>
-                                                            <td><button id='del{{estudiante[3]}}' class="btn btn-danger botonDltEst" onclick="mostrarModalEliminarEstudiante(this.id)"><span class="glyphicon glyphicon-trash"></span></button></td>
-                                                        </tr>
-                                                    {% endif %}
-                                                {% endfor %}
-                                            {% endif %}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            {% endfor %}
+                                        {% endfor %}
+                                    {% endif %}
+                                </tbody>
+                            </table>
+
                         </div>
                      </div>
                 </div>
