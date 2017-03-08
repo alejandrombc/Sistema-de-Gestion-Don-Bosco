@@ -1,5 +1,5 @@
-@import url(http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css);
-@import url(http://fonts.googleapis.com/css?family=Roboto:400,100);
+@import url("ionicons.css");
+@import url("roboto_font.css");
 
 .snip1566 {
   position: relative;
