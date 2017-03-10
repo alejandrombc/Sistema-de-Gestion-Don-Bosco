@@ -65,7 +65,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>                        
               </button>
-              <img class="pull-left" width="50px" style="margin-right: 5px;" src="{{ url_for('static', filename='imagenes/Logo_DonBosco.png') }}"><a class="navbar-brand hidden-xs" style="color:white;" href="seleccion">Escuela Técnica Popular Don Bosco</a>
+              <img class="pull-left" width="50px" style="margin-right: 5px;" src="{{ url_for('static', filename='imagenes/Logo_DonBosco.png') }}"><a class="navbar-brand hidden-xs" style="color:white;" href="/estudiantes_ano">Escuela Técnica Popular Don Bosco</a>
               <form class="navbar-form navbar-left hidden-xs">
                 <div class="input-group">
                     <input type="text" class="form-control" placeholder="Buscar alumno" autocomplete="off" name="busqueda">
@@ -101,13 +101,10 @@
             </div>
           </div>
         </nav>
-        <div id="SUPERparche" hidden>
-            <br><br><br><br>
-        </div>
 
 <div class="container-fluid">
     <!--Redirigir a vista de estudiantes y realizar consulta en BD, primero se debe chequear que el estudiante no esté repetido -->
-    <form role="form" action="registrarEstudiante" method="POST" enctype="multipart/form-data">
+    <form role="form" action="registrarEstudiante" method="POST" id="formulario_sec" enctype="multipart/form-data">
         
         <center><img id="toplogo" src="{{ url_for('static', filename='imagenes/Logo_DonBosco.png') }}"></center><br>
 
@@ -126,7 +123,7 @@
             <input class="form-control" name="nombres" id="nombres" type="text" required="true" autocomplete="off" value=""/><br>
 
             <label>Fecha de Nacimiento:</label>
-            <input type='text' id="fechaNac" name="fechaNac" class="form-control" required="true" autocomplete="off" value=""/><br>              
+            <input type='text' id="fechaNac" name="fechaNac" class="form-control" autocomplete="off" value=""/><br>              
         </div>
 
         <div class="col-md-12">      
@@ -151,7 +148,7 @@
         <!-- TRAER ESTO DE BD -->
         <div class="col-md-6 form-group">                                   
             <label>Teléfono Casa:</label>
-            <input class="form-control" name="telefono" id="telefono" type="text" required="true" autocomplete="off" value="" pattern="[0-9]{11}" title="Ingrese sólo números" placeholder="02120000000"/><br>
+            <input class="form-control" name="telefono" id="telefono" type="text" autocomplete="off" value="" pattern="[0-9]{11}" title="Ingrese sólo números" placeholder="02120000000"/><br>
             <!-- TRAER ESTO DE BD -->
             <label>Sección:</label>
             <select class="form-control" name="seccion" id="seccion" autocomplete="off"/>
@@ -162,23 +159,24 @@
 
         <div class="col-md-6 form-group">
             <label>E-Mail:</label>
-            <input class="form-control" name="correo" id="correo" type="email" required="true" autocomplete="off" value="" placeholder="estudiante@correo.com" /></br>
+            <input class="form-control" name="correo" id="correo" type="email" autocomplete="off" value="" placeholder="estudiante@correo.com" /></br>
             
             
         </div>
 
         <div class="col-md-6 form-group">                                   
             <label>Dirección:</label>
-            <textarea class="form-control" name="direccion" id="direccion" required="true" autocomplete="off"/></textarea><br>
+            <textarea style="resize:vertical;" class="form-control" name="direccion" id="direccion" autocomplete="off"/></textarea><br>
         </div>
 
+        <input type="text" hidden id="id_carrera" name="id_carrera"/>
          <!-- <div class="col-md-6">                                   
             
         </div> -->
 
         <div style="text-align: center;" class="col-md-12">  
             </br></br>
-            <button type="submit" class="btn btn-primary">
+            <button onclick="getIDCarrera()" class="btn btn-primary">
                 Guardar Cambios
             </button>
             <button type="button" class="btn btn-default" data-dismiss="modal">

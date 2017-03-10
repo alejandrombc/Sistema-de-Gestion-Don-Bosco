@@ -38,3 +38,83 @@ function openModal_Rec(inicial, final, id) {
   $("#ano_real").val(ano_real);
   $("#confir").text("¿Está seguro de recuperar el año escolar "+ inicial + " - " + final + "?");
 }
+
+ function createID_carrera(clase, valor)
+    {
+        var id_carrera = 0;
+        if(clase == '4to'){
+                switch(valor) {
+                case "TecnologiaGrafica":
+                    id_carrera = 1;
+                    break;
+                case "Mecanica":
+                    id_carrera = 2;
+                    break;
+                case "Electronica":
+                    id_carrera = 3;
+                    break;
+                case "Contabilidad":
+                    id_carrera = 4;
+                    break;
+                }
+            }
+        else if(clase == '5to'){
+                switch(valor) {
+                case "TecnologiaGrafica":
+                    id_carrera = 5;
+                    break;
+                case "Mecanica":
+                    id_carrera = 6;
+                    break;
+                case "Electronica":
+                    id_carrera = 7;
+                    break;
+                case "Contabilidad":
+                    id_carrera = 8;
+                    break;
+                }
+            }
+        else{
+                switch(valor) {
+                case "TecnologiaGrafica":
+                    id_carrera = 9;
+                    break;
+                case "Mecanica":
+                    id_carrera = 10;
+                    break;
+                case "Electronica":
+                    id_carrera = 11;
+                    break;
+                case "Contabilidad":
+                    id_carrera = 12;
+                    break;
+                }
+            }
+        return id_carrera;
+    }
+
+
+  function eliminarCaracteres(palabra)
+  {
+      palabra = palabra.replace(/á/gi,"a");
+      palabra = palabra.replace(/é/gi,"e");
+      palabra = palabra.replace(/í/gi,"i");
+      palabra = palabra.replace(/ó/gi,"o");
+      palabra = palabra.replace(/ /g,'');
+
+      return palabra;
+  }
+
+
+function getIDCarrera(){
+  ano = $('#ano').find(":selected").text();
+  curso = $('#curso').find(":selected").text();
+  curso = eliminarCaracteres(curso);
+
+  var id_carrera = createID_carrera(ano, curso);
+
+  $('#id_carrera').val(id_carrera);
+
+  $('.formulario_sec').submit();
+
+}

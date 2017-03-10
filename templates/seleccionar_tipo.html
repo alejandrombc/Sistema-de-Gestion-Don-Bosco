@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Año Escolar - Escuela Técnica Popular Don Bosco</title>
+  <title>Selección personal - Escuela Técnica Popular Don Bosco</title>
   
   <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery-ui.css') }}">
   <link rel="icon" type="image/png" href="{{ url_for('static', filename='imagenes/favicon.png') }}" sizes="32x32">
@@ -16,17 +16,28 @@
   
 </head><br>
 <body>
+<div id="wrapper">
+
+    <div id="container">
+
+        <a id="button" href="/seleccion"><span class="glyphicon glyphicon-circle-arrow-left"></span></a>
+
+    </div>
+
+</div>
+
 <center><img id="toplogo" src="{{ url_for('static', filename='imagenes/Logo_DonBosco.png') }}"></center><br>
+
 <center>
   <div class="btn gridcontainer clearfix">
   <div class="row">
-  <div class="col-md-4" id="prueba">
+  <div class="col-md-6" id="prueba">
       <div class="grid_3">
         <div class="fmcircle_out">
-          <a href="/seleccionar">
+          <a href="/estudiantes_ano">
             <div class="fmcircle_border">
               <div class="fmcircle_in fmcircle_blue">
-                <span style="margin-left:6px;">Seleccionar Año</span><img src="{{ url_for('static', filename='imagenes/mouse.png') }}" alt="" />
+                <span style="margin-left:6px;">Estudiante</span><img src="{{ url_for('static', filename='imagenes/student.png') }}" alt="" />
               </div>
             </div>
           </a>
@@ -34,32 +45,18 @@
       </div>
     </div>
 
-    <div class="col-md-4">
+    <div class="col-md-6">
       <div class="grid_3">
         <div class="fmcircle_out">
           <a href="/agregar">
             <div class="fmcircle_border">
               <div class="fmcircle_in fmcircle_green">
-                <span style="margin-left:6px;">Añadir Año</span><img src="{{ url_for('static', filename='imagenes/plus.png') }}" alt="" />
+                <span style="margin-left:6px;">Administrativo</span><img src="{{ url_for('static', filename='imagenes/personal.png') }}" alt="" />
               </div>
             </div>
           </a>
         </div>
       </div>
-    </div>
-
-  <div class="col-md-4">
-    <div class="grid_3">
-      <div class="fmcircle_out">
-        <a href="/eliminar">
-          <div class="fmcircle_border">
-            <div class="fmcircle_in fmcircle_red">
-              <span style="margin-left:6px;">Eliminar Año</span><img src="{{ url_for('static', filename='imagenes/cross.png') }}" alt="" />
-            </div>
-          </div>
-        </a>
-      </div>
-    </div>
     </div>
 
     </div>

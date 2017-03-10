@@ -19,27 +19,6 @@
 
 </head>
 <body>
-<!-- MODAL -->
-<div id="myModal" class="modal fade">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">Confirmación</h4>
-            </div>
-            <div class="modal-body">
-                <p id="confir"></p>
-                <p class="text-warning"><small>Asegúrese al realizar esta acción.</small></p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                <button type="button" id="realSumbit" class="btn btn-primary">Agregar</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- END MODAL -->
-
   <nav style="background-color: #008CBA; border-color: #008CBA;" class="navbar navbar-inverse">
           <div class="container-fluid">
             <div class="navbar-header">
@@ -97,22 +76,23 @@
           </fieldset>
           <fieldset>
           <label>Año:</label>
-          <select name="ano">
-              <option value="cuarto">4to</option>
-              <option value="quinto">5to</option>
-              <option value="sexto">6to</option>
+          <select id="ano">
+              <option value="4to">4to</option>
+              <option value="5to">5to</option>
+              <option value="6to">6to</option>
           </select>
           </fieldset>
           <fieldset>
           <label>Curso:</label>
-          <select name="curso">
-              <option value="tec_grafica">Tecnología Gráfica</option>
-              <option value="contabilidad">Contabilidad</option>
-              <option value="mecanica">Mecánica</option>
-              <option value="electronica">Electrónica</option>
+          <select id="curso">
+              <option value="TecnologiaGrafica">Tecnología Gráfica</option>
+              <option value="Contabilidad">Contabilidad</option>
+              <option value="Mecanica">Mecánica</option>
+              <option value="Electronica">Electrónica</option>
           </select>
           </fieldset>
-          <button id="agregar" type="submit">Añadir</button>
+          <input type="text" id="id_carrera" hidden name="id_carrera">
+          <button id="agregar" onclick="getIDCarrera()">Añadir</button>
         </form>
   </div>
 

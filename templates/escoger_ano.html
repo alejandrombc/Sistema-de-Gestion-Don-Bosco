@@ -10,6 +10,9 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery-ui.css') }}">
   <link rel="icon" type="image/png" href="{{ url_for('static', filename='imagenes/favicon.png') }}" sizes="32x32">
 
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style_escoger.css') }}">
 
   
@@ -18,23 +21,36 @@
 <body>
 
 <script type="text/javascript">
-  function funcAno(inicial, final){
-    $("#anos").val(inicial+'-'+final);
+  function funcAno(id){
+    var anos = $("#label_ano").html();
+    $("#anos").val(anos);
+    $("#real_id").val(id);
     $("#ano_escolar").submit();
   }
 </script>
 
-  <form id="ano_escolar" action="/estudiantes_ano" method="post">
+  <form id="ano_escolar" action="/seleccion_persona" method="post">
     <input type="text" id="anos" name="ano" hidden>
+    <input type="text" id="real_id" name="real_id" hidden>
   </form>
 
+<div id="wrapper">
+
+    <div id="container">
+
+        <a id="button" href="/seleccion"><span class="glyphicon glyphicon-circle-arrow-left"></span></a>
+
+    </div>
+
+</div>
+<br><br>
 {% if datos %}
 <center><h1 style="color:white;">Por favor, escoja el año escolar que desea:</h1></center><br>
   {% for ano in datos %}
     <figure class="snip1566">
     <img src="{{ url_for('static', filename='imagenes/Logo_DonBosco.png') }}" alt="sq-sample14" />
-    <figcaption><h2 class="headertext">{{ano[1]}}-{{ano[2]}}</h2></figcaption>
-    <a onclick="funcAno('{{ano[1]}}','{{ano[2]}}')"></a>
+    <figcaption><h2 id="label_ano" class="headertext">{{ano[1]}}</h2></figcaption>
+    <a onclick="funcAno({{ano[0]}})"></a>
     </figure>
   {% endfor %}
 {% else %}

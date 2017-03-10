@@ -63,14 +63,14 @@
 
         {% if (updateado) %}
             <input type="hidden" id="updateado" value="{{updateado}}" >
+            <div id="dialog-message" title="Actualización Exitosa!">
+                <p>
+                    <span class="ui-icon ui-icon-circle-check" style="float:left; margin:0 7px 50px 0;"></span>
+                    El estudiante se ha editado de forma exitosa.
+                </p>
+            </div>
         {% endif %}
 
-        <div id="dialog-message" title="Actualización Exitosa!">
-          <p>
-            <span class="ui-icon ui-icon-circle-check" style="float:left; margin:0 7px 50px 0;"></span>
-            El estudiante se ha editado de forma exitosa.
-          </p>
-        </div>
 
         <!-- MODAL SECCION-->
         <div id="modal_seccion" class="modal fade">
@@ -128,15 +128,15 @@
 
                     <div class="modal-body">
 
-                        <form role="form" action="editarEstudiante" method="POST">
-
+                        <form role="form" action="/editarEstudiante" id="modalUpdate" method="POST">
+                            <input type="text" id="real_carrera" hidden name="id_carrera"/>
                             <div class="col-md-6 form-group">                                   
 
                                 <label>Apellidos:</label>
-                                <input class="form-control" name="apellidos" id="apellidos" type="text" required="true" autocomplete="off" value="" /><br>
+                                <input class="form-control" name="apellidos" id="apellidos" type="text" autocomplete="off" value="" /><br>
 
                                 <label>Cédula:</label>
-                                <input class="form-control" name="cedula" id="cedula" type="text" required="true" autocomplete="off" pattern="[0-9]{8}" title="Ingrese sólo números" value=""/> 
+                                <input class="form-control" name="cedula" id="cedula" type="text" autocomplete="off" pattern="[0-9]{8}" title="Ingrese sólo números" value=""/> 
 
                                 <input name="hiddenCedula" id="hiddenCedula" type="hidden" value=""/> 
 
@@ -144,53 +144,55 @@
 
                             <div class="col-md-6">                                   
                                 <label>Nombres:</label>
-                                <input class="form-control" name="nombres" id="nombres" type="text" required="true" autocomplete="off" value=""/><br>
+                                <input class="form-control" name="nombres" id="nombres" type="text" autocomplete="off" value=""/><br>
 
                                 <label>Teléfono Casa:</label>
-                                <input class="form-control" name="telefono" id="telefono" type="text" required="true" autocomplete="off" value="" pattern="[0-9]{11}" title="Ingrese sólo números" placeholder="02120000000"/><br>            
+                                <input class="form-control" name="telefono" id="telefono" type="text" autocomplete="off" value="" pattern="[0-9]{11}" title="Ingrese sólo números" placeholder="02120000000"/><br>  
+
+            
                             </div>
+
+      
+                            <div class="col-md-6">                                   
+                                <label>E-Mail:</label>
+                                <input class="form-control" name="correo" id="correo" type="email" autocomplete="off" value="" placeholder="estudiante@correo.com" /></br>
+                                    
+                                
+                                <label>Inasistencias:</label>
+                                <input class="form-control" type="text" pattern="[0-9]" id="inasistencia" autocomplete="off" name="inasistencia"/><br>   
+
+                                <label>Sección:</label>
+                                <select class="form-control" name="seccion" id="seccion" autocomplete="off"/>
+                                </select><br>  
+
+                            </div>    
 
                             <div class="col-md-6 form-group">                                   
                                 <label>Curso:</label>
                                 <select class="form-control" name="curso" id="curso" autocomplete="off"/>
-                                    <option>Tecnología Gráfica</option>
+                                    <option>Tecnologia Grafica</option>
                                     <option>Contabilidad</option>
-                                    <option>Electrónica</option>
-                                    <option>Mecánica</option>
+                                    <option>Electronica</option>
+                                    <option>Mecanica</option>
                                 </select><br>   
-                                <!-- TRAER ESTO DE BD -->
+                                
                                 <label>Año:</label>
                                 <select class="form-control" name="ano" id="ano" autocomplete="off"/>
                                     <option>4</option>
                                     <option>5</option>
                                     <option>6</option>
-                                </select>             
-                            </div>
-                            <!-- TRAER ESTO DE BD -->
-                            <div class="col-md-6">                                   
-                                 <label>E-Mail:</label>
-                                <input class="form-control" name="correo" id="correo" type="email" required="true" autocomplete="off" value="" placeholder="estudiante@correo.com" /></br>
-                                    
-                                <!-- TRAER ESTO DE BD -->
-                                <label>Sección:</label>
-                                <select class="form-control" name="seccion" id="seccion" autocomplete="off"/>
-                                    <option>A</option>
-                                    <option>B</option>
-                                    <option>C</option>
-                                </select><br>                    
-                            </div>
-
-                            <div class="col-md-12">
+                                </select>    
+                                <br>
                                 <label>Dirección:</label>
-                                <textarea class="form-control" name="direccion" id="direccion" required="true" autocomplete="off"/></textarea><br>
+                                <textarea style="resize: vertical;" class="form-control" name="direccion" id="direccion" autocomplete="off"/></textarea><br>
+
                             </div>
                        
-
                         </div>
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                            <button type="submit" id="realSumbitEst" class="btn btn-primary">Aceptar</button>
+                            <button onclick="updateSubmit()" class="btn btn-primary">Aceptar</button>
                         </div>
 
                      </form>
@@ -207,7 +209,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>                        
               </button>
-              <img class="pull-left" width="50px" style="margin-right: 5px;" src="{{ url_for('static', filename='imagenes/Logo_DonBosco.png') }}"><a class="navbar-brand hidden-xs" style="color:white;" href="#">Escuela Técnica Popular Don Bosco</a>
+              <img class="pull-left" width="50px" style="margin-right: 5px;" src="{{ url_for('static', filename='imagenes/Logo_DonBosco.png') }}"><a class="navbar-brand hidden-xs" style="color:white;" href="/seleccion">Escuela Técnica Popular Don Bosco</a>
               <form class="navbar-form navbar-left hidden-xs" action="buscarEstudiante" method="POST">
                 <div class="input-group">
                     <input type="text" class="form-control" placeholder="Buscar alumno" autocomplete="off" name="busqueda">
@@ -283,7 +285,7 @@
                                     {% elif cant_secciones-1 == i %}
                                         <li><a id="li{{array[i]}}" href="#ano_select{{array[i]}}">Sección {{array[i]}}  <span onmouseover="mouseOverTrash(this)" onmouseout="mouseOutTrash(this)" onclick="mostrarBorrarSeccion(this)" class="glyphicon glyphicon-trash delete_sec"></span></a></li>
                                     {% else %}
-                                        <li style="display: none;" ><a href="#ano_select{{array[i]}}">Sección {{array[i]}} </a></li>
+                                        <li style="display: none;" ><a id="li{{array[i]}}" href="#ano_select{{array[i]}}">Sección {{array[i]}} </a></li>
                                     {% endif %}
                                 {% endfor %}
                             </ul>
@@ -316,14 +318,14 @@
                                             {% if datos %}
                                                 {% for estudiante in datos %}
                                                     {% if estudiante[9] == array[i]  %}
-                                                        <tr id='{{estudiante[3]}}' class="active"> 
-                                                            <td class='cedulaEstudiante editarEstudiante ' onclick="mostrarDetalleEstudiante({{estudiante[3]}})">{{estudiante[3]}}</td>
-                                                            <td class='editarEstudiante' onclick="mostrarDetalleEstudiante({{estudiante[3]}})">{{estudiante[1]}}</td>
-                                                            <td class='editarEstudiante' onclick="mostrarDetalleEstudiante({{estudiante[3]}})">{{estudiante[2]}}</td>
-                                                            <td class='editarEstudiante' onclick="mostrarDetalleEstudiante({{estudiante[3]}})">{{estudiante[6]}}</td>
-                                                            <td id="inasistencia{{estudiante[3]}}">{{estudiante[11]}}</td>
-                                                            <td><button id="add{{estudiante[3]}}" class="btn btn-warning" onclick="agregarInasistencia(this.id)">Agregar inasistencia</button></td>
-                                                            <td><button id='del{{estudiante[3]}}' class="btn btn-danger botonDltEst" onclick="mostrarModalEliminarEstudiante(this.id)"><span class="glyphicon glyphicon-trash"></span></button></td>
+                                                        <tr id='{{estudiante[0]}}' class="active"> 
+                                                            <td class='cedulaEstudiante editarEstudiante ' onclick="mostrarDetalleEstudiante({{estudiante[0]}})">{{estudiante[0]}}</td>
+                                                            <td class='editarEstudiante' onclick="mostrarDetalleEstudiante({{estudiante[0]}})">{{estudiante[1]}}</td>
+                                                            <td class='editarEstudiante' onclick="mostrarDetalleEstudiante({{estudiante[0]}})">{{estudiante[2]}}</td>
+                                                            <td class='editarEstudiante' onclick="mostrarDetalleEstudiante({{estudiante[0]}})">{{estudiante[4]}}</td>
+                                                            <td id="inasistencia{{estudiante[0]}}">{{estudiante[7]}}</td>
+                                                            <td><button id="add{{estudiante[0]}}" class="btn btn-warning" onclick="agregarInasistencia(this.id)">Agregar inasistencia</button></td>
+                                                            <td><button id='del{{estudiante[0]}}' class="btn btn-danger botonDltEst" onclick="mostrarModalEliminarEstudiante(this.id)"><span class="glyphicon glyphicon-trash"></span></button></td>
                                                         </tr>
                                                     {% endif %}
                                                 {% endfor %}

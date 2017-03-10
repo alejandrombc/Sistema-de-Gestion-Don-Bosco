@@ -11,6 +11,24 @@
         $("#internas").tabs();
 
 
+        //Para el responsive en la busqueda (falta editar)
+        // $('#ano_selectA-table').DataTable({
+        //         "searching": true,
+        //         "bPaginate": false,
+        //         "bLengthChange": false,
+        //         "bFilter": false,
+        //         responsive: true,
+        //         "bInfo": false,
+        //         "language": {
+        //             "sProcessing":     "Procesando...",
+        //             "sZeroRecords":    "No se encontraron resultados.",
+        //             "sEmptyTable":     "Ningún dato disponible en esta tabla.",
+        //             "sLoadingRecords": "Cargando...",
+        //             "search": "_INPUT_",
+        //             "searchPlaceholder": "Buscar en esta sección."
+        //         }
+        // });
+
         $("body").on('click', function()
         {
             if (($("#tocheck").hasClass("open"))) 
@@ -64,17 +82,17 @@
 
 
             /*busco el ano*/
-            if ($('#4to').hasClass('active')) ano = 4;
-            else if ($('#5to').hasClass('active')) ano = 5;
-            else ano = 6;
+            if ($('#4to').hasClass('active')) ano = "4to";
+            else if ($('#5to').hasClass('active')) ano = "5to";
+            else ano = "6to";
 
-
+            var id_carrera = createID_carrera(ano, curso_actual);
 
             /*Se elimina la seccion de la BD*/
             $.ajax
             ({
                 type:"DELETE" ,
-                url: '/eliminarSeccion?curso='+curso_actual+'&ano='+ano+'&cedulas='+lista_cedulas,
+                url: '/eliminarSeccion?id_carrera='+id_carrera+'&cedulas='+lista_cedulas,
                 dataType: "text",
                 error: function (xhr, ajaxOptions, thrownError){
                         console.log(xhr.status);
@@ -164,6 +182,10 @@
             setCantidadSecciones($('#ano').val()[0], $('#curso').val());
         });
 
+        $( "#ano" ).change(function() {
+            setCantidadSecciones($('#ano').val()[0], $('#curso').val());
+        });
+
 
         
         if( $('#updateado').val() == "True" ) { 
@@ -180,11 +202,21 @@
 
     });
 
-    function setCantidadSecciones(ano, curso) {
+    function changeYearVal(ano){
+        if(ano == 4) ano = "4to";
+        else if (ano == 5) ano = "5to";
+        else if(ano == 6) ano = "6to";
+        return ano;
+    }
+
+    function setCantidadSecciones(ano, curso, seccion) {
+        ano = changeYearVal(ano);
+        curso = eliminarCaracteres(curso);
+        var id_carrera = createID_carrera(ano, curso);
         $.ajax
             ({
                 type:"GET" ,
-                url: '/cant_secciones?ano='+ano+'&curso='+curso,
+                url: '/cant_secciones?id_carrera='+id_carrera,
                 dataType: "text",
                 error: function (xhr, ajaxOptions, thrownError)
                 {
@@ -205,6 +237,8 @@
                         }));
 
                     }
+                    if(seccion != null) $('#seccion').val(seccion);
+                    else $('#seccion').val('A');
                 }
             });
     }
@@ -220,10 +254,65 @@
         return palabra;
     }
 
+    // Funcion que retorna el ID de la BD de la carrera especificada
+    function createID_carrera(clase, valor)
+    {
+        var id_carrera = 0;
+        if(clase == '4to'){
+                switch(valor) {
+                case "TecnologiaGrafica":
+                    id_carrera = 1;
+                    break;
+                case "Mecanica":
+                    id_carrera = 2;
+                    break;
+                case "Electronica":
+                    id_carrera = 3;
+                    break;
+                case "Contabilidad":
+                    id_carrera = 4;
+                    break;
+                }
+            }
+        else if(clase == '5to'){
+                switch(valor) {
+                case "TecnologiaGrafica":
+                    id_carrera = 5;
+                    break;
+                case "Mecanica":
+                    id_carrera = 6;
+                    break;
+                case "Electronica":
+                    id_carrera = 7;
+                    break;
+                case "Contabilidad":
+                    id_carrera = 8;
+                    break;
+                }
+            }
+        else{
+                switch(valor) {
+                case "TecnologiaGrafica":
+                    id_carrera = 9;
+                    break;
+                case "Mecanica":
+                    id_carrera = 10;
+                    break;
+                case "Electronica":
+                    id_carrera = 11;
+                    break;
+                case "Contabilidad":
+                    id_carrera = 12;
+                    break;
+                }
+            }
+        return id_carrera;
+    }
+
     /*Esta funcion es cuando se selecciona otro curso*/
     function cambiarValor(valor, id) 
     {
-        var curso_actual, clase;
+      var curso_actual, clase;
         
         curso_actual = $("#curso_actual").text();
     
@@ -238,10 +327,12 @@
             else if ($('#5to').hasClass('active')) clase = '5to';
             else clase = '6to';
             
+            var id_carrera = createID_carrera(clase,valor);
+        
             $.ajax
             ({
                 type:"GET" ,
-                url: '/estudiantes_escoger_ano?ano='+clase+'&curso='+valor,
+                url: '/estudiantes_escoger_ano?id_carrera='+id_carrera,
                 dataType: "text",
                 error: function (xhr, ajaxOptions, thrownError)
                 {
@@ -253,15 +344,33 @@
                 success: function(str_secciones)
                 {    
                     mostrarListaEstudiantes(str_secciones); 
+                    // setCantidadSecciones(clase, valor);
                 }
             });
         }
+
+    }
+
+
+    function updateSubmit(){
+        var ano, curso;
+        ano = $('#ano').find(":selected").text();
+        curso = $('#curso').find(":selected").text();
+
+
+        ano = changeYearVal(ano);
+
+        curso = eliminarCaracteres(curso);        
+        var id_carrera = createID_carrera(ano,curso);
+
+        $("#real_carrera").val(id_carrera);
+        $("#modalUpdate").sumbit();
     }
 
     /*Esta funcion es cuando se selecciona otro año*/
     function cambioAnio(clase)
     {
-        var curso_actual;
+         var curso_actual;
 
         $('#4to').removeClass('active');
         $('#5to').removeClass('active');
@@ -271,10 +380,11 @@
         curso_actual = $("#curso_actual").text();
         curso_actual = eliminarCaracteres(curso_actual);
 
+        id_carrera = createID_carrera(clase, curso_actual);
         $.ajax
         ({
             type:"GET" ,
-            url: '/estudiantes_escoger_ano?ano='+clase+'&curso='+curso_actual,
+            url: '/estudiantes_escoger_ano?id_carrera='+id_carrera,
             dataType: "text",
             error: function (xhr, ajaxOptions, thrownError)
             {
@@ -285,7 +395,8 @@
             },
             success: function(str_secciones)
             {    
-                mostrarListaEstudiantes(str_secciones);    
+                mostrarListaEstudiantes(str_secciones); 
+                // setCantidadSecciones(clase, curso_actual);   
             }
         });
     }
@@ -295,12 +406,15 @@
     {
         var list, childList, cant_secciones, new_estudiantes, i, N, idBody, array, fc, tag, li, cant_estudiantes, boton, span, a;
 
-        li = document.getElementById('liA');
-        li.click();
-
         list = document.getElementById("internas");
-        childList = list.children;
         cant_secciones = parseInt(str_secciones[0]);
+    
+        if($('#liA').length) {
+            li = document.getElementById('liA');
+            li.click();
+        }
+
+        childList = list.children;
         new_estudiantes = jQuery.parseJSON(str_secciones.substring(2));
         array = ['A','B','C', 'D', 'E', 'F'];
         N = childList.length;
@@ -311,52 +425,50 @@
             idBody.empty();
 
             cant_estudiantes = new_estudiantes.length;
-
             if(i < cant_secciones) childList[i].style.display = 'block';
             else childList[i].style.display = 'none';
-
 
             for (j = 0; j < cant_estudiantes; j++) 
             {
                 if (str_secciones.substring(2).length > 2 && array[i] == new_estudiantes[j][9]) 
                 {   
                     tag = document.createElement('tr');
-                    tag.setAttribute('id', (String(new_estudiantes[j][3])));
+                    tag.setAttribute('id', (String(new_estudiantes[j][0])));
                     tag.setAttribute('class', ("active"));
                     
                     element = document.createElement('td');
                     element.setAttribute('class', 'cedulaEstudiante editarEstudiante');
-                    element.setAttribute('onclick',"mostrarDetalleEstudiante("+new_estudiantes[j][3]+")");
-                    element.innerHTML = new_estudiantes[j][3];
+                    element.setAttribute('onclick',"mostrarDetalleEstudiante("+new_estudiantes[j][0]+")");
+                    element.innerHTML = new_estudiantes[j][0];
                     tag.appendChild(element);
 
                     element = document.createElement('td');
                     element.setAttribute('class', 'editarEstudiante');
-                    element.setAttribute('onclick',"mostrarDetalleEstudiante("+new_estudiantes[j][3]+")");
+                    element.setAttribute('onclick',"mostrarDetalleEstudiante("+new_estudiantes[j][0]+")");
                     element.innerHTML = new_estudiantes[j][1];
                     tag.appendChild(element);
 
                     element = document.createElement('td');
                     element.setAttribute('class', 'editarEstudiante');
-                    element.setAttribute('onclick',"mostrarDetalleEstudiante("+new_estudiantes[j][3]+")");
+                    element.setAttribute('onclick',"mostrarDetalleEstudiante("+new_estudiantes[j][0]+")");
                     element.innerHTML = new_estudiantes[j][2];
                     tag.appendChild(element);
 
                     element = document.createElement('td');
                     element.setAttribute('class', 'editarEstudiante');
-                    element.setAttribute('onclick',"mostrarDetalleEstudiante("+new_estudiantes[j][3]+")");
-                    element.innerHTML = new_estudiantes[j][6];
+                    element.setAttribute('onclick',"mostrarDetalleEstudiante("+new_estudiantes[j][0]+")");
+                    element.innerHTML = new_estudiantes[j][4];
                     tag.appendChild(element);
 
                     element = document.createElement('td');
-                    element.setAttribute('id', 'inasistencia'+ new_estudiantes[j][3]);
-                    element.innerHTML = new_estudiantes[j][11];
+                    element.setAttribute('id', 'inasistencia'+ new_estudiantes[j][0]);
+                    element.innerHTML = new_estudiantes[j][7];
                     tag.appendChild(element);
 
                     element = document.createElement('td');
                     boton = document.createElement('button');
                     boton.setAttribute('class', 'btn btn-warning');
-                    boton.setAttribute('id','add'+ new_estudiantes[j][3]);
+                    boton.setAttribute('id','add'+ new_estudiantes[j][0]);
                     boton.setAttribute('onclick',"agregarInasistencia(this.id)");
                     boton.innerHTML = 'Agregar inasistencia';
                     element.appendChild(boton);
@@ -365,7 +477,7 @@
                     element = document.createElement('td');
                     boton = document.createElement('button');
                     boton.setAttribute('class', 'btn btn-danger botonDltEst');
-                    boton.setAttribute('id','del'+new_estudiantes[j][3]);
+                    boton.setAttribute('id','del'+new_estudiantes[j][0]);
                     boton.setAttribute('onclick',"mostrarModalEliminarEstudiante(this.id)");
                     
                     span = document.createElement('span');
@@ -493,8 +605,9 @@
         $("#modal_seccion").modal('show');
     }
 
-    function mostrarDetalleEstudiante(cedula) {
 
+    function mostrarDetalleEstudiante(cedula) {
+        var seccion = "";
         $.ajax
             ({
                 type:"GET" ,
@@ -508,36 +621,59 @@
                        
                 },
                 success: function(estudiante)
-                {    
-                    var array = estudiante.split(",");
-                    var nombre = array[1].replace(/'/g,"").replace(" ",'');
-                    var apellido = array[2].replace(/'/g,"").replace(" ",'');
-                    var cedula = array[3].replace(" ",'');
-                    var telefono = array[4].replace(/'/g,"").replace(/ /g,'');
-                    var direccion = array[6].replace(/'/g,"").replace(/ /,'');
-                    var email = array[5].replace(/'/g,"").replace(/ /g,'');
-                    var curso = array[11].replace(/'/g,"").replace(/ /,'').replace("]","");
-                    var seccion = array[8].replace(/'/g,"").replace(/ /g,'');
-                    // var periodo_lectivo = array[9].replace(/'/g,"").replace(/ /g,'');
-                    var ano = array[7].replace(/ /g,'');
+                {       
+                    var array = jQuery.parseJSON(estudiante);
+                    //array = array.split(',');
+                    var nombre = array[0][1];
+                    var apellido = array[0][2];
+                    var cedula = array[0][0];
+                    var telefono = array[0][5];
+                    var direccion = array[0][3];
+                    var email = array[0][4];
+                    var curso_for_id = array[0][9]; //Para la funcion de set cantidad
+                    if(array[0][9] == "Tecnologia_Grafica") var curso = (array[0][9]).replace('_',' ');
+                    else var curso = (array[0][9]);
+                    var inasistencias = array[0][7];
+                    var ano = array[0][10];
+                    var ano_for_id = changeYearVal(ano); //Para la funcion de set cantidad
+                    seccion = array[0][8];
+                    
 
+                    setCantidadSecciones(ano, curso_for_id, seccion);
+                
                     $('#apellidos').val(apellido);
                     $('#nombres').val(nombre);
                     $('#cedula').val(cedula);
+
                     $('#hiddenCedula').val(cedula);
+
+                    
 
                     $('#curso').val(curso);
 
+
                     // $('#periodo_lectivo').val(periodo_lectivo);
                     $('#ano').val(ano);
-                    $('#seccion').val(seccion);
+                    $('#inasistencia').val(inasistencias);
                     $('#direccion').val(direccion);
                     $('#correo').val(email);
                     $('#telefono').val(telefono);
-
                 }
             });
 
-
         $("#modal_detalle_est").modal('show');
+    }
+
+
+    function getIDCarrera(){
+        ano = $('#ano').find(":selected").text();
+        curso = $('#curso').find(":selected").text();
+        curso = eliminarCaracteres(curso);
+
+        var id_carrera = createID_carrera(ano, curso);
+
+        $('#id_carrera').val(id_carrera);
+        if($('#formulario_sec').valid()){
+            $('#formulario_sec').submit();
+        }
     }

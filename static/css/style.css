@@ -18,6 +18,24 @@ body {
     max-height: 120px;
 }
 
+
+#button {
+     line-height: 12px;
+     width: 18px;
+     font-size: 30pt;
+     font-family: tahoma;
+     margin-top: 10px;
+     margin-right: 2px;
+     position:absolute;
+     color:black;
+     top:0;
+     left:0;
+ }
+
+ #button:hover{
+  color:white;
+ }
+
 .login-card {
   padding: 40px;
   width: 274px;

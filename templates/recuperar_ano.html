@@ -68,8 +68,8 @@
   {% for ano in datos %}
       <figure class="snip1566">
         <img src="{{ url_for('static', filename='imagenes/Logo_DonBosco.png') }}" alt="sq-sample14" />
-        <figcaption><h2 class="headertext">{{ano[1]}}-{{ano[2]}}</h2></figcaption>
-        <a onclick="openModal_Rec({{ano[1]}},{{ano[2]}}, {{ano[0]}})" href="#"></a>
+        <figcaption><h2 id="label_ano" class="headertext">{{ano[1]}}</h2></figcaption>
+        <a onclick="openModal_Rec({{ano[0]}})" href="#"></a>
       </figure>
     
   {% endfor %}
