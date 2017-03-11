@@ -57,143 +57,101 @@
 </head>
 <body>
 
-    <nav style="background-color: #008CBA; border-color: #008CBA;" class="navbar navbar-inverse">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>                        
-          </button>
-          <a href="/seleccion"><img class="pull-left" width="50px" style="margin-right: 5px;" src="{{ url_for('static', filename='imagenes/Logo_DonBosco.png') }}"><a class="navbar-brand hidden-xs" style="color:white;" href="/seleccion">Escuela Técnica Popular Don Bosco</a></a>
-          <form class="navbar-form navbar-left hidden-xs" action="buscarEstudiante" method="POST">
-            <div class="input-group">
-                <input type="text" class="form-control" placeholder="Buscar alumno" autocomplete="off" name="busqueda">
-                <div class="input-group-btn">
-                    <button class="btn btn-default" type="submit" >
-                        <i class="glyphicon glyphicon-search"></i>
-                    </button>
-                </div>
+    <!-- Incluir el archivo del navbar -->
+    {% include "navbar.html" %} 
+
+    <div class="container-fluid">
+        <!--Redirigir a vista de estudiantes y realizar consulta en BD, primero se debe chequear que el estudiante no esté repetido -->
+        <form role="form" action="registrarEstudiante" method="POST" id="formulario_sec" enctype="multipart/form-data">
+            
+            <center><img id="toplogo" src="{{ url_for('static', filename='imagenes/Logo_DonBosco.png') }}"></center><br>
+
+            <div class="col-md-6 form-group">                                   
+
+                <label>Apellidos:</label>
+                <input class="form-control" name="apellidos" id="apellidos" type="text" required="true" autocomplete="off" value="" /><br>
+
+                <label>Cédula:</label>
+                <input class="form-control" name="cedula" id="cedula" type="text" required="true" autocomplete="off" pattern="[0-9]{8}" title="Ingrese sólo números" value=""/> 
+
             </div>
-           </form>
-        </div>
-        <div class="collapse navbar-collapse" id="myNavbar">
-          <ul class="nav navbar-nav navbar-right">
-            <li><a class="otravaina" href="#"><span class="glyphicon glyphicon-envelope"></span> Enviar correo</a></li>
-            <li class="dropdown">
-              <a class="dropdown-toggle otravaina" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-plus"></span> Añadir <span class="caret"></span></a>
-              <ul style="background-color: #9B9B9C" class="dropdown-menu">
-                <li><a id="anadir1" href="/anadirEstudiante">Añadir estudiantes</a></li>
-                <li><a id="anadir2" href="/agregar_seccion">Añadir seccion</a></li>
-              </ul>
-            </li>
-          </ul>
-            <form class="navbar-form navbar-left visible-xs" action="buscarEstudiante" method="POST">
-              <div class="input-group">
-                <input type="text" class="form-control" placeholder="Buscar alumno" autocomplete="off" name="busqueda">
-                <div class="input-group-btn">
-                  <button class="btn btn-default" type="submit">
-                    <i class="glyphicon glyphicon-search"></i>
-                  </button>
-                </div>
-              </div>
-            </form>
-        </div>
-      </div>
-    </nav>
 
-<div class="container-fluid">
-    <!--Redirigir a vista de estudiantes y realizar consulta en BD, primero se debe chequear que el estudiante no esté repetido -->
-    <form role="form" action="registrarEstudiante" method="POST" id="formulario_sec" enctype="multipart/form-data">
-        
-        <center><img id="toplogo" src="{{ url_for('static', filename='imagenes/Logo_DonBosco.png') }}"></center><br>
+            <div class="col-md-6">                                   
+                <label>Nombres:</label>
+                <input class="form-control" name="nombres" id="nombres" type="text" required="true" autocomplete="off" value=""/><br>
 
-        <div class="col-md-6 form-group">                                   
+                <label>Fecha de Nacimiento:</label>
+                <input type='text' id="fechaNac" name="fechaNac" class="form-control" autocomplete="off" value=""/><br>              
+            </div>
 
-            <label>Apellidos:</label>
-            <input class="form-control" name="apellidos" id="apellidos" type="text" required="true" autocomplete="off" value="" /><br>
+            <div class="col-md-12">      
+            </div>
 
-            <label>Cédula:</label>
-            <input class="form-control" name="cedula" id="cedula" type="text" required="true" autocomplete="off" pattern="[0-9]{8}" title="Ingrese sólo números" value=""/> 
-
-        </div>
-
-        <div class="col-md-6">                                   
-            <label>Nombres:</label>
-            <input class="form-control" name="nombres" id="nombres" type="text" required="true" autocomplete="off" value=""/><br>
-
-            <label>Fecha de Nacimiento:</label>
-            <input type='text' id="fechaNac" name="fechaNac" class="form-control" autocomplete="off" value=""/><br>              
-        </div>
-
-        <div class="col-md-12">      
-        </div>
-
-        <div class="col-md-6 form-group">                                   
-            <label>Curso:</label>
-            <select class="form-control" name="curso" id="curso" autocomplete="off"/>
-                <option>Tecnología Gráfica</option>
-                <option>Contabilidad</option>
-                <option>Electrónica</option>
-                <option>Mecánica</option>
-            </select><br>   
+            <div class="col-md-6 form-group">                                   
+                <label>Curso:</label>
+                <select class="form-control" name="curso" id="curso" autocomplete="off"/>
+                    <option>Tecnología Gráfica</option>
+                    <option>Contabilidad</option>
+                    <option>Electrónica</option>
+                    <option>Mecánica</option>
+                </select><br>   
+                <!-- TRAER ESTO DE BD -->
+                <label>Año:</label>
+                <select class="form-control" name="ano" id="ano" autocomplete="off"/>
+                    <option>4to</option>
+                    <option>5to</option>
+                    <option>6to</option>
+                </select>             
+            </div>
             <!-- TRAER ESTO DE BD -->
-            <label>Año:</label>
-            <select class="form-control" name="ano" id="ano" autocomplete="off"/>
-                <option>4to</option>
-                <option>5to</option>
-                <option>6to</option>
-            </select>             
-        </div>
-        <!-- TRAER ESTO DE BD -->
-        <div class="col-md-6 form-group">                                   
-            <label>Teléfono Casa:</label>
-            <input class="form-control" name="telefono" id="telefono" type="text" autocomplete="off" value="" pattern="[0-9]{11}" title="Ingrese sólo números" placeholder="02120000000"/><br>
-            <!-- TRAER ESTO DE BD -->
-            <label>Sección:</label>
-            <select class="form-control" name="seccion" id="seccion" autocomplete="off"/>
+            <div class="col-md-6 form-group">                                   
+                <label>Teléfono Casa:</label>
+                <input class="form-control" name="telefono" id="telefono" type="text" autocomplete="off" value="" pattern="[0-9]{11}" title="Ingrese sólo números" placeholder="02120000000"/><br>
+                <!-- TRAER ESTO DE BD -->
+                <label>Sección:</label>
+                <select class="form-control" name="seccion" id="seccion" autocomplete="off"/>
+                    
+                </select><br>                    
+            </div>
+
+
+            <div class="col-md-6 form-group">
+                <label>E-Mail:</label>
+                <input class="form-control" name="correo" id="correo" type="email" autocomplete="off" value="" placeholder="estudiante@correo.com" /></br>
                 
-            </select><br>                    
-        </div>
+                
+            </div>
 
+            <div class="col-md-6 form-group">                                   
+                <label>Dirección:</label>
+                <textarea style="resize:vertical;" class="form-control" name="direccion" id="direccion" autocomplete="off"/></textarea><br>
+            </div>
 
-        <div class="col-md-6 form-group">
-            <label>E-Mail:</label>
-            <input class="form-control" name="correo" id="correo" type="email" autocomplete="off" value="" placeholder="estudiante@correo.com" /></br>
-            
-            
-        </div>
+            <input type="text" hidden id="id_carrera" name="id_carrera"/>
+             <!-- <div class="col-md-6">                                   
+                
+            </div> -->
 
-        <div class="col-md-6 form-group">                                   
-            <label>Dirección:</label>
-            <textarea style="resize:vertical;" class="form-control" name="direccion" id="direccion" autocomplete="off"/></textarea><br>
-        </div>
+            <div style="text-align: center;" class="col-md-12">  
+                </br></br>
+                <button onclick="getIDCarrera()" class="btn btn-primary">
+                    Guardar Cambios
+                </button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    Cancelar
+                </button> 
+                </br></br>
+            </div>
 
-        <input type="text" hidden id="id_carrera" name="id_carrera"/>
-         <!-- <div class="col-md-6">                                   
-            
-        </div> -->
+        </form>
+    </div>
 
-        <div style="text-align: center;" class="col-md-12">  
-            </br></br>
-            <button onclick="getIDCarrera()" class="btn btn-primary">
-                Guardar Cambios
-            </button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">
-                Cancelar
-            </button> 
-            </br></br>
-        </div>
-
-    </form>
-</div>
-
-</br>
-<center>
-  <footer>
-    <b><p>Escuela Técnica Popular Don Bosco © - 2017</p></b>
-  </footer>
-</center> 
+    </br>
+    <center>
+      <footer>
+        <b><p>Escuela Técnica Popular Don Bosco © - 2017</p></b>
+      </footer>
+    </center> 
 </body>
     <script type="text/javascript">   
 
