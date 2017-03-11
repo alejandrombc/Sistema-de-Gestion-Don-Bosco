@@ -154,45 +154,52 @@
             <div class="row">
 
                 <div class="col-md-8 col-md-offset-2"> 
-                    <h3 style="color:white;" align="center">Resultados</h3>               
-                    <div id="vertical" style="width: 100%">  
-                    <div id="ano_select">
-                        <div>
-                            <table class="table">
-                                <thead>
-                                    <tr class="success">
-                                        <th>
-                                            Cédula
-                                        </th>
-                                        <th>
-                                            Nombre
-                                        </th>
-                                        <th>
-                                            Apellido
-                                        </th>
-                                        <th>
-                                            E-mail
-                                        </th>
 
-                                        </tr>
-                                </thead>
-                                <tbody>
-                                    {% if datos %}
-                                        {% for estudiante in datos %}
-                                                <tr id='{{estudiante[0]}}' class="active"> 
-                                                    <td class='cedulaEstudiante editarEstudiante ' onclick="mostrarDetalleEstudiante({{estudiante[0]}})">{{estudiante[0]}}</td>
-                                                    <td class='editarEstudiante' onclick="mostrarDetalleEstudiante({{estudiante[0]}})">{{estudiante[1]}}</td>
-                                                    <td class='editarEstudiante' onclick="mostrarDetalleEstudiante({{estudiante[0]}})">{{estudiante[2]}}</td>
-                                                    <td class='editarEstudiante' onclick="mostrarDetalleEstudiante({{estudiante[0]}})">{{estudiante[4]}}</td>
-                                                </tr>
-                                        {% endfor %}
-                                    {% endif %}
-                                </tbody>
-                            </table>
+                    {% if hayResultado == 1 %}
+                        <h3 style="color:white;" align="center">Resultados</h3> 
+                        <div id="vertical" style="width: 100%">  
+                        <div id="ano_select">
+                            <div>
+                                <table class="table">
+                                    <thead>
+                                        <tr class="success">
+                                            <th>
+                                                Cédula
+                                            </th>
+                                            <th>
+                                                Nombre
+                                            </th>
+                                            <th>
+                                                Apellido
+                                            </th>
+                                            <th>
+                                                E-mail
+                                            </th>
 
-                        </div>
-                     </div>
-                </div>
+                                            </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% if datos %}
+                                            {% for estudiante in datos %}
+                                                    <tr id='{{estudiante[0]}}' class="active"> 
+                                                        <td class='cedulaEstudiante editarEstudiante ' onclick="mostrarDetalleEstudiante({{estudiante[0]}})">{{estudiante[0]}}</td>
+                                                        <td class='editarEstudiante' onclick="mostrarDetalleEstudiante({{estudiante[0]}})">{{estudiante[1]}}</td>
+                                                        <td class='editarEstudiante' onclick="mostrarDetalleEstudiante({{estudiante[0]}})">{{estudiante[2]}}</td>
+                                                        <td class='editarEstudiante' onclick="mostrarDetalleEstudiante({{estudiante[0]}})">{{estudiante[4]}}</td>
+                                                    </tr>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tbody>
+                                </table>
+
+                            </div>
+                         </div>
+                    </div>
+                    {% else %}
+                        <h3 style="color:white;" align="center">No se encontró ningún resultado</h3> 
+                    {% endif %}
+
+                    
             </div>
         </div>
     </body>

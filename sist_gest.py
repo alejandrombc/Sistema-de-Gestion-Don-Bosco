@@ -217,12 +217,20 @@ def buscarEstudiante():
 		# print(busqueda)
 		cursor = mysql.connect().cursor()
 
-		cursor.execute("SELECT * FROM estudiante WHERE " +
-		"cedula LIKE '%"+busqueda+"%' OR nombres LIKE '%"+busqueda+"%' OR apellidos LIKE '%"+busqueda+"%' OR direccion LIKE '%"+busqueda+"%' OR " +
-		"correo LIKE '%"+busqueda+"%' OR numero_de_telefono LIKE '%"+busqueda+"%'" )
-		estudiantes = cursor.fetchall()
+		if (busqueda != ""):
+			cursor.execute("SELECT * FROM estudiante WHERE " +
+			"cedula LIKE '%"+busqueda+"%' OR nombres LIKE '%"+busqueda+"%' OR apellidos LIKE '%"+busqueda+"%' OR direccion LIKE '%"+busqueda+"%' OR " +
+			"correo LIKE '%"+busqueda+"%' OR numero_de_telefono LIKE '%"+busqueda+"%'" )
+			estudiantes = cursor.fetchall()
+			if(estudiantes != () ):
+				hayResultado = 1
+			else:
+				hayResultado = 0
+		else:
+			hayResultado = 0
+			estudiantes = ""
 
-		return render_template("resultado_busqueda_estudiante.html", datos=estudiantes)
+		return render_template("resultado_busqueda_estudiante.html", datos=estudiantes, hayResultado=hayResultado)
 
 
 
