@@ -21,38 +21,29 @@
         
         <style>
 
-            .ui-tabs-vertical > .ui-tabs-nav 
-            {
-                padding: .2em .1em .2em .2em;
-                width: 12em;
+            #tabla_resultados table tr:last-child th:first-child {
+                 border-top-left-radius: 10px;
             }
 
-            .ui-tabs-vertical > .ui-tabs-nav li 
-            {
-                width: 100%;
-                border-bottom-width: 1px !important;
-                border-right-width: 0 !important;
-                margin: 0 -1px .2em 0;
+            #tabla_resultados table tr:last-child th:last-child {
+                 border-top-right-radius: 10px;
             }
 
-            .ui-tabs-vertical > .ui-tabs-nav > li > a 
-            {
-                display:block;
+            #tabla_resultados table tr:last-child td:first-child {
+                 border-bottom-left-radius: 10px;
 
             }
 
-            .ui-tabs-vertical > .ui-tabs-nav > li.ui-tabs-active 
-            {
-                padding-bottom: 0;
-                padding-right: .1em; 
-                width: 100%;  
-                float: right;     
-                border-right-width: 1px;
+            #tabla_resultados table tr:last-child td:last-child {
+               border-bottom-right-radius: 10px;
             }
 
-            .dataTables_filter 
-            {
-                float: right;
+            #tabla_resultados th  {
+                font-size: 17px;
+
+            }
+            #tabla_resultados td  {
+                font-size: 15px;
             }
 
         </style>
@@ -151,14 +142,12 @@
             <br><br><br><br>
         </div>
         <div class="container-fluid">
+            
             <div class="row">
-
                 <div class="col-md-8 col-md-offset-2"> 
-
                     {% if hayResultado == 1 %}
                         <h3 style="color:white;" align="center">Resultados</h3> 
-                        <div id="vertical" style="width: 100%">  
-                        <div id="ano_select">
+                        <div id="tabla_resultados" >  
                             <div>
                                 <table class="table">
                                     <thead>
@@ -175,31 +164,26 @@
                                             <th>
                                                 E-mail
                                             </th>
-
-                                            </tr>
+                                        </tr>
                                     </thead>
                                     <tbody>
                                         {% if datos %}
                                             {% for estudiante in datos %}
-                                                    <tr id='{{estudiante[0]}}' class="active"> 
-                                                        <td class='cedulaEstudiante editarEstudiante ' onclick="mostrarDetalleEstudiante({{estudiante[0]}})">{{estudiante[0]}}</td>
-                                                        <td class='editarEstudiante' onclick="mostrarDetalleEstudiante({{estudiante[0]}})">{{estudiante[1]}}</td>
-                                                        <td class='editarEstudiante' onclick="mostrarDetalleEstudiante({{estudiante[0]}})">{{estudiante[2]}}</td>
-                                                        <td class='editarEstudiante' onclick="mostrarDetalleEstudiante({{estudiante[0]}})">{{estudiante[4]}}</td>
-                                                    </tr>
+                                                <tr id='{{estudiante[0]}}' class="active"> 
+                                                    <td class='cedulaEstudiante editarEstudiante ' onclick="mostrarDetalleEstudiante({{estudiante[0]}})">{{estudiante[0]}}</td>
+                                                    <td class='editarEstudiante' onclick="mostrarDetalleEstudiante({{estudiante[0]}})">{{estudiante[1]}}</td>
+                                                    <td class='editarEstudiante' onclick="mostrarDetalleEstudiante({{estudiante[0]}})">{{estudiante[2]}}</td>
+                                                    <td class='editarEstudiante' onclick="mostrarDetalleEstudiante({{estudiante[0]}})">{{estudiante[4]}}</td>
+                                                </tr>
                                             {% endfor %}
                                         {% endif %}
                                     </tbody>
                                 </table>
-
                             </div>
-                         </div>
                     </div>
                     {% else %}
                         <h3 style="color:white;" align="center">No se encontró ningún resultado</h3> 
-                    {% endif %}
-
-                    
+                    {% endif %}  
             </div>
         </div>
     </body>
