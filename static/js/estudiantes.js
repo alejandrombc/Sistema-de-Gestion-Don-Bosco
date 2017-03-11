@@ -211,7 +211,7 @@
 
     function setCantidadSecciones(ano, curso, seccion) {
         ano = changeYearVal(ano);
-        curso = eliminarCaracteres(curso);
+        curso = eliminarCaracteres(curso).replace("_","");
         var id_carrera = createID_carrera(ano, curso);
         $.ajax
             ({

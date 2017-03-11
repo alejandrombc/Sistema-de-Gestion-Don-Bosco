@@ -1,1 +1,0 @@
-![alt tag](https://lh6.googleusercontent.com/zvZ7UZ5_gDvxOnPA4z9B-_wj9Dw6jJxT72GerpMsQrQjbIUuUvlEbsps2eXLlIcmArmTqhNTW7OWo6mQxz1wPqr6Noc7U-uD5X04sb0oWyQ06Hfr7bOAURFpqMNHovLwOlKuuwqIH1ymqMlk5Q)

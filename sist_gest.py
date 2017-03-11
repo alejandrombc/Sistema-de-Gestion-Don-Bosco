@@ -161,6 +161,7 @@ def def_editar_estudiantes():
 		hiddenCedula = request.form['hiddenCedula']
 		seccion = request.form['seccion'];
 		cedula = request.form['cedula']
+		print(cedula)
 		nombres = request.form['nombres']
 		telefono = request.form['telefono']
 		id_carrera = request.form['id_carrera']
@@ -168,12 +169,16 @@ def def_editar_estudiantes():
 		direccion = request.form['direccion']
 		email = request.form['correo']
 
+		cursor.execute("SET FOREIGN_KEY_CHECKS=0;")
+
 		#Se actualizan los datos ingresados 
 		cursor.execute("UPDATE estudiante SET apellidos='"+apellidos+"', cedula='"+cedula+"', nombres='"+nombres+"', numero_de_telefono='"+telefono+"', direccion='"+direccion+"', correo='"+email+"' WHERE cedula='"+hiddenCedula+"'")
-		conn.commit()
 
 		#Se actualiza los datos de la tabla cursa
-		cursor.execute("UPDATE cursa SET periodo_id='"+session['ano_esc']+"', seccion_actual='"+seccion+"' , carrera_id='"+id_carrera+"', inasistencias='"+inasistencia+"' WHERE cedula='"+hiddenCedula+"'")
+		cursor.execute("UPDATE cursa SET cedula='"+cedula+"', periodo_id='"+session['ano_esc']+"', seccion_actual='"+seccion+"' , carrera_id='"+id_carrera+"', inasistencias='"+inasistencia+"' WHERE cedula='"+hiddenCedula+"'")
+		conn.commit()
+
+		cursor.execute("SET FOREIGN_KEY_CHECKS=1;")
 		conn.commit()
 
 		#Falta validar si la data es null o alguna excepcion
@@ -214,7 +219,7 @@ def buscarEstudiante():
 
 		cursor.execute("SELECT * FROM estudiante WHERE " +
 		"cedula LIKE '%"+busqueda+"%' OR nombres LIKE '%"+busqueda+"%' OR apellidos LIKE '%"+busqueda+"%' OR direccion LIKE '%"+busqueda+"%' OR " +
-		"correo LIKE '%"+busqueda+"%' OR numero_de_telefono LIKE '%"+busqueda+"%' OR fecha_de_nacimiento LIKE '%"+busqueda+"%' " )
+		"correo LIKE '%"+busqueda+"%' OR numero_de_telefono LIKE '%"+busqueda+"%'" )
 		estudiantes = cursor.fetchall()
 
 		return render_template("resultado_busqueda_estudiante.html", datos=estudiantes)
