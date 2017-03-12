@@ -20,40 +20,6 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/agregar.css') }}">
 
-<style>
-
-    .ui-tabs-vertical > .ui-tabs-nav {
-        padding: .2em .1em .2em .2em;
-        width: 12em;
-    }
-    .ui-tabs-vertical > .ui-tabs-nav li {
-        width: 100%;
-        border-bottom-width: 1px !important;
-        border-right-width: 0 !important;
-        margin: 0 -1px .2em 0;
-    }
-    .ui-tabs-vertical > .ui-tabs-nav > li > a {
-        display:block;
-
-    }
-    .ui-tabs-vertical > .ui-tabs-nav > li.ui-tabs-active {
-        padding-bottom: 0;
-        padding-right: .1em; 
-        width: 100%;  
-        float: right;     
-        border-right-width: 1px;
-    }
-
-    .dataTables_filter {
-        float: right;
-    } 
-
-    label {
-        color: white;
-    }
-
-</style>
-
 </head>
 <body>
 
@@ -62,67 +28,59 @@
 
     <div class="container-fluid">
         <!--Redirigir a vista de estudiantes y realizar consulta en BD, primero se debe chequear que el estudiante no esté repetido -->
-        <form role="form" action="registrarEstudiante" method="POST" id="formulario_sec" enctype="multipart/form-data">
-            
-            <center><img id="toplogo" src="{{ url_for('static', filename='imagenes/Logo_DonBosco.png') }}"></center><br>
+        <center><img id="toplogo" src="{{ url_for('static', filename='imagenes/Logo_DonBosco.png') }}"></center><br><br>
 
+
+
+        <form role="form" id="formEstudiante" idaction="registrarEstudiante" method="POST">
+
+            <div class="row">
+            <br>
             <div class="col-md-6 form-group">                                   
-
                 <label>Apellidos:</label>
                 <input class="form-control" name="apellidos" id="apellidos" type="text" required="true" autocomplete="off" value="" /><br>
-
                 <label>Cédula:</label>
                 <input class="form-control" name="cedula" id="cedula" type="text" required="true" autocomplete="off" pattern="[0-9]{8}" title="Ingrese sólo números" value=""/> 
 
             </div>
 
-            <div class="col-md-6">                                   
+            <div class="col-md-6 form-group">                                   
                 <label>Nombres:</label>
                 <input class="form-control" name="nombres" id="nombres" type="text" required="true" autocomplete="off" value=""/><br>
-
-                <label>Fecha de Nacimiento:</label>
-                <input type='text' id="fechaNac" name="fechaNac" class="form-control" autocomplete="off" value=""/><br>              
+                <label>Teléfono Casa:</label>
+                <input class="form-control" name="telefono" id="telefono" type="text" autocomplete="off" value="" pattern="[0-9]{11}" title="Ingrese sólo números" placeholder="02120000000"/><br>
+              
             </div>
 
-            <div class="col-md-12">      
+            <div class="col-md-12 form-group">      
             </div>
 
             <div class="col-md-6 form-group">                                   
                 <label>Curso:</label>
-                <select class="form-control" name="curso" id="curso" autocomplete="off"/>
+                <select class="form-control select-est" name="curso" id="curso" autocomplete="off"/>
                     <option>Tecnología Gráfica</option>
                     <option>Contabilidad</option>
                     <option>Electrónica</option>
                     <option>Mecánica</option>
-                </select><br>   
-                <!-- TRAER ESTO DE BD -->
+                </select>
                 <label>Año:</label>
-                <select class="form-control" name="ano" id="ano" autocomplete="off"/>
+                <select class="form-control select-est" name="ano" id="ano" autocomplete="off"/>
                     <option>4to</option>
                     <option>5to</option>
                     <option>6to</option>
                 </select>             
             </div>
-            <!-- TRAER ESTO DE BD -->
-            <div class="col-md-6 form-group">                                   
-                <label>Teléfono Casa:</label>
-                <input class="form-control" name="telefono" id="telefono" type="text" autocomplete="off" value="" pattern="[0-9]{11}" title="Ingrese sólo números" placeholder="02120000000"/><br>
-                <!-- TRAER ESTO DE BD -->
+
+            <div class="col-md-6 form-group"> 
                 <label>Sección:</label>
-                <select class="form-control" name="seccion" id="seccion" autocomplete="off"/>
+                <select class="form-control select-est" name="seccion" id="seccion" autocomplete="off"/>
                     
-                </select><br>                    
-            </div>
-
-
-            <div class="col-md-6 form-group">
+                </select>  
                 <label>E-Mail:</label>
-                <input class="form-control" name="correo" id="correo" type="email" autocomplete="off" value="" placeholder="estudiante@correo.com" /></br>
-                
-                
+                <input class="form-control" name="correo" id="correo" type="email" autocomplete="off" value="" placeholder="estudiante@correo.com" />              
             </div>
 
-            <div class="col-md-6 form-group">                                   
+            <div class="col-md-12 form-group">                                   
                 <label>Dirección:</label>
                 <textarea style="resize:vertical;" class="form-control" name="direccion" id="direccion" autocomplete="off"/></textarea><br>
             </div>
@@ -132,9 +90,9 @@
                 
             </div> -->
 
-            <div style="text-align: center;" class="col-md-12">  
-                </br></br>
-                <button onclick="getIDCarrera()" class="btn btn-primary">
+            <div style="text-align: center;" class="col-md-12 form-group">  
+                </br>
+                <button id="guardar" type="submit" onclick="getIDCarrera()" class="btn btn-primary">
                     Guardar Cambios
                 </button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">
@@ -142,8 +100,9 @@
                 </button> 
                 </br></br>
             </div>
-
+ </div>
         </form>
+
     </div>
 
     </br>
