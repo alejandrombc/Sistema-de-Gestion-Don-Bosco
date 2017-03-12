@@ -248,7 +248,6 @@ def getEstudiante():
 
 		return '{}'.format(data)
 
-# TAMBIEN FALTA
 @app.route('/registrarEstudiante', methods=['GET', 'POST'])
 def registrarEstudiante():
 	if(session.get('logged_in')):
@@ -257,7 +256,7 @@ def registrarEstudiante():
 		cedula = request.form.get('cedula')
 		fechaNac = request.form.get('fechaNac')	
 		dateFechaNac = '1900-01-01'
-		if(len(fechaNac) > 0): dateFechaNac = datetime.datetime.strptime(fechaNac, "%d/%m/%Y").strftime("%Y-%m-%d")
+		if(fechaNac != None ): dateFechaNac = datetime.datetime.strptime(fechaNac, "%d/%m/%Y").strftime("%Y-%m-%d")
 		id_carrera = request.form.get('id_carrera')
 		seccion = request.form.get('seccion')
 		correo = request.form.get('correo')
@@ -385,4 +384,4 @@ def send_mail():
 
 
 if __name__ == "__main__":
-	app.run(debug=True, host='127.0.0.1', port=3000)
+	app.run(debug=True, host='192.168.0.105', port=3000)
