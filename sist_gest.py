@@ -7,7 +7,7 @@ from werkzeug.utils import secure_filename
 import datetime, os
 
 #Para el UPLOAD de archivos en el servidor 
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif','rar'])
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif','rar', 'zip'])
 
 app = config_vars.app_conf()
 mail = Mail(app)
@@ -350,37 +350,84 @@ def exportarBD():
 #-----------ENVIAR CORREO Y UPLOAD DE ARCHIVO---------#
 @app.route('/test-mail')
 def test_mail():
-	return render_template("test_mail.html")	
+	return render_template("enviar_correo.html")	
 
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/send-mail', methods=['GET','POST'])
+@app.route('/send_mail', methods=['GET','POST'])
 def send_mail():
 	if session.get('logged_in') and request.method == 'POST':
-		file = request.files['filetype']
+		receptores = []
+		if(request.form['correos'] != None): receptores = request.form['correos'].split(',') #Puedo agregar mas con , 'otrocorreo@gmail.com' etc
+		
+		if(request.form['ResSec'] != ""):
+			uniones = request.form['ResSec'].split(',')
+			id_carreras = []
+			secciones = []
+			for union in uniones:
+				lista = union.split('_')
+				id_carreras.append(lista[0])
+				if(lista[1] == '1'): secciones.append('A')
+				elif(lista[1] == '2'): secciones.append('B')
+				elif(lista[1] == '3'): secciones.append('C')
+				elif(lista[1] == '4'): secciones.append('D')
+				elif(lista[1] == '5'): secciones.append('E')
+				else: secciones.append('F')
+
+			for i in range(0, len(id_carreras)):
+				cursor = mysql.connect().cursor()
+				cursor.execute("SELECT estudiante.correo FROM (SELECT cedula FROM cursa WHERE carrera_id='"+id_carreras[i]+"' AND periodo_id='"+session['ano_esc']+"' AND seccion_actual='"+secciones[i]+"') estudiante_cursando, estudiante WHERE estudiante_cursando.cedula=estudiante.cedula ")
+				correos = cursor.fetchall()
+				for correo in correos: receptores.append(correo[0])
+
+		
 		# if user does not select file, browser also
 		# submit a empty part without filename
-		receptores = ['estudiante.sincorreo.donbosco@gmail.com', 'alejandrombc@gmail.com'] #Puedo agregar mas con , 'otrocorreo@gmail.com' etc
-		titulo = "Examenes finales"
-		body = "Buenas adjunto la planificacion de los examenes finales"
+		titulo = request.form['asunto']
+		body = request.form['Mensaje']
 		msg = Message(
 	              titulo, #Asunto
 		       sender='escuelatecnicadonbosco@gmail.com', #Emisor
 		       bcc=receptores) #Receptor/es
 		msg.body = body #El body del mensaje en caso de no soportar html
-		if file.filename != '':
-			if file and allowed_file(file.filename):
-				filename = secure_filename(file.filename)
-				file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-				with app.open_resource('upload/' + filename) as fp:
-					msg.attach(filename, "application/x-rar-compressed", fp.read()) #El attachment si hay
-				ruta_trabajo = os.getcwd()
-				os.remove(ruta_trabajo + '/upload/' + filename)
+		if (request.files['filetype'] != None): 
+			file = request.files['filetype']
+			if file.filename != '':
+				if file and allowed_file(file.filename):
+					filename = secure_filename(file.filename)
+					file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+					with app.open_resource('upload/' + filename) as fp:
+						msg.attach(filename, "application/x-rar-compressed", fp.read()) #El attachment si hay
+					ruta_trabajo = os.getcwd()
+					os.remove(ruta_trabajo + '/upload/' + filename)
 		msg.html = render_template("correo_template.htm", body=body, titulo=titulo)
 		mail.send(msg)
-		return "Sent"
+		return "Correo enviado!"
+
+@app.route('/enviar_correo', methods=['GET', 'POST'])
+def enviar_correo():
+	if session['ano_esc'] != None:
+
+		# Busco los correos enviados y lo guardo en un arreglo
+		cursor = mysql.connect().cursor()
+		cursor.execute("SELECT correo FROM correo_enviado")
+		correos = cursor.fetchall()
+		correos_enviados = []
+		for correo in correos: correos_enviados.append(correo[0])
+		
+		# Busco las secciones y creo un json asociado
+		cursor.execute("SELECT cantidad FROM seccion WHERE periodo_id=%s", (session['ano_esc']))
+		cantidad_sec = cursor.fetchall()
+
+		listado_secciones = {}
+		for i in range(0, 12): listado_secciones.update({str(i+1):cantidad_sec[i][0]})
+
+		return render_template("enviar_correo.html", Array = correos_enviados, Datos= listado_secciones)
+	else:
+		print("Error no selecciono periodo escolar!")
+		return render_template("ano_escolar.html")
 
 
 if __name__ == "__main__":
