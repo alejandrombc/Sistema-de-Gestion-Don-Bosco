@@ -356,9 +356,12 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/send_mail', methods=['GET','POST'])
+@app.route('/send_mail', methods=['POST'])
 def send_mail():
 	if session.get('logged_in') and request.method == 'POST':
+		print("ALGO AQUI")
+		conn = mysql.connect()
+		cursor = conn.cursor()
 		receptores = []
 		if(request.form['correos'] != None): receptores = request.form['correos'].split(',') #Puedo agregar mas con , 'otrocorreo@gmail.com' etc
 		
@@ -377,7 +380,6 @@ def send_mail():
 				else: secciones.append('F')
 
 			for i in range(0, len(id_carreras)):
-				cursor = mysql.connect().cursor()
 				cursor.execute("SELECT estudiante.correo FROM (SELECT cedula FROM cursa WHERE carrera_id='"+id_carreras[i]+"' AND periodo_id='"+session['ano_esc']+"' AND seccion_actual='"+secciones[i]+"') estudiante_cursando, estudiante WHERE estudiante_cursando.cedula=estudiante.cedula ")
 				correos = cursor.fetchall()
 				for correo in correos: receptores.append(correo[0])
@@ -404,7 +406,27 @@ def send_mail():
 					os.remove(ruta_trabajo + '/upload/' + filename)
 		msg.html = render_template("correo_template.htm", body=body, titulo=titulo)
 		mail.send(msg)
-		return "Correo enviado!"
+		
+		# Luego de enviar el correo actualizo la tabla de correos enviados
+		receptores = [x.strip(' ') for x in receptores] #Le quito los espacios a los elementos
+
+		sql='SELECT correo FROM correo_enviado WHERE correo IN (%s)' 
+		in_p=', '.join(list(map(lambda x: '%s', receptores)))
+		sql = sql % in_p
+		cursor.execute(sql, receptores)
+		lista_correos = cursor.fetchall()
+		correos_usados = []
+		for correo in lista_correos: 
+			correo_sin_espacio = correo[0].replace(' ','')
+			correos_usados.append(correo_sin_espacio)
+
+		correos_a_insertar = list(set(receptores).difference(correos_usados))
+		correos_a_insertar = [x.strip(' ') for x in correos_a_insertar] #Le quito los espacios a los elementos
+
+		for correo in correos_a_insertar: cursor.execute("INSERT INTO correo_enviado (correo) VALUES (%s)", (correo))
+		conn.commit()
+
+		return redirect(url_for('enviar_correo'))
 
 @app.route('/enviar_correo', methods=['GET', 'POST'])
 def enviar_correo():
