@@ -10,6 +10,7 @@ import datetime, os
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif','rar', 'zip'])
 
 app = config_vars.app_conf()
+app.config['TEMPLATES_AUTO_RELOAD'] = True
 mail = Mail(app)
 mysql = MySQL()
 mysql.init_app(app)
@@ -64,6 +65,24 @@ def agregar():
 			return render_template("agregar_ano.html", error=error)
 	else:
 		return render_template("agregar_ano.html")
+
+
+#--------VISTA PERSONAL --------#
+@app.route('/personal_ano', methods=['GET'])
+def def_personal():
+	# Aqui va el g con el ano escolar
+	if session.get('logged_in'):
+		cursor = mysql.connect().cursor()
+		
+		cursor.execute("SELECT estudiante.*, estudiante_temporal.inasistencias, estudiante_temporal.periodo_nombre, estudiante_temporal.seccion_actual FROM (SELECT cursa.cedula,cursa.seccion_actual,cursa.inasistencias, periodo_actual.periodo_nombre  FROM (SELECT periodo_nombre FROM periodo WHERE periodo_id='"+session['ano_esc']+"') periodo_actual, cursa WHERE cursa.periodo_id='"+session['ano_esc']+"' AND carrera_id=1) estudiante_temporal, estudiante WHERE estudiante_temporal.cedula = estudiante.cedula")
+		data = cursor.fetchall()
+
+		cursor.execute("SELECT cantidad FROM seccion WHERE carrera_id=1 AND periodo_id='"+session['ano_esc']+"'")
+		secciones = cursor.fetchall()
+
+		cant_secciones = int(secciones[0][0])
+		return render_template("personal.html", datos=data, cant_secciones=cant_secciones )
+	return redirect(url_for('index'))
 
 
 #--------VISTA ESTUDIANTES--------#
@@ -232,11 +251,35 @@ def buscarEstudiante():
 
 		return render_template("resultado_busqueda_estudiante.html", datos=estudiantes, hayResultado=hayResultado)
 
+@app.route('/buscarPersonal', methods=['POST'])
+def buscarPersonal():
+	if(session.get('logged_in')):
+		busqueda = request.form['busqueda']
+		# print(busqueda)
+		cursor = mysql.connect().cursor()
 
+		if (busqueda != ""):
+			cursor.execute("SELECT * FROM estudiante WHERE " +
+			"cedula LIKE '%"+busqueda+"%' OR nombres LIKE '%"+busqueda+"%' OR apellidos LIKE '%"+busqueda+"%' OR direccion LIKE '%"+busqueda+"%' OR " +
+			"correo LIKE '%"+busqueda+"%' OR numero_de_telefono LIKE '%"+busqueda+"%'" )
+			estudiantes = cursor.fetchall()
+			if(estudiantes != () ):
+				hayResultado = 1
+			else:
+				hayResultado = 0
+		else:
+			hayResultado = 0
+			estudiantes = ""
+
+		return render_template("resultado_busqueda_personal.html", datos=estudiantes, hayResultado=hayResultado)
 
 @app.route('/anadirEstudiante', methods=['GET', 'POST'])
 def anadirEstudiante():
 	if(session.get('logged_in')): return render_template("estudiante_individual.html")	
+
+@app.route('/anadirPersonal', methods=['GET', 'POST'])
+def anadirPersonal():
+	if(session.get('logged_in')): return render_template("personal_individual.html")	
 
 @app.route('/estudiante')
 def getEstudiante():
@@ -453,4 +496,4 @@ def enviar_correo():
 
 
 if __name__ == "__main__":
-	app.run(debug=True, host='192.168.0.105', port=3000)
+	app.run(debug=True, port=3000)

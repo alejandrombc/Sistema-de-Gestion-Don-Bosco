@@ -20,6 +20,12 @@
 		  });
 		});
 
+		$( "#spoiler4" ).click(function() {
+		  $( "#Personal" ).slideToggle( "slow", function() {
+
+		  });
+		});
+
 		$(".group-span-filestyle input-group-btn").css("z-index",0)
 
 
@@ -132,6 +138,15 @@
 			string = string + '</tr></table>'		
 			$("#Secciones3").html(string);
 
+			var string = '<table class="table" style="background-color: #FFFFFF;"><tbody><tr><td><b>Docente:</b></td>'
+			string = string + '<td><input type="checkbox" id="personal_1"></td>';
+			string = string + '</tr><tr><td><b>Administrativo:</b></td>';
+			string = string + '<td><input type="checkbox" id="personal_2"></td>';
+			string = string + "</tr><tr><td><b>Obrero:</b></td>";
+			string = string + '<td><input type="checkbox" id="personal_3"></td>';
+			
+			string = string + '</tr></table>'		
+			$("#Personal").html(string);
 
 	 	} // Fin Funcion
  });

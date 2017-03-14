@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html >
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>Personal - Don Bosco</title>
+
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery-ui.css') }}">
+        <link rel="icon" type="image/png" href="{{ url_for('static', filename='imagenes/favicon.png') }}" sizes="32x32">
+
+        <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/jquery-ui.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/jquery.dataTables.min.js') }}"></script>
+        
+
+        <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/estudiantes.js') }}"></script>
+
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/agregar.css') }}">
+        
+        <style>
+
+            #tabla_resultados table tr:last-child th:first-child {
+                 border-top-left-radius: 10px;
+            }
+
+            #tabla_resultados table tr:last-child th:last-child {
+                 border-top-right-radius: 10px;
+            }
+
+            #tabla_resultados table tr:last-child td:first-child {
+                 border-bottom-left-radius: 10px;
+
+            }
+
+            #tabla_resultados table tr:last-child td:last-child {
+               border-bottom-right-radius: 10px;
+            }
+
+            #tabla_resultados th  {
+                font-size: 15px;
+                font-family: verdana;
+
+            }
+            #tabla_resultados td  {
+                font-size: 15px;
+                font-family: verdana;
+            }
+
+        </style>
+    
+    </head>
+
+    <body>
+
+    <!-- MODAL DETALLE PERSONAL -->
+        <div id="modal_detalle_est" class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">Editar Persona</h4>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <form role="form" action="/editarPersonal" id="modalUpdate" method="POST">
+                            <input type="text" id="real_carrera" hidden name="id_carrera"/>
+                            <div class="col-md-6 form-group">                                   
+
+                                <label>Apellidos:</label>
+                                <input class="form-control" name="apellidos" id="apellidos" type="text" autocomplete="off" value="" /><br>
+
+                                <label>Cédula:</label>
+                                <input class="form-control" name="cedula" id="cedula" type="text" autocomplete="off" pattern="[0-9]{8}" title="Ingrese sólo números" value=""/> 
+
+                                <input name="hiddenCedula" id="hiddenCedula" type="hidden" value=""/> 
+
+                            </div>
+
+                            <div class="col-md-6">                                   
+                                <label>Nombres:</label>
+                                <input class="form-control" name="nombres" id="nombres" type="text" autocomplete="off" value=""/><br>
+
+                                <label>Teléfono Casa:</label>
+                                <input class="form-control" name="telefono" id="telefono" type="text" autocomplete="off" value="" pattern="[0-9]{11}" title="Ingrese sólo números" placeholder="02120000000"/><br>  
+
+            
+                            </div>
+
+      
+                            <div class="col-md-6">                                   
+                                <label>E-Mail:</label>
+                                <input class="form-control" name="correo" id="correo" type="email" autocomplete="off" value="" placeholder="estudiante@correo.com" /></br>
+                                    
+                                
+                                <label>Inasistencias:</label>
+                                <input class="form-control" type="number"  min="0" max="356" id="inasistencia" autocomplete="off" name="inasistencia"/><br>   
+
+                            </div>    
+
+                            <div class="col-md-6 form-group">                                   
+                                <label>Tipo:</label>
+                                <select class="form-control" name="tipo" id="tipo" autocomplete="off"/>
+                                    <option>Docente</option>
+                                    <option>Administrativo</option>
+                                    <option>Obrero</option>
+                                </select><br>   
+                                
+                                <label>Dirección:</label>
+                                <textarea style="resize: vertical;" class="form-control" name="direccion" id="direccion" autocomplete="off"/></textarea><br>
+
+                            </div>
+                       
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                            <button onclick="updateSubmit()" class="btn btn-primary">Aceptar</button>
+                        </div>
+
+                     </form>
+                </div>
+            </div>
+        </div>
+        <!-- END MODAL -->
+
+        <!-- Incluir el archivo del navbar -->
+        {% include "navbar2.html" %} 
+
+        <div id="spaces" hidden>
+            <br><br><br><br>
+        </div>
+        <div class="container-fluid">
+            
+            <div class="row">
+                <div class="col-md-8 col-md-offset-2"> 
+
+                    {% if hayResultado == 1 %}
+                        <h3 style="color:white;" align="center">Resultados</h3> 
+                        <div id="tabla_resultados" class="table-responsive">  
+                            <div>
+                                <table class="table">
+                                    <thead>
+                                        <tr class="success">
+                                            <th>
+                                                Cédula
+                                            </th>
+                                            <th>
+                                                Nombre
+                                            </th>
+                                            <th>
+                                                Apellido
+                                            </th>
+                                            <th>
+                                                E-mail
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% if datos %}
+                                            {% for estudiante in datos %}
+                                                <tr id='{{estudiante[0]}}' class="active"> 
+                                                    <td class='cedulaEstudiante editarEstudiante ' onclick="mostrarDetalleEstudiante({{estudiante[0]}})">{{estudiante[0]}}</td>
+                                                    <td class='editarEstudiante' onclick="mostrarDetalleEstudiante({{estudiante[0]}})">{{estudiante[1]}}</td>
+                                                    <td class='editarEstudiante' onclick="mostrarDetalleEstudiante({{estudiante[0]}})">{{estudiante[2]}}</td>
+                                                    <td class='editarEstudiante' onclick="mostrarDetalleEstudiante({{estudiante[0]}})">{{estudiante[4]}}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                    </div>
+                    {% else %}
+                        <h3 style="color:white;" align="center">No se encontró ningún resultado</h3> 
+                    {% endif %}  
+            </div>
+        </div>
+    </body>
+</html>

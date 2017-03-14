@@ -2,6 +2,7 @@
  <!-- enviar_correo.css -->
 <head>
 	<meta charset="UTF-8">
+    <title>Enviar correo - Don Bosco</title>
 	<!--  Importando estilos-->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/enviar_correo.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
@@ -45,12 +46,16 @@
                                         <div class="col-md-3"></div>
                                         <div class="col-md-6" id="div_inf">
                                         	<!-- Aquí toca agregar las secciones con los selects-->
+
                                             <input type="button" class="btn" id="spoiler1" value="4to Año" />
                                             <div id="Secciones" class="form-group" style="display: none;"></div>
                                             <input type="button" class="btn" id="spoiler2" value="5to Año"/>
                                             <div id="Secciones2" class="form-group" style="display: none;"></div>
                                             <input type="button" class="btn" id="spoiler3" value="6to Año"/>
                                             <div id="Secciones3" class="form-group" style="display: none;"></div>
+                                            <input type="button" class="btn" id="spoiler4" value="Personal" />
+                                            <div id="Personal" class="form-group" style="display: none;"></div>
+
                                             <br>
                                             <!-- Emails -->
                                             <div id="div_correo" class="form-group" style=" margin-top: 2%;" >
