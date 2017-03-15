@@ -3,15 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Año Escolar - Escuela Técnica Popular Don Bosco</title>
+  <title>Configuración - Escuela Técnica Popular Don Bosco</title>
   
   <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery-ui.css') }}">
   <link rel="icon" type="image/png" href="{{ url_for('static', filename='imagenes/favicon.png') }}" sizes="32x32">
 
+
   <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/sha.js') }}"></script>
   <script src="{{ url_for('static', filename='js/config.js') }}"></script>
+
 
   <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
@@ -21,42 +22,47 @@
   
 </head><br>
 <body>
-<!-- INICIO DE MODAL DE CONFIRMACION -->
-<div id="modal_config" class="modal fade">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">Confirmación</h4>
-            </div>
-            <div class="modal-body">
-                <p id="confir"></p>
-                <p>Está a punto de entrar en la configuración, por seguridad ingrese la contraseña nuevamente: </p>
-                <center><input type="password" style="width:100%; border-radius: 4px; border: 1px solid #ccc;" id="password"></center><br>
-            </div>
-            <div class="modal-footer">
-                  <form id="contact" style="float: right;" method="GET" action="/configuracion">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" >Cancelar</button>
-                    <button type="submit" id="realSumbit" disabled class="btn btn-info">Ingresar</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- END MODAL -->
+{% if (sucess) %}
+<script type="text/javascript">
+  $(document).ready(function() 
+    {
+      $("#success-alert").fadeTo(2000, 500).slideUp(500, function(){
+        $("#success-alert").slideUp(500);
+      });
+  });
+</script>
+{% endif %}
 
+<center><img id="toplogo" src="{{ url_for('static', filename='imagenes/Logo_DonBosco.png') }}"></center><br>
+{% if (sucess) %}
+  <div class="alert alert-success" id="success-alert">
+    <strong>Éxito!</strong> {{sucess}}
+  </div>
+{% endif %}
 
-<center><img id="toplogo" onclick="openModal()" src="{{ url_for('static', filename='imagenes/Logo_DonBosco.png') }}"></center><br>
+  <div id="wrapper">
+
+      <div id="container">
+
+          <a id="button" href="/seleccion"><span class="glyphicon glyphicon-circle-arrow-left"></span></a>
+
+      </div>
+
+  </div>
+
 <center>
+  <form id="formLoad" enctype="multipart/form-data" method="POST" action="/cargarBD">
+    <input type="file" id="filename" name="archivo" style="display:none;">
+  </form>
   <div class="btn gridcontainer clearfix">
   <div class="row">
   <div class="col-md-4" id="prueba">
       <div class="grid_3">
         <div class="fmcircle_out">
-          <a href="/seleccionar">
+          <a href="/exportarBD">
             <div class="fmcircle_border">
               <div class="fmcircle_in fmcircle_blue">
-                <span style="margin-left:6px;">Seleccionar Año</span><img src="{{ url_for('static', filename='imagenes/mouse.png') }}" alt="" />
+                <span style="margin-left:6px;">Exportar BD</span><img src="{{ url_for('static', filename='imagenes/exportar.png') }}" alt="" />
               </div>
             </div>
           </a>
@@ -67,10 +73,10 @@
     <div class="col-md-4">
       <div class="grid_3">
         <div class="fmcircle_out">
-          <a href="/agregar">
+          <a href="#" onclick="openFile()">
             <div class="fmcircle_border">
               <div class="fmcircle_in fmcircle_green">
-                <span style="margin-left:6px;">Añadir Año</span><img src="{{ url_for('static', filename='imagenes/plus.png') }}" alt="" />
+                <span style="margin-left:6px;">Cargar BD</span><img src="{{ url_for('static', filename='imagenes/cargar.ico') }}" alt="" />
               </div>
             </div>
           </a>
@@ -81,10 +87,10 @@
   <div class="col-md-4">
     <div class="grid_3">
       <div class="fmcircle_out">
-        <a href="/eliminar">
+        <a href="/cerrar_sesion">
           <div class="fmcircle_border">
             <div class="fmcircle_in fmcircle_red">
-              <span style="margin-left:6px;">Eliminar Año</span><img src="{{ url_for('static', filename='imagenes/cross.png') }}" alt="" />
+              <span style="margin-left:6px;">Cerrar sesión</span><img src="{{ url_for('static', filename='imagenes/cerrar.png') }}" alt="" />
             </div>
           </div>
         </a>

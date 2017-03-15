@@ -11,6 +11,7 @@ def app_conf():
 	app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 	app.secret_key = "Estodeberiaserandom"
 
+	app.config['TEMPLATES_AUTO_RELOAD'] = True	
 	#Para enviar un correo
 	app.config['MAIL_SERVER']='smtp.gmail.com'
 	app.config['MAIL_PORT'] = 465

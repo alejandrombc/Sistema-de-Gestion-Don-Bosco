@@ -6,11 +6,11 @@ from flask_mail import Mail, Message #pip install Flask-Mail
 from werkzeug.utils import secure_filename
 import datetime, os
 
+
 #Para el UPLOAD de archivos en el servidor 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif','rar', 'zip'])
 
 app = config_vars.app_conf()
-app.config['TEMPLATES_AUTO_RELOAD'] = True
 mail = Mail(app)
 mysql = MySQL()
 mysql.init_app(app)
@@ -33,6 +33,12 @@ def seleccionarPersona():
 @app.route('/seleccion')
 def seleccionar():
 	return sist_gest_functs.selec_funct(session)
+
+#Funcion seleccionar que muestra la ventana luego del logueo
+@app.route('/configuracion', methods=['GET'])
+def configuracion():
+	if(session.get('logged_in')): return render_template("configuracion.html")
+	return redirect(url_for('index'))
 
 @app.route('/agregar', methods=['GET','POST'])
 def agregar():
@@ -83,6 +89,31 @@ def def_personal():
 		cant_secciones = int(secciones[0][0])
 		return render_template("personal.html", datos=data, cant_secciones=cant_secciones )
 	return redirect(url_for('index'))
+
+@app.route('/buscarPersonal', methods=['POST'])
+def buscarPersonal():
+	if(session.get('logged_in')):
+		busqueda = request.form['busqueda']
+		# print(busqueda)
+		cursor = mysql.connect().cursor()
+
+		if (busqueda != ""):
+			cursor.execute("SELECT * FROM estudiante WHERE " +
+			"cedula LIKE '%"+busqueda+"%' OR nombres LIKE '%"+busqueda+"%' OR apellidos LIKE '%"+busqueda+"%' OR direccion LIKE '%"+busqueda+"%' OR " +
+			"correo LIKE '%"+busqueda+"%' OR numero_de_telefono LIKE '%"+busqueda+"%'" )
+			estudiantes = cursor.fetchall()
+			if(estudiantes != () ):
+				hayResultado = 1
+			else:
+				hayResultado = 0
+		else:
+			hayResultado = 0
+			estudiantes = ""  
+		return render_template("resultado_busqueda_personal.html", datos=estudiantes, hayResultado=hayResultado)
+
+@app.route('/anadirPersonal', methods=['GET', 'POST'])
+def anadirPersonal():
+	if(session.get('logged_in')): return render_template("personal_individual.html")	
 
 
 #--------VISTA ESTUDIANTES--------#
@@ -251,35 +282,11 @@ def buscarEstudiante():
 
 		return render_template("resultado_busqueda_estudiante.html", datos=estudiantes, hayResultado=hayResultado)
 
-@app.route('/buscarPersonal', methods=['POST'])
-def buscarPersonal():
-	if(session.get('logged_in')):
-		busqueda = request.form['busqueda']
-		# print(busqueda)
-		cursor = mysql.connect().cursor()
 
-		if (busqueda != ""):
-			cursor.execute("SELECT * FROM estudiante WHERE " +
-			"cedula LIKE '%"+busqueda+"%' OR nombres LIKE '%"+busqueda+"%' OR apellidos LIKE '%"+busqueda+"%' OR direccion LIKE '%"+busqueda+"%' OR " +
-			"correo LIKE '%"+busqueda+"%' OR numero_de_telefono LIKE '%"+busqueda+"%'" )
-			estudiantes = cursor.fetchall()
-			if(estudiantes != () ):
-				hayResultado = 1
-			else:
-				hayResultado = 0
-		else:
-			hayResultado = 0
-			estudiantes = ""
-
-		return render_template("resultado_busqueda_personal.html", datos=estudiantes, hayResultado=hayResultado)
 
 @app.route('/anadirEstudiante', methods=['GET', 'POST'])
 def anadirEstudiante():
 	if(session.get('logged_in')): return render_template("estudiante_individual.html")	
-
-@app.route('/anadirPersonal', methods=['GET', 'POST'])
-def anadirPersonal():
-	if(session.get('logged_in')): return render_template("personal_individual.html")	
 
 @app.route('/estudiante')
 def getEstudiante():
@@ -381,20 +388,62 @@ def recuperar_anos():
 		conn.commit()
 		return redirect(url_for('recuperar_ano'))
 
-#-----------FUNCIONES DE CARGAR Y EXPORTAR BD---------#
+#-----------FUNCIONES DE CARGAR, EXPORTAR BD Y CERRAR---------#
 @app.route('/exportarBD', methods=['GET'])
 def exportarBD():
 	if(session.get('logged_in')):
-		password = 123
-		os.system('mysqldump -u root -p%s don_bosco > database.sql' % password)
-		return "Done!"
+		#DEBE ESTAR EN EL PATH DE WINDOWS EL MYSQLDUMP
+		password = 123 #Clave de la BD
+		os.system('mysqldump -u root -p%s don_bosco > BaseDeDatos_DonBosco.sql' % password)
+		sucess = "¡Exportado realizado correctamente!"
+		return render_template("configuracion.html", sucess=sucess)
+	return redirect(url_for('index'))
+
+def run_sql_file(filename, connection):
+    sql = s = " ".join(filename.readlines())
+    cursor = connection.cursor()
+    cursor.execute(sql)    
+    connection.commit()
+    
+    return True
+
+
+@app.route('/cargarBD', methods=['POST'])
+def cargarBD():
+	if(session.get('logged_in')):
+		file = request.files['archivo']
+		print(file)
+		conn = mysql.connect()
+		cursor = conn.cursor()
+		cursor.execute("DROP TABLE IF EXISTS cursa")
+		cursor.execute("DROP TABLE IF EXISTS seccion")
+		cursor.execute("DROP TABLE IF EXISTS carrera")
+		cursor.execute("DROP TABLE IF EXISTS periodo")
+		cursor.execute("DROP TABLE IF EXISTS estudiante")
+		cursor.execute("DROP TABLE IF EXISTS correo_enviado")
+		conn.commit()
+		filename = secure_filename(file.filename)
+		file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+		filepath = "upload/"+file.filename 
+		with open(filepath, encoding="utf8", errors='replace') as infile:
+			sucess = "¡Cargado realizado correctamente!"
+			run_sql_file(infile, conn)
+		ruta_trabajo = os.getcwd()
+		os.remove(ruta_trabajo + '/upload/' + filename)
+		return render_template("configuracion.html", sucess=sucess)
+
+	return redirect(url_for('index'))
+
+@app.route('/cerrar_sesion', methods=['GET'])
+def cerrar_sesion():
+	if(session.get('logged_in')): 
+		session.pop('logged_in', None)
+		return redirect(url_for('index'))
+
 
 
 #-----------ENVIAR CORREO Y UPLOAD DE ARCHIVO---------#
-@app.route('/test-mail')
-def test_mail():
-	return render_template("enviar_correo.html")	
-
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -402,7 +451,7 @@ def allowed_file(filename):
 @app.route('/send_mail', methods=['POST'])
 def send_mail():
 	if session.get('logged_in') and request.method == 'POST':
-		print("ALGO AQUI")
+
 		conn = mysql.connect()
 		cursor = conn.cursor()
 		receptores = []
@@ -449,7 +498,7 @@ def send_mail():
 					os.remove(ruta_trabajo + '/upload/' + filename)
 		msg.html = render_template("correo_template.htm", body=body, titulo=titulo)
 		mail.send(msg)
-		
+
 		# Luego de enviar el correo actualizo la tabla de correos enviados
 		receptores = [x.strip(' ') for x in receptores] #Le quito los espacios a los elementos
 
@@ -496,4 +545,4 @@ def enviar_correo():
 
 
 if __name__ == "__main__":
-	app.run(debug=True, port=3000)
+	app.run(debug=True, host='127.0.0.1', port=3000)
