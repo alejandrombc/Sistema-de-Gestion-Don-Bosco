@@ -2,7 +2,6 @@
  <!-- enviar_correo.css -->
 <head>
 	<meta charset="UTF-8">
-    <title>Enviar correo - Don Bosco</title>
 	<!--  Importando estilos-->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/enviar_correo.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
@@ -17,9 +16,6 @@
     <!-- Importando JQuery Autocompete, se necesita internet: -->
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <!-- Importando la libreria para el editor de texto, se necesita internet -->
-    <link href="https://cdn.quilljs.com/1.2.2/quill.snow.css" rel="stylesheet">
-    <script src="https://cdn.quilljs.com/1.2.2/quill.js"></script>
     <!-- Otros -->
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='imagenes/favicon.png') }}" sizes="32x32">
 
@@ -46,16 +42,12 @@
                                         <div class="col-md-3"></div>
                                         <div class="col-md-6" id="div_inf">
                                         	<!-- Aquí toca agregar las secciones con los selects-->
-
-                                            <input type="button" class="btn" id="spoiler1" value="4to Año" />
+                                            <button type="button" class="btn btn-primary" id="spoiler1" value="4to Año">4to Año</button>
                                             <div id="Secciones" class="form-group" style="display: none;"></div>
-                                            <input type="button" class="btn" id="spoiler2" value="5to Año"/>
+                                            <button type="button" class="btn btn-primary" id="spoiler2" value="5to Año">5to Año</button>
                                             <div id="Secciones2" class="form-group" style="display: none;"></div>
-                                            <input type="button" class="btn" id="spoiler3" value="6to Año"/>
+                                            <button type="button" class="btn btn-primary" id="spoiler3" value="6to Año">6to Año</button>
                                             <div id="Secciones3" class="form-group" style="display: none;"></div>
-                                            <input type="button" class="btn" id="spoiler4" value="Personal" />
-                                            <div id="Personal" class="form-group" style="display: none;"></div>
-
                                             <br>
                                             <!-- Emails -->
                                             <div id="div_correo" class="form-group" style=" margin-top: 2%;" >
@@ -72,7 +64,8 @@
 	                                        <!-- Area de texto donde contendra un array con las secciones-->
 	                                        <textarea id="text_area2" name="ResSec" style="display: none;"></textarea>
                                             <!-- Adjuntar un archivo -->
-    										<div class="form-group" style=" margin-top: 10%;" >
+                                                <strong>Extensiones permitidas: [ .RAR  .ZIP  .DOCX  .PPT  .XLS  .PDF  .PNG  .JPEG  .JPG  .BMP ]</strong>
+    										<div class="form-group" style=" margin-top: 5%;" >
     											<input type="file" id="fileinput" class="filestyle" name="filetype" data-buttonBefore="true" >
     										</div>
                                             <!-- Boton de enviado -->
@@ -97,19 +90,24 @@
                 // Funcion para validar los correos del campo correo
              	function Validar(){
              		var i; 					// Contador del ciclo
+                    var bool = false;
              		var Correos = $('#tokenfield').val();
              		var emailRegex = /\S+@\S+\.\S+/;
+                    if ( Correos != "" ) {
+                        bool = true;
              		Correos = Correos.split(",");				// Guardamos los correos en un array
                     /* Validar si el campo de correos esta vacio */
-             		for (i=0;i<Correos.length;i++) {
-             			// Buscamos si existe  un correo inválido
-             			if (emailRegex.test( Correos[i] ) != true ) {             				
-         					$('#div_correo').attr('class', 'form-group has-error has-feedback');
-         					$('#div_correo').append('<span id="glyphicon_error" class="glyphicon glyphicon-remove form-control-feedback" ></span>');
-         					alert("El campo de emails tiene un correo inválido");
-							return false;
-             			}
-             		}
+                 		for (i=0;i<Correos.length;i++) {
+                 			// Buscamos si existe  un correo inválido
+                 			if (emailRegex.test( Correos[i] ) != true ) {             				
+             					$('#div_correo').attr('class', 'form-group has-error has-feedback');
+             					$('#div_correo').append('<span id="glyphicon_error" class="glyphicon glyphicon-remove form-control-feedback" ></span>');
+             					alert("El campo de emails tiene un correo inválido");
+    							return false;
+                 			}
+                            
+                 		}
+                    }
              		// Adjunto el mensaje en el text_area y text_area2
              		var data = {{ Datos|tojson }};
              		var Arr = [];
@@ -121,8 +119,16 @@
 	             			}
              			}
              		}
+                    if ( Arr != "") {
+                        bool = true;
+                    }
              		// Guardo las secciones
              		$("#text_area2").text(Arr);
+                    // Verificamos que al menos haya un destino:
+                    if ( bool == false ) {
+                        alert("No hay destinos, ingrese al menos una seccion o un correo");
+                        return false;
+                    }
              		// Buscamos el nombre del archivo
              		var x = document.getElementById("fileinput");
 				    var txt = "";
@@ -151,7 +157,20 @@
              		return true;
 				}
 
+
+
                 </script>
 
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Correo Enviado correctamente!!</h4>
+        </div>
+    </div>
+  </div>
 
 </body>
