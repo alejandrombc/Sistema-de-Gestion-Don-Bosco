@@ -3,6 +3,7 @@ Flask (con url_for, redirect, session, render template, etc)
 mysql flask (no me acuerdo exactamente cual)
 hashlib (para el sha256)
 
+pip install mysqlclient
 
 Para hacer que el vbs se ejecute al iniciar escribir en windows gpedit.msc y ahi seleccionar "Configuracion del equipo"->"Configuracion de Windows"->"Scrips"->"Inicio" y ahi agregar el .vbs y listo
 
