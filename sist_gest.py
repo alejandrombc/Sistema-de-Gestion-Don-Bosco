@@ -5,6 +5,7 @@ from flaskext.mysql import MySQL
 from flask_mail import Mail, Message #pip install Flask-Mail
 from werkzeug.utils import secure_filename
 import datetime, os
+import MySQLdb as db
 
 
 #Para el UPLOAD de archivos en el servidor 
@@ -412,17 +413,13 @@ def run_sql_file(filename, connection):
 def cargarBD():
 	if(session.get('logged_in')):
 		file = request.files['archivo']
-		print(file)
-		conn = mysql.connect()
+		conn = db.connect(host="localhost", user="root", passwd="123")
 		cursor = conn.cursor()
-		cursor.execute("DROP TABLE IF EXISTS cursa")
-		cursor.execute("DROP TABLE IF EXISTS seccion")
-		cursor.execute("DROP TABLE IF EXISTS carrera")
-		cursor.execute("DROP TABLE IF EXISTS periodo")
-		cursor.execute("DROP TABLE IF EXISTS estudiante")
-		cursor.execute("DROP TABLE IF EXISTS correo_enviado")
-		conn.commit()
+		cursor.execute("DROP DATABASE IF EXISTS don_bosco")
+		cursor.execute("CREATE DATABASE don_bosco")
+
 		filename = secure_filename(file.filename)
+		conn = mysql.connect()
 		file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
 		filepath = "upload/"+file.filename 
