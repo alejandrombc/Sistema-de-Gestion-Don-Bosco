@@ -150,6 +150,45 @@ INSERT INTO `periodo` VALUES (1,'2016-2017',0);
 /*!40000 ALTER TABLE `periodo` ENABLE KEYS */;
 UNLOCK TABLES;
 
+-- Volcando estructura para tabla don_bosco.tipo_trabajador
+CREATE TABLE  `tipo_trabajador` (
+  `id_tipo` int(1) NOT NULL,
+  `cargo` varchar(255) NOT NULL,
+  PRIMARY KEY (`id_tipo`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
+
+-- Volcando datos para la tabla don_bosco.tipo_trabajador
+INSERT INTO `tipo_trabajador` (`id_tipo`, `cargo`) VALUES
+(1, 'Docente'),
+(2, 'Administrativo'),
+(3, 'Obrero');
+
+-- Volcando estructura para tabla don_bosco.personal
+CREATE TABLE IF NOT EXISTS `personal` (
+  `Cedula` int(11) NOT NULL COMMENT 'Cedula del trabajador',
+  `Tipo` int(1) NOT NULL COMMENT 'Tipo de trabajador',
+  `Nombres` varchar(50) NOT NULL COMMENT 'Nombre del trabajador',
+  `Apellidos` varchar(50) NOT NULL COMMENT 'Apellido del trabajador',
+  `Direccion` varchar(100) DEFAULT NULL COMMENT 'Direccion del trabajador',
+  `Correo` varchar(50) DEFAULT NULL COMMENT 'Correo del trabajador',
+  `Numero_de_telefono` varchar(50) DEFAULT NULL COMMENT 'Numero de telefono del trabajador',
+  CONSTRAINT `Tipo` FOREIGN KEY (`Tipo`) REFERENCES `tipo_trabajador` (`id_tipo`),
+  PRIMARY KEY (`Cedula`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Informacion de trabajadores de la escuela tecnica popular don bosco';
+
+-- Volcando estructura para tabla don_bosco.trabaja
+CREATE TABLE IF NOT EXISTS `trabaja` (
+  `Cedula` int(11) NOT NULL COMMENT 'Cedula de los trabajadores',
+  `Tipo` int(1) NOT NULL COMMENT 'Tipo de trabajador',
+  `Periodo_ID` int(11) NOT NULL COMMENT 'ID del periodo lectivo',
+  `Inasistencias` smallint(6) NOT NULL DEFAULT '0' COMMENT 'Las inasistencias del estudiante en ese periodo',
+  PRIMARY KEY (`Cedula`,`Periodo_ID`),
+  KEY `Periodo` (`Periodo_ID`),
+  CONSTRAINT `Cedula_Trabajador` FOREIGN KEY (`Cedula`) REFERENCES `personal` (`Cedula`),
+  CONSTRAINT `Tipo_Trabajador` FOREIGN KEY (`Tipo`) REFERENCES `personal` (`Tipo`),
+  CONSTRAINT `Periodo_Trabajador` FOREIGN KEY (`Periodo_ID`) REFERENCES `periodo` (`Periodo_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Relacion entre los trabajadores y el periodo';
+
 --
 -- Table structure for table `seccion`
 --
