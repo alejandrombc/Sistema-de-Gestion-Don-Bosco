@@ -14,7 +14,7 @@
         
 
         <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/estudiantes.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/personal.js') }}"></script>
 
         <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/agregar.css') }}">
@@ -55,7 +55,7 @@
     <body>
 
     <!-- MODAL DETALLE PERSONAL -->
-        <div id="modal_detalle_est" class="modal fade">
+        <div id="modal_detalle_per" class="modal fade">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -66,14 +66,14 @@
                     <div class="modal-body">
 
                         <form role="form" action="/editarPersonal" id="modalUpdate" method="POST">
-                            <input type="text" id="real_carrera" hidden name="id_carrera"/>
+                            <input type="text" id="real_tipo" hidden name="id_tipo"/>
                             <div class="col-md-6 form-group">                                   
 
                                 <label>Apellidos:</label>
                                 <input class="form-control" name="apellidos" id="apellidos" type="text" autocomplete="off" value="" /><br>
 
                                 <label>Cédula:</label>
-                                <input class="form-control" name="cedula" id="cedula" type="text" autocomplete="off" pattern="[0-9]{8}" title="Ingrese sólo números" value=""/> 
+                                <input class="form-control" name="cedula" id="cedula" type="text" autocomplete="off" pattern="[0-9]{6,}" title="Ingrese sólo números" value=""/> 
 
                                 <input name="hiddenCedula" id="hiddenCedula" type="hidden" value=""/> 
 
@@ -92,7 +92,7 @@
       
                             <div class="col-md-6">                                   
                                 <label>E-Mail:</label>
-                                <input class="form-control" name="correo" id="correo" type="email" autocomplete="off" value="" placeholder="estudiante@correo.com" /></br>
+                                <input class="form-control" name="correo" id="correo" type="email" autocomplete="off" value="" placeholder="personal@correo.com" /></br>
                                     
                                 
                                 <label>Inasistencias:</label>
@@ -160,12 +160,12 @@
                                     </thead>
                                     <tbody>
                                         {% if datos %}
-                                            {% for estudiante in datos %}
-                                                <tr id='{{estudiante[0]}}' class="active"> 
-                                                    <td class='cedulaEstudiante editarEstudiante ' onclick="mostrarDetalleEstudiante({{estudiante[0]}})">{{estudiante[0]}}</td>
-                                                    <td class='editarEstudiante' onclick="mostrarDetalleEstudiante({{estudiante[0]}})">{{estudiante[1]}}</td>
-                                                    <td class='editarEstudiante' onclick="mostrarDetalleEstudiante({{estudiante[0]}})">{{estudiante[2]}}</td>
-                                                    <td class='editarEstudiante' onclick="mostrarDetalleEstudiante({{estudiante[0]}})">{{estudiante[4]}}</td>
+                                            {% for personal in datos %}
+                                                <tr id='{{personal[0]}}' class="active"> 
+                                                    <td class='cedulaPersonal editarPersonal ' onclick="mostrarDetallePersonal({{personal[0]}})">{{personal[0]}}</td>
+                                                    <td class='editarPersonal' onclick="mostrarDetallePersonal({{personal[0]}})">{{personal[1]}}</td>
+                                                    <td class='editarPersonal' onclick="mostrarDetallePersonal({{personal[0]}})">{{personal[2]}}</td>
+                                                    <td class='editarPersonal' onclick="mostrarDetallePersonal({{personal[0]}})">{{personal[4]}}</td>
                                                 </tr>
                                             {% endfor %}
                                         {% endif %}

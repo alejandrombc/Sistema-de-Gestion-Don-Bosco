@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+ <!-- enviar_correo.css -->
+<head>
+	<meta charset="UTF-8">
+	<!--  Importando estilos-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/enviar_correo.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-tokenfield.min.css') }}">
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+     <!-- Importando scripts-->
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap-tokenfield.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/enviar_correo_personal.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap-filestyle.min.js') }}"></script>
+    <!-- Importando JQuery Autocompete, se necesita internet: -->
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <!-- Otros -->
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='imagenes/favicon.png') }}" sizes="32x32">
+
+</head>
+
+<body background="static/imagenes/fondo.jpg">
+     {% include "navbar.html" %} 
+                <br>
+                <!-- Form Area -->
+                <div class="contact-form">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-5"></div>
+                            <div class="col-md-3">
+                                <img id="toplogo" src="{{ url_for('static', filename='imagenes/Logo_DonBosco.png') }}">
+                            </div>
+                        </div>
+                        <br><br>
+                        <div class="row">
+                            <!-- Form -->
+                            <form method="post" action="send_mail" enctype="multipart/form-data" id="formulario" onsubmit="return Validar();" >
+                                <!-- Inputs -->
+
+                                        <div class="col-md-3"></div>
+                                        <div class="col-md-6" id="div_inf">
+                                        	<!-- Aquí toca agregar las secciones con los selects-->
+                                            <button type="button" class="btn btn-primary" id="spoiler1" value="4to Año">4to Año</button>
+                                            <div id="Secciones" class="form-group" style="display: none;"></div>
+                                            <button type="button" class="btn btn-primary" id="spoiler2" value="5to Año">5to Año</button>
+                                            <div id="Secciones2" class="form-group" style="display: none;"></div>
+                                            <button type="button" class="btn btn-primary" id="spoiler3" value="6to Año">6to Año</button>
+                                            <div id="Secciones3" class="form-group" style="display: none;"></div>
+                                            <br>
+                                            <!-- Emails -->
+                                            <div id="div_correo" class="form-group" style=" margin-top: 2%;" >
+                                            	<input type="text" name="correos" style="height: 200px;" placeholder="Escriba los correos aquí" class="form-control" data-role="tagsinput" id="tokenfield"/>
+                                            </div>
+                                            <!-- Asunto -->
+                                            <div class="form-group">
+                                            	<input type="text" name="asunto" id="subject" required="required" class="form-control" placeholder="Asunto del correo"  style=" z-index: 0" />
+                                            </div>
+	                                        <!-- Area de texto donde contendra el mensaje-->
+                                            <div class="form-group">
+	                                        <textarea id="text_area" class="form-control" placeholder="Contenido del correo" name="Mensaje" style="resize: vertical; margin-top: 2%; height: 200px;"></textarea>
+                                             </div>
+	                                        <!-- Area de texto donde contendra un array con las secciones-->
+	                                        <textarea id="text_area2" name="ResSec" style="display: none;"></textarea>
+                                            <!-- Adjuntar un archivo -->
+    										<div class="form-group" style=" margin-top: 5%;" >
+    											<input type="file" id="fileinput" class="filestyle" name="filetype" data-buttonBefore="true" >
+    										</div>
+    										<div class="alert alert-warning">
+  												Extensiones permitidas:<p style="font-size: 14px;"> [ <strong>.RAR </strong>, <strong>.ZIP</strong> , <strong>.DOCX</strong> , <strong>.PPT</strong> , <strong>.XLS</strong> , <strong>.PDF</strong> , <strong>.PNG</strong> , <strong>.JPEG</strong> , <strong>.JPG</strong> , <strong>.BMP</strong> ]</p>
+											</div>
+                                                
+                                            <!-- Boton de enviado -->
+                                            <button type="submit" id="submit" name="submit" class="form-btn semibold" style="margin-bottom: 15%;">Enviar Mensaje</button> 
+                                        </div>
+                            </form>
+                        </div>
+                    </div>
+                </div><!-- End Contact Form Area -->
+
+
+                <script type="text/javascript">
+                // Opcion para dar estilo al fileinput
+                $(":file").filestyle({buttonBefore: true});
+                // Funcion adicional para JQuery autocomplete 
+                function Retornar(){
+                	return {{ Array|tojson }};
+                }
+                function Retornar2(){
+                    return {{ Datos|tojson }};
+                }
+                // Funcion para validar los correos del campo correo
+             	function Validar(){
+             		var i; 					// Contador del ciclo
+                    var bool = false;
+             		var Correos = $('#tokenfield').val();
+             		var emailRegex = /\S+@\S+\.\S+/;
+                    if ( Correos != "" ) {
+                        bool = true;
+             		Correos = Correos.split(",");				// Guardamos los correos en un array
+                    /* Validar si el campo de correos esta vacio */
+                 		for (i=0;i<Correos.length;i++) {
+                 			// Buscamos si existe  un correo inválido
+                 			if (emailRegex.test( Correos[i] ) != true ) {             				
+             					$('#div_correo').attr('class', 'form-group has-error has-feedback');
+             					$('#div_correo').append('<span id="glyphicon_error" class="glyphicon glyphicon-remove form-control-feedback" ></span>');
+             					alert("El campo de emails tiene un correo inválido");
+    							return false;
+                 			}
+                            
+                 		}
+                    }
+             		// Adjunto el mensaje en el text_area y text_area2
+             		var data = {{ Datos|tojson }};
+             		var Arr = [];
+             		for (i=1; i<=12;i++) {
+             			for (j=1; j<=data[i.toString()]; j++) {
+	             			x = i.toString() + '_' + j.toString();
+	             			if ( $("#"+x).is(":checked") ) {
+	             				Arr.push(x);
+	             			}
+             			}
+             		}
+                    if ( Arr != "") {
+                        bool = true;
+                    }
+             		// Guardo las secciones
+             		$("#text_area2").text(Arr);
+                    // Verificamos que al menos haya un destino:
+                    if ( bool == false ) {
+                        alert("No hay destinos, ingrese al menos una seccion o un correo");
+                        return false;
+                    }
+             		// Buscamos el nombre del archivo
+             		var x = document.getElementById("fileinput");
+				    var txt = "";
+				    if ('files' in x) {
+				        if (x.files.length == 0) {
+				            return true;
+				        } else {
+				            for (var i = 0; i < x.files.length; i++) {
+				                var file = x.files[i];
+				                if ('name' in file) {
+				                    txt += file.name;
+				                }
+				            }
+				        }
+				    } 
+				    // Verificamos el formato:
+				    var last = txt.substr(txt.length - 4);
+				    if ( last == ".rar" || last == ".zip" || last == ".pdf" || last == ".png" || last == ".bmp" || last == ".jpg" || last == "jpeg" || last == ".docx" || last == ".ppt" || last == "xls"){
+				    	return true;
+				    }else{
+				    	alert("Formato adjunto inválido");
+				    	return false;
+				    }
+
+             		// De no haber ningun probema, se retorna true.
+             		return true;
+				}
+
+
+
+                </script>
+
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Correo Enviado correctamente!!</h4>
+        </div>
+    </div>
+  </div>
+
+</body>

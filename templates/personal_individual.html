@@ -15,7 +15,7 @@
     
 
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/estudiantes.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/personal.js') }}"></script>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/agregar.css') }}">
@@ -27,12 +27,12 @@
     {% include "navbar2.html" %} 
 
     <div class="container-fluid">
-        <!--Redirigir a vista de estudiantes y realizar consulta en BD, primero se debe chequear que el estudiante no esté repetido -->
+        <!--Redirigir a vista de personal y realizar consulta en BD, primero se debe chequear que el personal no esté repetido -->
         <center><img id="toplogo" src="{{ url_for('static', filename='imagenes/Logo_DonBosco.png') }}"></center><br><br>
 
 
 
-        <form role="form" id="formEstudiante" action="registrarEstudiante" method="POST">
+        <form role="form" id="formPersonal" action="registrarPersonal" method="POST">
 
             <div class="row">
             <br>
@@ -40,7 +40,7 @@
                 <label>Apellidos:</label>
                 <input class="form-control" name="apellidos" id="apellidos" type="text" required="true" autocomplete="off" value="" /><br>
                 <label>Cédula:</label>
-                <input class="form-control" name="cedula" id="cedula" type="text" required="true" autocomplete="off" pattern="[0-9]{8}" title="Ingrese sólo números" value=""/> 
+                <input class="form-control" name="cedula" id="cedula" type="text" required="true" autocomplete="off" pattern="[0-9]{6,}" title="Ingrese sólo números" value=""/> 
 
             </div>
 
@@ -76,14 +76,12 @@
                 <textarea style="resize:vertical;" class="form-control" name="direccion" id="direccion" autocomplete="off"/></textarea><br>
             </div>
 
-            <input type="text" hidden id="id_carrera" name="id_carrera"/>
-             <!-- <div class="col-md-6">                                   
-                
-            </div> -->
+            <input type="text" hidden id="real_tipo" name="id_tipo"/>
+
 
             <div style="text-align: center;" class="col-md-12 form-group">  
                 </br>
-                <button id="guardar" onclick="getIDCarrera()" class="btn btn-primary">
+                <button id="guardar" onclick="updateSubmit()" class="btn btn-primary">
                     Guardar Cambios
                 </button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">

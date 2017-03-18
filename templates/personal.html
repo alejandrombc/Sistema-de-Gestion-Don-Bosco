@@ -14,7 +14,8 @@
         
 
         <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/estudiantes.js') }}"></script>
+        <!-- <script src="{{ url_for('static', filename='js/estudiantes.js') }}"></script> -->
+        <script src="{{ url_for('static', filename='js/personal.js') }}"></script>
 
         <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/agregar.css') }}">
@@ -23,7 +24,7 @@
 
     <body>
 
-        {% if (updateado) %}
+        <!-- {% if (updateado) %}
             <input type="hidden" id="updateado" value="{{updateado}}" >
             <div id="dialog-message" title="Actualización Exitosa!">
                 <p>
@@ -31,10 +32,10 @@
                     La persona se ha editado de forma exitosa.
                 </p>
             </div>
-        {% endif %}
+        {% endif %} -->
 
-        <!-- MODAL ESTUDIANTES -->
-        <div id="modal_est" class="modal fade">
+        <!-- MODAL PERSONAL -->
+        <div id="modal_per" class="modal fade">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -42,9 +43,9 @@
                         <h4 class="modal-title">¿Está seguro que desea eliminar a esta persona?</h4>
                     </div>
                     <div class="modal-body">
-                        <h5>Cédula de la persona a eliminar: <b id="texto_est"></b></h5>
+                        <h5>Cédula de la persona a eliminar: <b id="texto_per"></b></h5>
                         <p>Por favor, escriba textualmente "Deseo eliminar a esta persona":</p>
-                        <center><input type="text" style="width:100%" id="confirmacion_real_est"></center><br>
+                        <center><input type="text" style="width:100%" id="confirmacion_real_per"></center><br>
                         <p class="text-warning"><small>Este cambio es <b>irrecuperable.</b></small></p>
                     </div>
                     <div class="modal-footer">
@@ -57,7 +58,7 @@
         <!-- END MODAL -->
 
         <!-- MODAL DETALLE PERSONAL -->
-        <div id="modal_detalle_est" class="modal fade">
+        <div id="modal_detalle_per" class="modal fade">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -68,14 +69,14 @@
                     <div class="modal-body">
 
                         <form role="form" action="/editarPersonal" id="modalUpdate" method="POST">
-                            <input type="text" id="real_carrera" hidden name="id_carrera"/>
+                            <input type="text" id="real_tipo" hidden name="id_tipo"/>
                             <div class="col-md-6 form-group">                                   
 
                                 <label>Apellidos:</label>
                                 <input class="form-control" name="apellidos" id="apellidos" type="text" autocomplete="off" value="" /><br>
 
                                 <label>Cédula:</label>
-                                <input class="form-control" name="cedula" id="cedula" type="text" autocomplete="off" pattern="[0-9]{8}" title="Ingrese sólo números" value=""/> 
+                                <input class="form-control" name="cedula" id="cedula" type="text" autocomplete="off" pattern="[0-9]{6,}" title="Ingrese sólo números" value=""/> 
 
                                 <input name="hiddenCedula" id="hiddenCedula" type="hidden" value=""/> 
 
@@ -94,7 +95,7 @@
       
                             <div class="col-md-6">                                   
                                 <label>E-Mail:</label>
-                                <input class="form-control" name="correo" id="correo" type="email" autocomplete="off" value="" placeholder="estudiante@correo.com" /></br>
+                                <input class="form-control" name="correo" id="correo" type="email" autocomplete="off" value="" placeholder="personal@correo.com" /></br>
                                     
                                 
                                 <label>Inasistencias:</label>
@@ -140,9 +141,9 @@
                     <br>
                         <h4 style="text-align: center; color:white;">Tipo</h4>
                         <div class="btn-group btn-group-vertical" style="width: 100%;">                         
-                            <button id="docente" onclick="cambioTipo('docente')" class="btn btn-default active" type="button">Docente</button> 
-                            <button id="admin" onclick="cambioTipo('admin')" class="btn btn-default" type="button">Administrativo</button> 
-                            <button id="obrero" onclick="cambioTipo('obrero')" class="btn btn-default" type="button">Obrero</button>
+                            <button id="docente" onclick="cambioCargo('Docente')" class="btn btn-default active" type="button">Docente</button> 
+                            <button id="admin" onclick="cambioCargo('Administrativo')" class="btn btn-default" type="button">Administrativo</button> 
+                            <button id="obrero" onclick="cambioCargo('Obrero')" class="btn btn-default" type="button">Obrero</button>
                         </div>
                 </div>
 
@@ -176,15 +177,15 @@
                                     </thead>
                                     <tbody id='body_select'>
                                         {% if datos %}
-                                            {% for estudiante in datos %}
-                                                <tr id='{{estudiante[0]}}' class="active"> 
-                                                    <td class='cedulaEstudiante editarEstudiante ' onclick="mostrarDetalleEstudiante({{estudiante[0]}})">{{estudiante[0]}}</td>
-                                                    <td class='editarEstudiante' onclick="mostrarDetalleEstudiante({{estudiante[0]}})">{{estudiante[1]}}</td>
-                                                    <td class='editarEstudiante' onclick="mostrarDetalleEstudiante({{estudiante[0]}})">{{estudiante[2]}}</td>
-                                                    <td class='editarEstudiante' onclick="mostrarDetalleEstudiante({{estudiante[0]}})">{{estudiante[4]}}</td>
-                                                    <td id="inasistencia{{estudiante[0]}}">{{estudiante[7]}}</td>
-                                                    <td><button id="add{{estudiante[0]}}" class="btn btn-warning" onclick="agregarInasistencia(this.id)">Agregar inasistencia</button></td>
-                                                    <td><button id='del{{estudiante[0]}}' class="btn btn-danger botonDltEst" onclick="mostrarModalEliminarEstudiante(this.id)"><span class="glyphicon glyphicon-trash"></span></button></td>
+                                            {% for personal in datos %}
+                                                <tr id='{{personal[0]}}' class="active"> 
+                                                    <td class='cedulaPersonal editarPersonal ' onclick="mostrarDetallePersonal({{personal[0]}})">{{personal[0]}}</td>
+                                                    <td class='editarPersonal' onclick="mostrarDetallePersonal({{personal[0]}})">{{personal[1]}}</td>
+                                                    <td class='editarPersonal' onclick="mostrarDetallePersonal({{personal[0]}})">{{personal[2]}}</td>
+                                                    <td class='editarPersonal' onclick="mostrarDetallePersonal({{personal[0]}})">{{personal[4]}}</td>
+                                                    <td id="inasistencia{{personal[0]}}">{{personal[6]}}</td>
+                                                    <td><button id="add{{personal[0]}}" class="btn btn-warning" onclick="agregarInasistencia(this.id)">Agregar inasistencia</button></td>
+                                                    <td><button id='del{{personal[0]}}' class="btn btn-danger botonDltEst" onclick="mostrarModalEliminarPersonal(this.id)"><span class="glyphicon glyphicon-trash"></span></button></td>
                                                 </tr>
                                             {% endfor %}
                                         {% endif %}

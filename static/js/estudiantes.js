@@ -1,5 +1,5 @@
- var confirmacion_real = "";
- var seccion_borrar = "";
+    var confirmacion_real = "";
+    var seccion_borrar = "";
 
     $(document).ready(function() 
     {
@@ -364,7 +364,7 @@
         var id_carrera = createID_carrera(ano,curso);
 
         $("#real_carrera").val(id_carrera);
-        $("#modalUpdate").sumbit();
+        // $("#modalUpdate").submit();
     }
 
     /*Esta funcion es cuando se selecciona otro año*/
