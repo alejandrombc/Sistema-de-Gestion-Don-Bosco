@@ -13,6 +13,22 @@
                 $("#spaces").css({ display: "none" });
         });
 
+        $('#ano_select-table').DataTable({
+                "searching": true,
+                "bPaginate": false,
+                "bLengthChange": false,
+                "bFilter": false,
+                "bInfo": false,
+                "language": {
+                    "sProcessing":     "Procesando...",
+                    "sZeroRecords":    "No se encontraron resultados.",
+                    "sEmptyTable":     "Ningún dato disponible en esta tabla.",
+                    "sLoadingRecords": "Cargando...",
+                    "search": "_INPUT_",
+                    "searchPlaceholder": "Buscar"
+                }
+        });
+
 
         $("#space").on('click', function()
         {
@@ -95,8 +111,50 @@
             {    
             	var new_personal, idBody, tag, cant_personal, boton, span, element;
 
-            	idBody = $('#body_select');
-            	idBody.empty();
+                $("#ano_select").empty();
+
+                divI = document.getElementById("ano_select");
+
+                tabla = document.createElement('table');
+                tabla.setAttribute('id', ('ano_select-table'));
+                tabla.setAttribute('class', 'table');
+
+                titulos = document.createElement('thead');
+
+                tr = document.createElement('tr');
+                tr.setAttribute('class', 'success');
+
+                element = document.createElement('th');
+                element.innerHTML = 'Cédula';
+                tr.appendChild(element);
+
+                element = document.createElement('th');
+                element.innerHTML = 'Nombre';
+                tr.appendChild(element);
+
+                element = document.createElement('th');
+                element.innerHTML = 'Apellido';
+                tr.appendChild(element);
+
+                element = document.createElement('th');
+                element.innerHTML = 'E-mail';
+                tr.appendChild(element);
+
+                element = document.createElement('th');
+                element.innerHTML = 'Inasistencias';
+                tr.appendChild(element);
+
+                element = document.createElement('th');
+                tr.appendChild(element);
+
+                element = document.createElement('th');
+                tr.appendChild(element);
+
+                titulos.appendChild(tr);
+                tabla.appendChild(titulos);
+
+                idBody = document.createElement('tbody');
+                idBody.setAttribute('id', ('body_select'));
 
             	new_personal = jQuery.parseJSON(data);
             	cant_personal = new_personal.length;
@@ -158,8 +216,27 @@
             		element.appendChild(boton);
             		tag.appendChild(element);
             		idBody.append(tag);
-            	}  
-            }
+            	}
+
+                tabla.appendChild(idBody);
+                divI.appendChild(tabla);
+
+                $('#ano_select-table').DataTable({
+                        "searching": true,
+                        "bPaginate": false,
+                        "bLengthChange": false,
+                        "bFilter": false,
+                        "bInfo": false,
+                        "language": {
+                            "sProcessing":     "Procesando...",
+                            "sZeroRecords":    "No se encontraron resultados.",
+                            "sEmptyTable":     "Ningún dato disponible en esta tabla.",
+                            "sLoadingRecords": "Cargando...",
+                            "search": "_INPUT_",
+                            "searchPlaceholder": "Buscar"
+                        }
+                });  
+                }
         });
     }
 

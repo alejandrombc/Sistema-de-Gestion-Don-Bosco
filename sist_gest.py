@@ -678,7 +678,7 @@ def enviar_correo_personal():
 		print(correos_enviados)
 		print(listado_secciones)
 
-		return render_template("enviar_correo.html", Array = correos_enviados, Datos= listado_secciones)
+		return render_template("enviar_correo_personal.html", Array = correos_enviados, Datos= listado_secciones)
 	else:
 		print("Error no selecciono periodo escolar!")
 		return render_template("ano_escolar.html")

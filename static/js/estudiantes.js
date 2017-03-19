@@ -11,23 +11,22 @@
         $("#internas").tabs();
 
 
-        //Para el responsive en la busqueda (falta editar)
-        // $('#ano_selectA-table').DataTable({
-        //         "searching": true,
-        //         "bPaginate": false,
-        //         "bLengthChange": false,
-        //         "bFilter": false,
-        //         responsive: true,
-        //         "bInfo": false,
-        //         "language": {
-        //             "sProcessing":     "Procesando...",
-        //             "sZeroRecords":    "No se encontraron resultados.",
-        //             "sEmptyTable":     "Ningún dato disponible en esta tabla.",
-        //             "sLoadingRecords": "Cargando...",
-        //             "search": "_INPUT_",
-        //             "searchPlaceholder": "Buscar en esta sección."
-        //         }
-        // });
+        $('#ano_selectA-table').DataTable({
+                "searching": true,
+                "bPaginate": false,
+                "bLengthChange": false,
+                "bFilter": false,
+                responsive: true,
+                "bInfo": false,
+                "language": {
+                    "sProcessing":     "Procesando...",
+                    "sZeroRecords":    "No se encontraron resultados.",
+                    "sEmptyTable":     "Ningún dato disponible en esta tabla.",
+                    "sLoadingRecords": "Cargando...",
+                    "search": "_INPUT_",
+                    "searchPlaceholder": "Buscar en esta sección."
+                }
+        });
 
         $("body").on('click', function()
         {
@@ -404,7 +403,7 @@
     /*Se agrega en pantalla la lista de estudiantes corrrespondiente al año-curso*/
     function mostrarListaEstudiantes(str_secciones) 
     {
-        var list, childList, cant_secciones, new_estudiantes, i, N, idBody, array, fc, tag, li, cant_estudiantes, boton, span, a;
+        var list, tabla, divI, titulos, tr, childList, cant_secciones, new_estudiantes, i, N, idBody, array, fc, tag, li, cant_estudiantes, boton, span, a;
 
         list = document.getElementById("internas");
         cant_secciones = parseInt(str_secciones[0]);
@@ -418,11 +417,54 @@
         new_estudiantes = jQuery.parseJSON(str_secciones.substring(2));
         array = ['A','B','C', 'D', 'E', 'F'];
         N = childList.length;
+        
 
         for (i = 0; i < N; i++) 
         {
-            idBody = $('#body_select' + array[i]);
-            idBody.empty();
+            $("#ano_select" + array[i]).empty();
+
+            divI = document.getElementById("ano_select" + array[i]);
+
+            tabla = document.createElement('table');
+            tabla.setAttribute('id', ('ano_select' + array[i] + '-table'));
+            tabla.setAttribute('class', 'table');
+
+            titulos = document.createElement('thead');
+
+            tr = document.createElement('tr');
+            tr.setAttribute('class', 'success');
+
+            element = document.createElement('th');
+            element.innerHTML = 'Cédula';
+            tr.appendChild(element);
+
+            element = document.createElement('th');
+            element.innerHTML = 'Nombre';
+            tr.appendChild(element);
+
+            element = document.createElement('th');
+            element.innerHTML = 'Apellido';
+            tr.appendChild(element);
+
+            element = document.createElement('th');
+            element.innerHTML = 'E-mail';
+            tr.appendChild(element);
+
+            element = document.createElement('th');
+            element.innerHTML = 'Inasistencias';
+            tr.appendChild(element);
+
+            element = document.createElement('th');
+            tr.appendChild(element);
+
+            element = document.createElement('th');
+            tr.appendChild(element);
+
+            titulos.appendChild(tr);
+            tabla.appendChild(titulos);
+
+            idBody = document.createElement('tbody');
+            idBody.setAttribute('id', ('body_select' + array[i]));
 
             cant_estudiantes = new_estudiantes.length;
             if(i < cant_secciones) childList[i].style.display = 'block';
@@ -486,9 +528,28 @@
 
                     element.appendChild(boton);
                     tag.appendChild(element);
-                    idBody.append(tag);
+                    idBody.appendChild(tag);
                 }
-            }  
+            }
+
+            tabla.appendChild(idBody);
+            divI.appendChild(tabla);
+
+            $('#ano_select' + array[i] + '-table').DataTable({
+                    "searching": true,
+                    "bPaginate": false,
+                    "bLengthChange": false,
+                    "bFilter": false,
+                    "bInfo": false,
+                    "language": {
+                        "sProcessing":     "Procesando...",
+                        "sZeroRecords":    "No se encontraron resultados.",
+                        "sEmptyTable":     "Ningún dato disponible en esta tabla.",
+                        "sLoadingRecords": "Cargando...",
+                        "search": "_INPUT_",
+                        "searchPlaceholder": "Buscar en esta sección."
+                    }
+            });
         }
 
         /*Elimino el icono de la papelera de todas las secciones*/
