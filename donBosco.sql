@@ -46,13 +46,14 @@ CREATE TABLE IF NOT EXISTS `correo_enviado` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `correo` varchar(64) NOT NULL DEFAULT '0',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='Lista a los correos que se les han enviado algo';
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COMMENT='Lista a los correos que se les han enviado algo';
 
 -- Volcando datos para la tabla don_bosco.correo_enviado: ~2 rows (aproximadamente)
 /*!40000 ALTER TABLE `correo_enviado` DISABLE KEYS */;
 INSERT INTO `correo_enviado` (`ID`, `correo`) VALUES
 	(3, 'alejandrombc@gmail.com'),
-	(4, 'josemalvarezg1@gmail.com');
+	(4, 'josemalvarezg1@gmail.com'),
+	(7, 'josegregorio994@gmail.com');
 /*!40000 ALTER TABLE `correo_enviado` ENABLE KEYS */;
 
 -- Volcando estructura para tabla don_bosco.cursa
@@ -347,15 +348,16 @@ CREATE TABLE IF NOT EXISTS `personal` (
   PRIMARY KEY (`Cedula`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Informacion de trabajadores de la escuela tecnica popular don bosco';
 
--- Volcando datos para la tabla don_bosco.personal: ~5 rows (aproximadamente)
+-- Volcando datos para la tabla don_bosco.personal: ~6 rows (aproximadamente)
 /*!40000 ALTER TABLE `personal` DISABLE KEYS */;
 INSERT INTO `personal` (`Cedula`, `Nombres`, `Apellidos`, `Direccion`, `Correo`, `Numero_de_telefono`) VALUES
 	(6458745, 'Jose', 'Lopes', 'Los ruices', 'joselopez@gmail.com', '04165847582'),
-	(9545658, 'Romina', 'Cibeira', 'Los ruices', 'romina@gmail.com', '0416458745'),
+	(9545658, 'Romina', 'Cibeira', 'Los ruices', 'josegregorio994@gmail.com', '0416458745'),
 	(10808934, 'Karla', 'Perez', 'Los Palos Grandes', 'karla@gmail.com', '04166188545'),
 	(11254856, 'Carmen', 'Contreras', 'Plaza Venezuela', 'camucha@gmail.com', '0412545865'),
 	(12145487, 'Ana', 'Rodriguez', 'lomas del avila', 'anar@gmail.com', '02122854521'),
-	(12587458, 'Pedro', 'Perez', 'Chuao', 'pedrito@gmail.com', '04141254783');
+	(12587458, 'Pedro', 'Perez', 'Chuao', 'pedrito@gmail.com', '04141254783'),
+	(24635905, 'Gabriel', 'Castro', 'LPG', 'jose.castro@gmail.com', '04142774941');
 /*!40000 ALTER TABLE `personal` ENABLE KEYS */;
 
 -- Volcando estructura para tabla don_bosco.seccion
@@ -415,7 +417,7 @@ CREATE TABLE IF NOT EXISTS `trabaja` (
   CONSTRAINT `Periodo_Trabajador` FOREIGN KEY (`Periodo_ID`) REFERENCES `periodo` (`Periodo_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Relacion entre los trabajadores y el periodo';
 
--- Volcando datos para la tabla don_bosco.trabaja: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla don_bosco.trabaja: ~6 rows (aproximadamente)
 /*!40000 ALTER TABLE `trabaja` DISABLE KEYS */;
 INSERT INTO `trabaja` (`Cedula`, `Tipo`, `Periodo_ID`, `Inasistencias`) VALUES
 	(6458745, 2, 1, 2),
@@ -423,8 +425,23 @@ INSERT INTO `trabaja` (`Cedula`, `Tipo`, `Periodo_ID`, `Inasistencias`) VALUES
 	(10808934, 2, 1, 3),
 	(11254856, 1, 1, 0),
 	(12145487, 1, 1, 2),
-	(12587458, 1, 1, 0);
+	(12587458, 1, 1, 0),
+	(24635905, 3, 1, 5);
 /*!40000 ALTER TABLE `trabaja` ENABLE KEYS */;
+
+-- Volcando estructura para vista don_bosco.view_correos
+-- Creando tabla temporal para superar errores de dependencia de VIEW
+CREATE TABLE `view_correos` (
+	`correo` VARCHAR(50) NULL COMMENT 'Correo del trabajador' COLLATE 'utf8_general_ci',
+	`tipo` INT(1) NOT NULL COMMENT 'Tipo de trabajador'
+) ENGINE=MyISAM;
+
+-- Volcando estructura para vista don_bosco.view_correos
+-- Eliminando tabla temporal y crear estructura final de VIEW
+DROP TABLE IF EXISTS `view_correos`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` VIEW `view_correos` AS SELECT p.correo, t.tipo 
+FROM personal p, trabaja t 
+WHERE p.Cedula = t.Cedula ;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
