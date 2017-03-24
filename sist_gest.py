@@ -569,6 +569,7 @@ def send_mail():
 		conn = mysql.connect()
 		cursor = conn.cursor()
 		receptores = []
+
 		if(request.form['correos'] != None): receptores = request.form['correos'].split(',') #Puedo agregar mas con , 'otrocorreo@gmail.com' etc
 		
 		if(request.form['ResSec'] != ""):
@@ -657,6 +658,8 @@ def enviar_correo():
 		print("Error no selecciono periodo escolar!")
 		return render_template("ano_escolar.html")
 
+
+
 @app.route('/enviar_correo_personal', methods=['GET', 'POST'])
 def enviar_correo_personal():
 	if session['ano_esc'] != None:
@@ -668,20 +671,86 @@ def enviar_correo_personal():
 		correos_enviados = []
 		for correo in correos: correos_enviados.append(correo[0])
 		
-		# Busco las secciones y creo un json asociado
-		cursor.execute("SELECT cantidad FROM seccion WHERE periodo_id=%s", (session['ano_esc']))
-		cantidad_sec = cursor.fetchall()
 
-		listado_secciones = {}
-		for i in range(0, 12): listado_secciones.update({str(i+1):cantidad_sec[i][0]})
-
-		print(correos_enviados)
-		print(listado_secciones)
-
-		return render_template("enviar_correo_personal.html", Array = correos_enviados, Datos= listado_secciones)
+		return render_template("enviar_correo_personal.html", Array = correos_enviados)
 	else:
 		print("Error no selecciono periodo escolar!")
 		return render_template("ano_escolar.html")
+
+	
+
+@app.route('/send_mail_personal', methods=['POST'])
+def send_mail_personal():
+	if session.get('logged_in') and request.method == 'POST':
+
+		conn = mysql.connect()
+		cursor = conn.cursor()
+		receptores = []
+
+		print(request.form['correos'])
+		if(request.form['correos'] != None): receptores = request.form['correos'].split(',') #Puedo agregar mas con , 'otrocorreo@gmail.com' etc
+		
+
+		if(request.form['ResSec'] != ""):
+			tipos_personal = request.form['ResSec']
+
+			tipos_personal = tipos_personal.split(",")
+			N = len(tipos_personal)
+			for x in range(0,N):
+				tipos_personal[x] = int(tipos_personal[x])
+			print(tipos_personal)
+			
+			format_strings = ','.join(['%s'] * len(tipos_personal))
+			print(format_strings)
+			cursor.execute("SELECT correo FROM view_correos WHERE tipo IN (%s)" % format_strings,tuple(tipos_personal))
+			correos = cursor.fetchall()
+			print (correos)
+
+			for correo in correos: receptores.append(correo[0])
+
+		
+		# if user does not select file, browser also
+		# submit a empty part without filename
+		titulo = request.form['asunto']
+		body = request.form['Mensaje']
+		msg = Message(
+	              titulo, #Asunto
+		       sender='escuelatecnicadonbosco@gmail.com', #Emisor
+		       bcc=receptores) #Receptor/es
+		msg.body = body #El body del mensaje en caso de no soportar html
+		if (request.files['filetype'] != None): 
+			file = request.files['filetype']
+			if file.filename != '':
+				if file and allowed_file(file.filename):
+					filename = secure_filename(file.filename)
+					file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+					with app.open_resource('upload/' + filename) as fp:
+						msg.attach(filename, "application/x-rar-compressed", fp.read()) #El attachment si hay
+					ruta_trabajo = os.getcwd()
+					os.remove(ruta_trabajo + '/upload/' + filename)
+		msg.html = render_template("correo_template.htm", body=body, titulo=titulo)
+		mail.send(msg)
+
+		# Luego de enviar el correo actualizo la tabla de correos enviados
+		receptores = [x.strip(' ') for x in receptores] #Le quito los espacios a los elementos
+
+		sql='SELECT correo FROM correo_enviado WHERE correo IN (%s)' 
+		in_p=', '.join(list(map(lambda x: '%s', receptores)))
+		sql = sql % in_p
+		cursor.execute(sql, receptores)
+		lista_correos = cursor.fetchall()
+		correos_usados = []
+		for correo in lista_correos: 
+			correo_sin_espacio = correo[0].replace(' ','')
+			correos_usados.append(correo_sin_espacio)
+
+		correos_a_insertar = list(set(receptores).difference(correos_usados))
+		correos_a_insertar = [x.strip(' ') for x in correos_a_insertar] #Le quito los espacios a los elementos
+
+		for correo in correos_a_insertar: cursor.execute("INSERT INTO correo_enviado (correo) VALUES (%s)", (correo))
+		conn.commit()
+
+		return redirect(url_for('enviar_correo_personal'))
 
 
 if __name__ == "__main__":

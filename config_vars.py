@@ -5,8 +5,8 @@ UPLOAD_FOLDER = 'upload'
 def app_conf():
 	app = Flask(__name__)
 	app.config['MYSQL_DATABASE_USER'] = 'root'
-	app.config['MYSQL_DATABASE_PASSWORD'] = '123'
-	# app.config['MYSQL_DATABASE_PASSWORD'] = ''
+	# app.config['MYSQL_DATABASE_PASSWORD'] = '123'
+	app.config['MYSQL_DATABASE_PASSWORD'] = ''
 	app.config['MYSQL_DATABASE_DB'] = 'don_bosco'
 	app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 	app.secret_key = "Estodeberiaserandom"
