@@ -44,7 +44,7 @@
                     <input id="id_ano" name="real_id" hidden>
                     <input id="ano_real" name="ano_escolar" hidden>
                     <button type="button" class="btn btn-default" data-dismiss="modal" >Cancelar</button>
-                    <button type="submit" id="realSumbit2" class="btn btn-danger">Eliminar</button>
+                    <button type="submit" id="realSumbit" class="btn btn-danger">Eliminar</button>
                 </form>
             </div>
         </div>
@@ -68,7 +68,7 @@
       <figure class="snip1566">
         <img src="{{ url_for('static', filename='imagenes/Logo_DonBosco.png') }}" alt="sq-sample14" />
         <figcaption><h2 id="label_ano" class="headertext">{{ano[1]}}</h2></figcaption>
-        <a onclick="openModal({{ano[0]}})" href="#"></a>
+        <a onclick="openModal({{ano[1]}}, {{ano[0]}})" href="#"></a>
       </figure>
     
   {% endfor %}

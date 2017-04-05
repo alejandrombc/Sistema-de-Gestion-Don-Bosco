@@ -22,21 +22,20 @@ function validateForm() {
 }
 
 
-function openModal(inicial, final, id) {
+function openModal(ano, id) {
   $("#myModal").modal('show');
   $("#id_ano").val(id);
-  var ano_real = inicial +"-"+final; 
-  $("#ano_real").val(ano_real);
-  $("#confir").text("¿Está seguro de eliminar el año escolar "+ inicial + " - " + final + "?");
+  $("#ano_real").val(ano);
+  $("#confir").text("¿Está seguro de eliminar el año escolar?");
 }
 
 
-function openModal_Rec(inicial, final, id) {
+function openModal_Rec(ano, id) {
+  alert(id);
   $("#myModal").modal('show');
-  var ano_real = inicial +"-"+final; 
   $("#id_ano").val(id);
-  $("#ano_real").val(ano_real);
-  $("#confir").text("¿Está seguro de recuperar el año escolar "+ inicial + " - " + final + "?");
+  $("#ano_real").val(ano);
+  $("#confir").text("¿Está seguro de recuperar el año escolar?");
 }
 
  function createID_carrera(clase, valor)
