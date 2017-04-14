@@ -252,3 +252,8 @@ fieldset {
 .editarEstudiante:hover { 
   cursor: pointer; 
 }
+
+.dataTables_filter {
+   float: right;
+   text-align: right;
+}
