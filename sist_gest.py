@@ -3,13 +3,9 @@ import sist_gest_functs, config_vars
 from flask import render_template, request, url_for, redirect, session, g,  json
 from flaskext.mysql import MySQL
 from flask_mail import Mail, Message #pip install Flask-Mail
-from werkzeug.utils import secure_filename
 import datetime, os
 import MySQLdb as db
 
-
-#Para el UPLOAD de archivos en el servidor 
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif','rar', 'zip'])
 
 app = config_vars.app_conf()
 mail = Mail(app)
@@ -35,421 +31,134 @@ def seleccionarPersona():
 def seleccionar():
 	return sist_gest_functs.selec_funct(session)
 
+
 #Funcion seleccionar que muestra la ventana luego del logueo
 @app.route('/configuracion', methods=['GET'])
 def configuracion():
 	if(session.get('logged_in')): return render_template("configuracion.html")
 	return redirect(url_for('index'))
 
+
 @app.route('/agregar', methods=['GET','POST'])
 def agregar():
-	if request.method == 'POST' and session.get('logged_in'): 
-		inicio = request.form['inicial']
-		final = request.form['final']
-		ano = inicio + "-" + final
-		con = mysql.connect()
-		cursor = con.cursor()
-		cursor.execute("SELECT * from periodo WHERE periodo_nombre=%s", (ano))
-		data = cursor.fetchone()
-
-		if(data != None):
-			error="Error: Ese año esta repetido, por favor seleccionelo o eliminelo."
-			return render_template("agregar_ano.html", error=error)
-
-		if (inicio[0] == '2') and (inicio[1] == '0') and (final[0] == '2') and (final[1] == '0') and (len(final)==4) and (len(inicio)==4) and (final > inicio):
-			cursor.execute("""INSERT INTO periodo (periodo_nombre, eliminada) VALUES (%s, '0')""", (ano))
-			con.commit()
-			cursor.execute("SELECT COUNT(*) from periodo")
-			ID = cursor.fetchone()
-			ID = ID[0]
-			for i in range(1,13):
-				cursor.execute("""INSERT INTO seccion ( carrera_id, periodo_id, cantidad ) VALUES (%s, %s, 1)""", (i, ID))
-			con.commit()
-			session['logged_in'] = "newform" 
-			return redirect(url_for('seleccionar'))
-		else:
-			error="Error: Año invalido"
-			return render_template("agregar_ano.html", error=error)
+	if request.method == 'POST' and session.get('logged_in'):
+		return sist_gest_functs.agregar_funct(request.form['inicial'], request.form['final'], mysql.connect(), session)
 	else:
 		return render_template("agregar_ano.html")
 
 
 #--------VISTA PERSONAL --------#
 @app.route('/personal_ano', methods=['GET'])
-def def_personal():
+def personal():
 	# Aqui va el g con el ano escolar
-	if session.get('logged_in'):
-		cursor = mysql.connect().cursor()
-		
-		cursor.execute("SELECT personal.*, personal_temporal.inasistencias, personal_temporal.periodo_nombre " +
-			           "FROM (SELECT trabaja.cedula,trabaja.inasistencias, periodo_actual.periodo_nombre  " +
-		               "FROM (SELECT periodo_nombre FROM periodo WHERE periodo_id='"+session['ano_esc']+"') periodo_actual, trabaja WHERE trabaja.periodo_id='"+session['ano_esc']+"' AND tipo=1) personal_temporal, personal WHERE personal_temporal.cedula = personal.cedula")
-		data = cursor.fetchall()
-
-		return render_template("personal.html", datos=data)
+	if session.get('logged_in'): return sist_gest_functs.personal_funct(mysql.connect().cursor())
 	return redirect(url_for('index'))
+
 
 @app.route('/personal_escoger_tipo', methods=['GET'])
 def escoger_tipo_personal():
-	if(session.get('logged_in')):
-		cursor = mysql.connect().cursor()
-		id_tipo = request.args['id_tipo']
+	if(session.get('logged_in')): return sist_gest_functs.escoger_tipo_personal_funct(mysql.connect().cursor(), request.args['id_tipo'])
 
-		cursor.execute("SELECT personal.*, personal_temporal.inasistencias, personal_temporal.periodo_nombre " +
-			           "FROM (SELECT trabaja.cedula,trabaja.inasistencias, periodo_actual.periodo_nombre  " +
-		               "FROM (SELECT periodo_nombre FROM periodo WHERE periodo_id='"+session['ano_esc']+"') periodo_actual, trabaja WHERE trabaja.periodo_id='"+session['ano_esc']+"' AND tipo="+id_tipo+") personal_temporal, personal WHERE personal_temporal.cedula = personal.cedula")
-		
-		data = cursor.fetchall()
-
-		data = json.dumps(data)
-		return data
-
-
+#Aumenta el contador de inasistencias para los empleados
 @app.route('/agregarInasistenciaPersonal', methods=['PUT'])
 def agregarInasistenciaPersonal():
-	if(session.get('logged_in')):
-		conn = mysql.connect()
-		cursor = conn.cursor()
-		resultado = request.args['resultado']
-		arreglo = resultado.split("-")
-		inasistencias = int(arreglo[1])
-		
-		cursor.execute("UPDATE trabaja SET inasistencias='"+str(inasistencias)+"' WHERE periodo_id='"+session['ano_esc']+"' AND cedula='"+arreglo[0]+"'")
-		conn.commit()
-
-		return ""
+	if(session.get('logged_in')): return sist_gest_functs.agregarInasistenciaPersonal_funct(mysql.connect(), request.args['resultado'])
 
 
 @app.route('/eliminarPersonal', methods=['DELETE'])
 def eliminarPersonal():
-	if(session.get('logged_in')):
-		conn = mysql.connect()
-		cursor = conn.cursor()
-		idPersonal = request.args['id']
-		
-		cursor.execute("DELETE FROM trabaja WHERE periodo_id=%s AND cedula=%s", (session['ano_esc'], idPersonal))
-		conn.commit()
-
-		return ""
+	if(session.get('logged_in')): return sist_gest_functs.eliminarPersonal_funct(mysql.connect(), request.args['id'], session)
 
 
 @app.route('/personal')
 def getPersonal():
-	if(session.get('logged_in')):
-		cursor = mysql.connect().cursor()	
-
-		cursor.execute("SELECT personal.*, personal_temporal.inasistencias, tipo_trabajador.cargo FROM (SELECT trabaja.tipo, trabaja.cedula,trabaja.inasistencias FROM trabaja WHERE trabaja.periodo_id='"+session['ano_esc']+"' AND cedula='"+request.args['cedula']+"') personal_temporal, personal, tipo_trabajador WHERE tipo_trabajador.id_tipo = personal_temporal.tipo AND personal_temporal.cedula = personal.cedula")
-		personal = cursor.fetchall()
-		data = json.dumps(personal)
-
-		return '{}'.format(data)
+	if(session.get('logged_in')): return sist_gest_functs.getPersonal_funct(mysql.connect().cursor())
 
 
 @app.route('/editarPersonal', methods=[ 'POST'])
 def editarPersonal():
 	if request.method == 'POST' and session.get('logged_in'): 
+		return sist_gest_functs.editarPersonal_funct(mysql.connect(), request.form['apellidos'], request.form['hiddenCedula'], request.form['cedula'], request.form['nombres'], request.form['telefono'], request.form['id_tipo'], request.form['inasistencia'], request.form['direccion'], request.form['correo'])
 
-		conn = mysql.connect()
-		cursor = conn.cursor()
-
-		apellidos = request.form['apellidos']
-		hiddenCedula = request.form['hiddenCedula']
-		cedula = request.form['cedula']
-		nombres = request.form['nombres']
-		telefono = request.form['telefono']
-		tipo = request.form['id_tipo']
-		inasistencia = request.form['inasistencia']
-		direccion = request.form['direccion']
-		
-		email = request.form['correo']
-		cursor.execute("SET FOREIGN_KEY_CHECKS=0;")
-
-		#Se actualizan los datos ingresados 
-		cursor.execute("UPDATE personal SET apellidos='"+apellidos+"', cedula='"+cedula+"', nombres='"+nombres+"', numero_de_telefono='"+telefono+"', direccion='"+direccion+"', correo='"+email+"' WHERE cedula='"+hiddenCedula+"'")
-
-		#Se actualiza los datos de la tabla trabaja
-		cursor.execute("UPDATE trabaja SET cedula='"+cedula+"', periodo_id='"+session['ano_esc']+"', tipo='"+tipo+"', inasistencias='"+inasistencia+"' WHERE cedula='"+hiddenCedula+"'")
-		conn.commit()
-
-		cursor.execute("SET FOREIGN_KEY_CHECKS=1;")
-		conn.commit()
-		#Falta validar si la data es null o alguna excepcion
-	return redirect(url_for('def_personal'))
 
 @app.route('/anadirPersonal', methods=['GET', 'POST'])
 def anadirPersonal():
 	if(session.get('logged_in')): return render_template("personal_individual.html")	
 
-
+#Buscar miembros del personal
 @app.route('/buscarPersonal', methods=['POST'])
 def buscarPersonal():
-	if(session.get('logged_in')):
-		busqueda = request.form['busqueda']
-		# print(busqueda)
-		cursor = mysql.connect().cursor()
+	if(session.get('logged_in')): return sist_gest_functs.buscarPersonal_funct(request.form['busqueda'], mysql.connect().cursor())
 
-		if (busqueda != ""):
-			cursor.execute("SELECT * FROM personal WHERE " +
-			"cedula LIKE '%"+busqueda+"%' OR nombres LIKE '%"+busqueda+"%' OR apellidos LIKE '%"+busqueda+"%' OR direccion LIKE '%"+busqueda+"%' OR " +
-			"correo LIKE '%"+busqueda+"%' OR numero_de_telefono LIKE '%"+busqueda+"%'" )
-			personal = cursor.fetchall()
-			if(personal != () ):
-				hayResultado = 1
-			else:
-				hayResultado = 0
-		else:
-			hayResultado = 0
-			personal = ""  
-		return render_template("resultado_busqueda_personal.html", datos=personal, hayResultado=hayResultado)
-
-
+#Registrar nuevo trabajador
 @app.route('/registrarPersonal', methods=['GET', 'POST'])
-def registrarPersonal():
-	if(session.get('logged_in')):
-		nombres = request.form.get('nombres')
-		apellidos  = request.form.get('apellidos')	
-		cedula = request.form.get('cedula')
-		id_tipo = request.form.get('id_tipo')
-		correo = request.form.get('correo')
-		direccion = request.form.get('direccion')
-		telefono = request.form.get('telefono')
-		conn = mysql.connect()
-		cursor = conn.cursor()
-		cursor.execute("SELECT * FROM personal WHERE cedula='"+cedula+"'")
-		data = cursor.fetchall()
-		if(len(data) > 0):
-			cursor.execute("SELECT * FROM trabaja WHERE cedula='"+cedula+"' AND periodo_id='"+session['ano_esc']+"'")
-			data = cursor.fetchall()
-			if(len(data) == 0):
-				cursor.execute("INSERT INTO trabaja (cedula, periodo_id, tipo, inasistencias) VALUES ('"+cedula+"', '"+session['ano_esc']+"','"+id_tipo+"','"+str(0)+"')")
-		else:
-			cursor.execute("INSERT INTO personal (cedula, nombres, apellidos, direccion, correo, numero_de_telefono) VALUES ('"+cedula+"','"+nombres+"','"+apellidos+"','"+direccion+"','"+correo+"','"+telefono+"')")
-
-			cursor.execute("INSERT INTO trabaja (cedula, periodo_id, tipo, inasistencias) VALUES ('"+cedula+"', '"+session['ano_esc']+"','"+id_tipo+"','"+str(0)+"')")
-
-		#Se debe validar antes si ese estudiante esta repetido
-		conn.commit()
-
-		return redirect(url_for('def_personal'))
-
+def registrarPersonal(): 
+	if(session.get('logged_in')): return sist_gest_functs.registrarPersonal_funct(request.form.get('nombres'), request.form.get('apellidos'), request.form.get('cedula'), request.form.get('id_tipo'), request.form.get('correo'), request.form.get('direccion'), request.form.get('telefono'), mysql.connect())
 
 
 #--------VISTA ESTUDIANTES--------#
 @app.route('/estudiantes_ano', methods=['GET'])
-def def_estudiantes():
+def def_estudiantes(): 
 	# Aqui va el g con el ano escolar
-	if session.get('logged_in'):
-		cursor = mysql.connect().cursor()
-		
-		cursor.execute("SELECT estudiante.*, estudiante_temporal.inasistencias, estudiante_temporal.periodo_nombre, estudiante_temporal.seccion_actual FROM (SELECT cursa.cedula,cursa.seccion_actual,cursa.inasistencias, periodo_actual.periodo_nombre  FROM (SELECT periodo_nombre FROM periodo WHERE periodo_id='"+session['ano_esc']+"') periodo_actual, cursa WHERE cursa.periodo_id='"+session['ano_esc']+"' AND carrera_id=1) estudiante_temporal, estudiante WHERE estudiante_temporal.cedula = estudiante.cedula")
-		data = cursor.fetchall()
-
-		cursor.execute("SELECT cantidad FROM seccion WHERE carrera_id=1 AND periodo_id='"+session['ano_esc']+"'")
-		secciones = cursor.fetchall()
-
-		cant_secciones = int(secciones[0][0])
-		return render_template("estudiantes.html", datos=data, cant_secciones=cant_secciones )
+	if session.get('logged_in'): return sist_gest_functs.def_estudiantes_funct(mysql.connect().cursor())
 	return redirect(url_for('index'))
 
-
+#Selecciona el ano que se desee visualizar
 @app.route('/estudiantes_escoger_ano', methods=['GET'])
 def escoger_ano_estudiantes():
-	if(session.get('logged_in')):
-		cursor = mysql.connect().cursor()
-		id_carrera = request.args['id_carrera']
+	if(session.get('logged_in')): return sist_gest_functs.escoger_ano_estudiantes_funct(mysql.connect().cursor(), request.args['id_carrera'])
 
-		cursor.execute("SELECT estudiante.*, estudiante_temporal.inasistencias, estudiante_temporal.periodo_nombre, estudiante_temporal.seccion_actual FROM (SELECT cursa.cedula,cursa.seccion_actual,cursa.inasistencias, periodo_actual.periodo_nombre  FROM (SELECT periodo_nombre FROM periodo WHERE periodo_id='"+session['ano_esc']+"') periodo_actual, cursa WHERE cursa.periodo_id='"+session['ano_esc']+"' AND carrera_id='"+id_carrera+"') estudiante_temporal, estudiante WHERE estudiante_temporal.cedula = estudiante.cedula")
-		data = cursor.fetchall()
-
-		cursor.execute("SELECT cantidad FROM seccion WHERE carrera_id='"+id_carrera+"' AND periodo_id='"+session['ano_esc']+"'")
-		secciones = cursor.fetchall()
-
-		cant_secciones = int(secciones[0][0])
-
-		data = json.dumps(data)
-		return '{} {}'.format(cant_secciones, data)
-
-
+#Aumenta el contador de inasistencias para un estudiante
 @app.route('/agregarInasistencia', methods=['PUT'])
 def agregarInasistencia():
-	if(session.get('logged_in')):
-		conn = mysql.connect()
-		cursor = conn.cursor()
-		resultado = request.args['resultado']
-		arreglo = resultado.split("-")
-		inasistencias = int(arreglo[1])
-		
-		cursor.execute("UPDATE cursa SET inasistencias='"+str(inasistencias)+"' WHERE periodo_id='"+session['ano_esc']+"' AND cedula='"+arreglo[0]+"'")
-		conn.commit()
+	if(session.get('logged_in')): return sist_gest_functs.agregarInasistencia_funct(mysql.connect(), request.args['resultado'])
 
-		return ""
-
+#Elimina un estudiante de un curso
 @app.route('/eliminarEstudiante', methods=['DELETE'])
 def eliminarEstudiante():
-	if(session.get('logged_in')):
-		conn = mysql.connect()
-		cursor = conn.cursor()
-		idStudent = request.args['id']
-		
-		cursor.execute("DELETE FROM cursa WHERE periodo_id=%s AND cedula=%s", (session['ano_esc'], idStudent))
-		conn.commit()
+	if(session.get('logged_in')): return sist_gest_functs.eliminarEstudiante_funct(mysql.connect(), request.args['id'], session)
 
-		return ""
-
+#Elimina una seccion de un curso
 @app.route('/eliminarSeccion', methods=['DELETE'])
 def eliminarSeccion():
-	if(session.get('logged_in')):
-		id_carrera = request.args['id_carrera']
-		cedulas = request.args['cedulas'].split(",")
+	if(session.get('logged_in')): return sist_gest_functs.eliminarSeccion_funct(request.args['id_carrera'], request.args['cedulas'].split(","), mysql.connect(), session)
 
-		conn = mysql.connect()
-		cursor = conn.cursor()
-		cursor.execute("SELECT cantidad FROM seccion WHERE carrera_id='"+id_carrera+"' AND periodo_id='"+session['ano_esc']+"'")
-		secciones = cursor.fetchall()
-
-		cant_secciones = int(secciones[0][0])
-		
-		cant_secciones -= 1 #Se decrementa el numero de secciones
-		#Actualizo cantidad de secciones
-		cursor.execute("UPDATE seccion SET cantidad=%s WHERE periodo_id=%s AND carrera_id=%s", (cant_secciones, session['ano_esc'], id_carrera ) )
-		
-		#Borrar estudiantes pertenecientes a ese periodo-curso-ano
-		for cedula in cedulas:
-			cursor.execute("DELETE FROM cursa WHERE periodo_id=%s AND cedula=%s", (session['ano_esc'], cedula))
-			
-		conn.commit()
-		return ""
 
 @app.route('/editarEstudiante', methods=[ 'POST'])
-def def_editar_estudiantes():
-	if request.method == 'POST' and session.get('logged_in'): 
-		conn = mysql.connect()
-		cursor = conn.cursor()
-		apellidos = request.form['apellidos']
-		hiddenCedula = request.form['hiddenCedula']
-		seccion = request.form['seccion'];
-		cedula = request.form['cedula']
-		print(cedula)
-		nombres = request.form['nombres']
-		telefono = request.form['telefono']
-		id_carrera = request.form['id_carrera']
-		inasistencia = request.form['inasistencia']
-		direccion = request.form['direccion']
-		email = request.form['correo']
-
-		cursor.execute("SET FOREIGN_KEY_CHECKS=0;")
-
-		#Se actualizan los datos ingresados 
-		cursor.execute("UPDATE estudiante SET apellidos='"+apellidos+"', cedula='"+cedula+"', nombres='"+nombres+"', numero_de_telefono='"+telefono+"', direccion='"+direccion+"', correo='"+email+"' WHERE cedula='"+hiddenCedula+"'")
-
-		#Se actualiza los datos de la tabla cursa
-		cursor.execute("UPDATE cursa SET cedula='"+cedula+"', periodo_id='"+session['ano_esc']+"', seccion_actual='"+seccion+"' , carrera_id='"+id_carrera+"', inasistencias='"+inasistencia+"' WHERE cedula='"+hiddenCedula+"'")
-		conn.commit()
-
-		cursor.execute("SET FOREIGN_KEY_CHECKS=1;")
-		conn.commit()
-
-		#Falta validar si la data es null o alguna excepcion
+def editar_estudiantes():
+	if request.method == 'POST' and session.get('logged_in'): return sist_gest_functs.editar_estudiantes_funct(mysql.connect(), request.form['apellidos'], request.form['hiddenCedula'], request.form['seccion'], request.form['cedula'], request.form['nombres'], request.form['telefono'], request.form['id_carrera'], request.form['inasistencia'], request.form['direccion'], request.form['correo'])
 	return redirect(url_for('def_estudiantes'))
 
-
+#Agrega una seccion nueva a un curso
 @app.route('/agregar_seccion', methods=['GET', 'POST'])
 def seccion():
-	if request.method == 'POST' and session.get('logged_in'):
-		id_carrera = request.form.get('id_carrera')
-		conn = mysql.connect()
-		cursor = conn.cursor()
-
-		cursor.execute("UPDATE seccion SET cantidad=cantidad+1 WHERE carrera_id='"+id_carrera+"' AND periodo_id='"+session['ano_esc']+"'")
-		conn.commit()
-		return redirect(url_for('def_estudiantes'))
+	if request.method == 'POST' and session.get('logged_in'): return sist_gest_functs.seccion_funct(request.form.get('id_carrera'), mysql.connect())
 	return render_template("agregar_seccion.html")
 
-
+#Cantidad de secciones de un curso
 @app.route('/cant_secciones')
 def getCantidadSecciones():
-	if(session.get('logged_in')):
-		cursor = mysql.connect().cursor()
-		id_carrera = request.args['id_carrera']
+	if(session.get('logged_in')): return sist_gest_functs.getCantidadSecciones_funct(mysql.connect().cursor(), request.args['id_carrera'])
 
-		cursor.execute("SELECT cantidad FROM seccion WHERE carrera_id='"+id_carrera+"' AND periodo_id='"+session['ano_esc']+"'")
-		secciones = cursor.fetchall()
-
-		cant_secciones = int(secciones[0][0])
-		return '{}'.format(cant_secciones)
 
 @app.route('/buscarEstudiante', methods=['POST'])
 def buscarEstudiante():
-	if(session.get('logged_in')):
-		busqueda = request.form['busqueda']
-		# print(busqueda)
-		cursor = mysql.connect().cursor()
-
-		if (busqueda != ""):
-			cursor.execute("SELECT * FROM estudiante WHERE " +
-			"cedula LIKE '%"+busqueda+"%' OR nombres LIKE '%"+busqueda+"%' OR apellidos LIKE '%"+busqueda+"%' OR direccion LIKE '%"+busqueda+"%' OR " +
-			"correo LIKE '%"+busqueda+"%' OR numero_de_telefono LIKE '%"+busqueda+"%'" )
-			estudiantes = cursor.fetchall()
-			if(estudiantes != () ):
-				hayResultado = 1
-			else:
-				hayResultado = 0
-		else:
-			hayResultado = 0
-			estudiantes = ""
-
-		return render_template("resultado_busqueda_estudiante.html", datos=estudiantes, hayResultado=hayResultado)
-
+	if(session.get('logged_in')): return sist_gest_functs.buscarEstudiante_funct(request.form['busqueda'], mysql.connect().cursor())
 
 
 @app.route('/anadirEstudiante', methods=['GET', 'POST'])
 def anadirEstudiante():
 	if(session.get('logged_in')): return render_template("estudiante_individual.html")	
 
+
 @app.route('/estudiante')
 def getEstudiante():
-	if(session.get('logged_in')):
-		cursor = mysql.connect().cursor()	
-		cursor.execute("SELECT estudiante.*, estudiante_temporal.inasistencias, estudiante_temporal.seccion_actual, carrera.carrera_nombre, carrera.ano_escolar FROM (SELECT cursa.carrera_id, cursa.cedula,cursa.seccion_actual,cursa.inasistencias FROM cursa WHERE cursa.periodo_id='"+session['ano_esc']+"' AND cedula='"+request.args['cedula']+"') estudiante_temporal, estudiante, carrera WHERE carrera.carrera_id = estudiante_temporal.carrera_id AND estudiante_temporal.cedula = estudiante.cedula")
-		estudiante = cursor.fetchall()
-		data = json.dumps(estudiante)
+	if(session.get('logged_in')): return sist_gest_functs.getEstudiante_funct(mysql.connect().cursor())
 
-		return '{}'.format(data)
 
 @app.route('/registrarEstudiante', methods=['GET', 'POST'])
 def registrarEstudiante():
-	if(session.get('logged_in')):
-		nombres = request.form.get('nombres')
-		apellidos  = request.form.get('apellidos')	
-		cedula = request.form.get('cedula')
-		fechaNac = request.form.get('fechaNac')	
-		dateFechaNac = '1900-01-01'
-		if(fechaNac != None ): dateFechaNac = datetime.datetime.strptime(fechaNac, "%d/%m/%Y").strftime("%Y-%m-%d")
-		id_carrera = request.form.get('id_carrera')
-		seccion = request.form.get('seccion')
-		correo = request.form.get('correo')
-		direccion = request.form.get('direccion')
-		telefono = request.form.get('telefono')
-		conn = mysql.connect()
-		cursor = conn.cursor()
-		cursor.execute("SELECT * FROM estudiante WHERE cedula='"+cedula+"'")
-		data = cursor.fetchall()
-		if(len(data) > 0):
-			cursor.execute("SELECT * FROM cursa WHERE cedula='"+cedula+"' AND periodo_id='"+session['ano_esc']+"'")
-			data = cursor.fetchall()
-			if(len(data) == 0):
-				cursor.execute("INSERT INTO cursa (cedula, periodo_id, carrera_id, seccion_actual, inasistencias) VALUES ('"+cedula+"', '"+session['ano_esc']+"','"+id_carrera+"','"+seccion+"','"+str(0)+"')")
-		else:
-			cursor.execute("INSERT INTO estudiante (cedula, nombres, apellidos, direccion, correo, numero_de_telefono, fecha_de_nacimiento) VALUES ('"+cedula+"','"+nombres+"','"+apellidos+"','"+direccion+"','"+correo+"','"+telefono+"','"+dateFechaNac+"')")
-
-			cursor.execute("INSERT INTO cursa (cedula, periodo_id, carrera_id, seccion_actual, inasistencias) VALUES ('"+cedula+"', '"+session['ano_esc']+"','"+id_carrera+"','"+seccion+"','"+str(0)+"')")
-
-		#Se debe validar antes si ese estudiante esta repetido
-		conn.commit()
-
-		return redirect(url_for('def_estudiantes'))
-
-
+	if(session.get('logged_in')): return sist_gest_functs.registrarEstudiante_funct(request.form.get('nombres'), request.form.get('apellidos'), request.form.get('cedula'), request.form.get('fechaNac'), '1900-01-01', request.form.get('id_carrera'), request.form.get('seccion'), request.form.get('correo'), request.form.get('direccion'), request.form.get('telefono'), mysql.connect())
 
 
 #--------FIN VISTA ESTUDIANTES--------#
@@ -458,95 +167,41 @@ def registrarEstudiante():
 # Al darle a seleccionar busco todos los anos y los mando al html
 @app.route('/seleccionar')
 def seleccion_ano():
-	if(session.get('logged_in')):
-		cursor = mysql.connect().cursor()
-		cursor.execute("SELECT periodo_id, periodo_nombre from periodo WHERE eliminada='0'")
-		data = cursor.fetchall()
-		return render_template("escoger_ano.html", datos=data)
+	if(session.get('logged_in')): return sist_gest_functs.seleccion_ano_funct(mysql.connect().cursor())
 
-
+#Vista para eliminar anos
 @app.route('/eliminar')
 def eliminar_ano():
-	if(session.get('logged_in')):
-		cursor = mysql.connect().cursor()
-		cursor.execute("SELECT periodo_id, periodo_nombre from periodo WHERE eliminada=0")
-		data = cursor.fetchall()
-		return render_template("eliminar_ano.html", datos=data)	
+	if(session.get('logged_in')): return sist_gest_functs.eliminar_ano_funct(mysql.connect().cursor())
 
-
+#Oculta el ano de la vista
 @app.route('/eliminar_ano', methods=['POST'])
 def eliminar_anos():
-	if(session.get('logged_in')):
-		real_id = request.form['real_id']
-		ano = request.form['ano_escolar']
-		conn = mysql.connect()
-		cursor = conn.cursor()
-		cursor.execute("UPDATE periodo SET eliminada = 1 WHERE periodo_id=%s",(int(real_id)))
-		conn.commit()
-		return redirect(url_for('eliminar_ano'))
+	if(session.get('logged_in')): return sist_gest_functs.eliminar_anos_funct(request.form['real_id'], request.form['ano_escolar'], mysql.connect())
 
-
+#Vista para recuperar anos
 @app.route('/recuperar')
 def recuperar_ano():
-	if(session.get('logged_in')):
-		cursor = mysql.connect().cursor()
-		cursor.execute("SELECT periodo_id, periodo_nombre from periodo WHERE eliminada=1")
-		data = cursor.fetchall()
-		return render_template("recuperar_ano.html", datos=data)		
+	if(session.get('logged_in')): return sist_gest_functs.recuperar_ano_funct(mysql.connect().cursor())		
 
-
+#Vuelve a colocar el ano en la vista
 @app.route('/recuperar_ano', methods=['POST'])
 def recuperar_anos():
-	if(session.get('logged_in')):
-		real_id = request.form['real_id']
-		ano = request.form['ano_escolar']
-		conn = mysql.connect()
-		cursor = conn.cursor()
-		cursor.execute("UPDATE periodo SET eliminada = 0 WHERE periodo_id=%s",(int(real_id)))
-		conn.commit()
-		return redirect(url_for('recuperar_ano'))
+	if(session.get('logged_in')): return sist_gest_functs.recuperar_anos_funct(request.form['real_id'], request.form['ano_escolar'], mysql.connect(), conn.cursor())
+
 
 #-----------FUNCIONES DE CARGAR, EXPORTAR BD Y CERRAR---------#
 @app.route('/exportarBD', methods=['GET'])
 def exportarBD():
-	if(session.get('logged_in')):
-		#DEBE ESTAR EN EL PATH DE WINDOWS EL MYSQLDUMP
-		password = 123 #Clave de la BD
-		os.system('mysqldump -u root -p%s don_bosco > BaseDeDatos_DonBosco.sql' % password)
-		sucess = "¡Exportado realizado correctamente!"
-		return render_template("configuracion.html", sucess=sucess)
+	if(session.get('logged_in')): return sist_gest_functs.exportarBD_funct()
 	return redirect(url_for('index'))
 
-def run_sql_file(filename, connection):
-    sql = s = " ".join(filename.readlines())
-    cursor = connection.cursor()
-    cursor.execute(sql)    
-    connection.commit()
-    
-    return True
+def run_sql_file(filename, connection): return sist_gest_functs.run_sql_file_funct(filename, connection)
 
 
 @app.route('/cargarBD', methods=['POST'])
 def cargarBD():
-	if(session.get('logged_in')):
-		file = request.files['archivo']
-		conn = db.connect(host="localhost", user="root", passwd="")
-		cursor = conn.cursor()
-		cursor.execute("DROP DATABASE IF EXISTS don_bosco")
-		cursor.execute("CREATE DATABASE don_bosco")
-
-		filename = secure_filename(file.filename)
-		conn = mysql.connect()
-		file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-
-		filepath = "upload/"+file.filename 
-		with open(filepath, encoding="utf8", errors='replace') as infile:
-			sucess = "¡Cargado realizado correctamente!"
-			run_sql_file(infile, conn)
-		ruta_trabajo = os.getcwd()
-		os.remove(ruta_trabajo + '/upload/' + filename)
-		return render_template("configuracion.html", sucess=sucess)
-
+	if(session.get('logged_in')): return sist_gest_functs.cargarBD_funct(request.files['archivo'], db.connect(host="localhost", user="root", passwd=""), conn.cursor())
 	return redirect(url_for('index'))
 
 @app.route('/cerrar_sesion', methods=['GET'])
@@ -556,202 +211,33 @@ def cerrar_sesion():
 		return redirect(url_for('index'))
 
 
-
 #-----------ENVIAR CORREO Y UPLOAD DE ARCHIVO---------#
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/send_mail', methods=['POST'])
 def send_mail():
-	if session.get('logged_in') and request.method == 'POST':
+	if session.get('logged_in') and request.method == 'POST': return sist_gest_functs.send_mail_funct(mysql.connect(), request, request.form['asunto'], request.form['Mensaje'], config_vars.app_conf(), mail)
 
-		conn = mysql.connect()
-		cursor = conn.cursor()
-		receptores = []
-
-		if(request.form['correos'] != None): receptores = request.form['correos'].split(',') #Puedo agregar mas con , 'otrocorreo@gmail.com' etc
-		
-		if(request.form['ResSec'] != ""):
-			uniones = request.form['ResSec'].split(',')
-			id_carreras = []
-			secciones = []
-			for union in uniones:
-				lista = union.split('_')
-				id_carreras.append(lista[0])
-				if(lista[1] == '1'): secciones.append('A')
-				elif(lista[1] == '2'): secciones.append('B')
-				elif(lista[1] == '3'): secciones.append('C')
-				elif(lista[1] == '4'): secciones.append('D')
-				elif(lista[1] == '5'): secciones.append('E')
-				else: secciones.append('F')
-
-			for i in range(0, len(id_carreras)):
-				cursor.execute("SELECT estudiante.correo FROM (SELECT cedula FROM cursa WHERE carrera_id='"+id_carreras[i]+"' AND periodo_id='"+session['ano_esc']+"' AND seccion_actual='"+secciones[i]+"') estudiante_cursando, estudiante WHERE estudiante_cursando.cedula=estudiante.cedula ")
-				correos = cursor.fetchall()
-				for correo in correos: receptores.append(correo[0])
-
-		
-		# if user does not select file, browser also
-		# submit a empty part without filename
-		titulo = request.form['asunto']
-		body = request.form['Mensaje']
-		msg = Message(
-	              titulo, #Asunto
-		       sender='escuelatecnicadonbosco@gmail.com', #Emisor
-		       bcc=receptores) #Receptor/es
-		msg.body = body #El body del mensaje en caso de no soportar html
-		if (request.files['filetype'] != None): 
-			file = request.files['filetype']
-			if file.filename != '':
-				if file and allowed_file(file.filename):
-					filename = secure_filename(file.filename)
-					file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-					with app.open_resource('upload/' + filename) as fp:
-						msg.attach(filename, "application/x-rar-compressed", fp.read()) #El attachment si hay
-					ruta_trabajo = os.getcwd()
-					os.remove(ruta_trabajo + '/upload/' + filename)
-		msg.html = render_template("correo_template.htm", body=body, titulo=titulo)
-		mail.send(msg)
-
-		# Luego de enviar el correo actualizo la tabla de correos enviados
-		receptores = [x.strip(' ') for x in receptores] #Le quito los espacios a los elementos
-
-		sql='SELECT correo FROM correo_enviado WHERE correo IN (%s)' 
-		in_p=', '.join(list(map(lambda x: '%s', receptores)))
-		sql = sql % in_p
-		cursor.execute(sql, receptores)
-		lista_correos = cursor.fetchall()
-		correos_usados = []
-		for correo in lista_correos: 
-			correo_sin_espacio = correo[0].replace(' ','')
-			correos_usados.append(correo_sin_espacio)
-
-		correos_a_insertar = list(set(receptores).difference(correos_usados))
-		correos_a_insertar = [x.strip(' ') for x in correos_a_insertar] #Le quito los espacios a los elementos
-
-		for correo in correos_a_insertar: cursor.execute("INSERT INTO correo_enviado (correo) VALUES (%s)", (correo))
-		conn.commit()
-
-		return redirect(url_for('enviar_correo'))
 
 @app.route('/enviar_correo', methods=['GET', 'POST'])
 def enviar_correo():
-	if session['ano_esc'] != None:
-
-		# Busco los correos enviados y lo guardo en un arreglo
-		cursor = mysql.connect().cursor()
-		cursor.execute("SELECT correo FROM correo_enviado")
-		correos = cursor.fetchall()
-		correos_enviados = []
-		for correo in correos: correos_enviados.append(correo[0])
-		
-		# Busco las secciones y creo un json asociado
-		cursor.execute("SELECT cantidad FROM seccion WHERE periodo_id=%s", (session['ano_esc']))
-		cantidad_sec = cursor.fetchall()
-
-		listado_secciones = {}
-		for i in range(0, 12): listado_secciones.update({str(i+1):cantidad_sec[i][0]})
-
-		return render_template("enviar_correo.html", Array = correos_enviados, Datos= listado_secciones)
+	if session['ano_esc'] != None: 
+		return sist_gest_functs.enviar_correo_funct(mysql.connect().cursor())
 	else:
 		print("Error no selecciono periodo escolar!")
 		return render_template("ano_escolar.html")
-
-
 
 @app.route('/enviar_correo_personal', methods=['GET', 'POST'])
 def enviar_correo_personal():
 	if session['ano_esc'] != None:
-
-		# Busco los correos enviados y lo guardo en un arreglo
-		cursor = mysql.connect().cursor()
-		cursor.execute("SELECT correo FROM correo_enviado")
-		correos = cursor.fetchall()
-		correos_enviados = []
-		for correo in correos: correos_enviados.append(correo[0])
-		
-
-		return render_template("enviar_correo_personal.html", Array = correos_enviados)
+		return sist_gest_functs.enviar_correo_personal_funct(mysql.connect().cursor())
 	else:
 		print("Error no selecciono periodo escolar!")
 		return render_template("ano_escolar.html")
 
-	
-
 @app.route('/send_mail_personal', methods=['POST'])
 def send_mail_personal():
-	if session.get('logged_in') and request.method == 'POST':
-
-		conn = mysql.connect()
-		cursor = conn.cursor()
-		receptores = []
-
-		print(request.form['correos'])
-		if(request.form['correos'] != None): receptores = request.form['correos'].split(',') #Puedo agregar mas con , 'otrocorreo@gmail.com' etc
-		
-
-		if(request.form['ResSec'] != ""):
-			tipos_personal = request.form['ResSec']
-
-			tipos_personal = tipos_personal.split(",")
-			N = len(tipos_personal)
-			for x in range(0,N):
-				tipos_personal[x] = int(tipos_personal[x])
-			print(tipos_personal)
-			
-			format_strings = ','.join(['%s'] * len(tipos_personal))
-			print(format_strings)
-			cursor.execute("SELECT correo FROM view_correos WHERE tipo IN (%s)" % format_strings,tuple(tipos_personal))
-			correos = cursor.fetchall()
-			print (correos)
-
-			for correo in correos: receptores.append(correo[0])
-
-		
-		# if user does not select file, browser also
-		# submit a empty part without filename
-		titulo = request.form['asunto']
-		body = request.form['Mensaje']
-		msg = Message(
-	              titulo, #Asunto
-		       sender='escuelatecnicadonbosco@gmail.com', #Emisor
-		       bcc=receptores) #Receptor/es
-		msg.body = body #El body del mensaje en caso de no soportar html
-		if (request.files['filetype'] != None): 
-			file = request.files['filetype']
-			if file.filename != '':
-				if file and allowed_file(file.filename):
-					filename = secure_filename(file.filename)
-					file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-					with app.open_resource('upload/' + filename) as fp:
-						msg.attach(filename, "application/x-rar-compressed", fp.read()) #El attachment si hay
-					ruta_trabajo = os.getcwd()
-					os.remove(ruta_trabajo + '/upload/' + filename)
-		msg.html = render_template("correo_template.htm", body=body, titulo=titulo)
-		mail.send(msg)
-
-		# Luego de enviar el correo actualizo la tabla de correos enviados
-		receptores = [x.strip(' ') for x in receptores] #Le quito los espacios a los elementos
-
-		sql='SELECT correo FROM correo_enviado WHERE correo IN (%s)' 
-		in_p=', '.join(list(map(lambda x: '%s', receptores)))
-		sql = sql % in_p
-		cursor.execute(sql, receptores)
-		lista_correos = cursor.fetchall()
-		correos_usados = []
-		for correo in lista_correos: 
-			correo_sin_espacio = correo[0].replace(' ','')
-			correos_usados.append(correo_sin_espacio)
-
-		correos_a_insertar = list(set(receptores).difference(correos_usados))
-		correos_a_insertar = [x.strip(' ') for x in correos_a_insertar] #Le quito los espacios a los elementos
-
-		for correo in correos_a_insertar: cursor.execute("INSERT INTO correo_enviado (correo) VALUES (%s)", (correo))
-		conn.commit()
-
-		return redirect(url_for('enviar_correo_personal'))
+	if session.get('logged_in') and request.method == 'POST': return sist_gest_functs.send_mail_personal_funct(mysql.connect(), request, request.form['asunto'], request.form['Mensaje'], config_vars.app_conf(), mail)
 
 
 if __name__ == "__main__":
-	app.run(debug=True, host='192.168.0.102', port=5000)
+	app.run(debug=True, host='127.0.0.1', port=3000)

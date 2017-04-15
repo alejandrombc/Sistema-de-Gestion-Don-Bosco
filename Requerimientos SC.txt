@@ -1,0 +1,17 @@
+Requerimientos:
+Python 3
+Flask
+Base de datos MySQL
+
+Una vez realizada la instalación de Python 3, se deben realizar ciertas instalaciones haciendo uso de "pip".
+En caso de no tener "pip", este debe ser descargado o actualizado y se debe actualizar la variable de entorno PATH.
+Instalaciones necesarias mediante "pip":
+- virtualenv, con esto levantamos el ambiente virtual donde correrá flask
+- flask, microframework utilizado para el funcionamiento de la aplicación
+- Flask-Mail, para el manejo de correos electrónicos
+- MySQLdb
+- MySQL-python
+
+Luego de haber realizado las instalaciones correctamente, se debe levantar el ambiente virtual flask y ejecutar el
+archivo principal "sist_gest.py". Se podrá acceder desde el navegador ingresando la dirección 127.0.0.1:3000, la cual
+mostrará la página inicial de la aplicación.
