@@ -67,7 +67,7 @@
     									<input type="file" id="fileinput" class="filestyle" name="filetype" data-buttonBefore="true" >
     								</div>
     								<div class="alert alert-warning">
-    										Extensiones permitidas:<p style="font-size: 14px;"> [ <strong>.RAR </strong>, <strong>.ZIP</strong> , <strong>.DOCX</strong> , <strong>.PPT</strong> , <strong>.XLS</strong> , <strong>.PDF</strong> , <strong>.PNG</strong> , <strong>.JPEG</strong> , <strong>.JPG</strong> , <strong>.BMP</strong> ]</p>
+    										Extensiones permitidas:<p style="font-size: 14px;"> [ <strong>.RAR </strong>, <strong>.ZIP</strong> , <strong>.PDF</strong> , <strong>.PNG</strong> , <strong>.JPEG</strong> ]</p>
     								</div>
                                         
                                     <!-- Boton de enviado -->
@@ -149,7 +149,7 @@
 				    } 
 				    // Verificamos el formato:
 				    var last = txt.substr(txt.length - 4);
-				    if ( last == ".rar" || last == ".zip" || last == ".pdf" || last == ".png" || last == ".bmp" || last == ".jpg" || last == "jpeg" || last == ".docx" || last == ".ppt" || last == "xls"){
+				    if ( last == ".rar" || last == ".zip" || last == ".pdf" || last == ".png" || last == ".jpg" || last == "jpeg"){
 				    	return true;
 				    }else{
 				    	alert("Formato adjunto inválido");

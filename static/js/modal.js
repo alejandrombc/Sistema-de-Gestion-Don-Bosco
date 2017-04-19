@@ -31,7 +31,6 @@ function openModal(ano, id) {
 
 
 function openModal_Rec(ano, id) {
-  alert(id);
   $("#myModal").modal('show');
   $("#id_ano").val(id);
   $("#ano_real").val(ano);

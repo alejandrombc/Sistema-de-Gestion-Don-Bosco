@@ -1,11 +1,14 @@
 # encoding=utf-8
 import consultas
+from sist_gest import app, mysql
 from flask import render_template, request, url_for, redirect, session, g,  json
 from flaskext.mysql import MySQL
 from flask_mail import Mail, Message #pip install Flask-Mail
 from werkzeug.utils import secure_filename
 import hashlib
 import datetime, os
+import MySQLdb as db
+
 
 #Para el UPLOAD de archivos en el servidor 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif','rar', 'zip'])
@@ -305,8 +308,8 @@ def registrarEstudiante_funct(nombres, apellidos, cedula, fechaNac, dateFechaNac
 		if(len(data) == 0):
 			consultas.insert_cursa(cedula, session, id_carrera, seccion, cursor)
 	else:
-		cursor.execute(consultas.insert_estudiante())
-
+		consultas.insert_estudiante(nombres, apellidos, cedula, dateFechaNac, correo, direccion, telefono, cursor)
+		
 		consultas.insert_cursa(cedula, session, id_carrera, seccion, cursor)
 
 	#Se debe validar antes si ese estudiante esta repetido
@@ -318,7 +321,7 @@ def registrarEstudiante_funct(nombres, apellidos, cedula, fechaNac, dateFechaNac
 
 #Seleccionar ano
 def seleccion_ano_funct(cursor):
-	consultas.select_periodo(cursor)
+	consultas.select_periodo_ano(cursor)
 	data = cursor.fetchall()
 	return render_template("escoger_ano.html", datos=data)
 
@@ -342,7 +345,8 @@ def recuperar_ano_funct(cursor):
 	return render_template("recuperar_ano.html", datos=data)
 
 #Recuperar anos
-def recuperar_anos_funct(real_id, ano, conn, cursor):
+def recuperar_anos_funct(real_id, ano, conn):
+	cursor = conn.cursor()
 	consultas.update_periodo_recuperar(real_id, cursor)
 	conn.commit()
 	return redirect(url_for('recuperar_ano'))
@@ -352,7 +356,7 @@ def recuperar_anos_funct(real_id, ano, conn, cursor):
 #Exportar BD
 def exportarBD_funct():
 	#DEBE ESTAR EN EL PATH DE WINDOWS EL MYSQLDUMP
-	password = 123 #Clave de la BD
+	password = 1234 #Clave de la BD
 	os.system('mysqldump -u root -p%s don_bosco > BaseDeDatos_DonBosco.sql' % password)
 	sucess = "¡Exportado realizado correctamente!"
 	return render_template("configuracion.html", sucess=sucess)
@@ -366,20 +370,21 @@ def run_sql_file_funct(filename, connection):
     return True
 
 #Cargar BD
-def cargarBD_funct(file, conn, cursor):
+def cargarBD_funct(file, conn):
+	cursor = conn.cursor()
 	cursor.execute("DROP DATABASE IF EXISTS don_bosco")
 	cursor.execute("CREATE DATABASE don_bosco")
 
 	filename = secure_filename(file.filename)
-	conn = mysql.connect()
 	file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-
+	conn = mysql.connect()
 	filepath = "upload/"+file.filename 
 	with open(filepath, encoding="utf8", errors='replace') as infile:
 		sucess = "¡Cargado realizado correctamente!"
-		run_sql_file(infile, conn)
+		run_sql_file_funct(infile, conn)
 	ruta_trabajo = os.getcwd()
 	os.remove(ruta_trabajo + '/upload/' + filename)
+
 	return render_template("configuracion.html", sucess=sucess)
 
 #-----------ENVIAR CORREO Y UPLOAD DE ARCHIVO---------#
@@ -491,7 +496,7 @@ def enviar_correo_personal_funct(cursor):
 	print(correos_enviados)
 	print(listado_secciones)
 
-	return render_template("enviar_correo.html", Array = correos_enviados, Datos= listado_secciones)
+	return render_template("enviar_correo_personal.html", Array = correos_enviados, Datos= listado_secciones)
 
 def send_mail_personal_funct(conn, request, titulo, body, app, mail):
 	cursor = conn.cursor()

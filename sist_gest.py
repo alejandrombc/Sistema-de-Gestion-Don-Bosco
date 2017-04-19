@@ -187,7 +187,7 @@ def recuperar_ano():
 #Vuelve a colocar el ano en la vista
 @app.route('/recuperar_ano', methods=['POST'])
 def recuperar_anos():
-	if(session.get('logged_in')): return sist_gest_functs.recuperar_anos_funct(request.form['real_id'], request.form['ano_escolar'], mysql.connect(), conn.cursor())
+	if(session.get('logged_in')): return sist_gest_functs.recuperar_anos_funct(request.form['real_id'], request.form['ano_escolar'], mysql.connect())
 
 
 #-----------FUNCIONES DE CARGAR, EXPORTAR BD Y CERRAR---------#
@@ -201,7 +201,7 @@ def run_sql_file(filename, connection): return sist_gest_functs.run_sql_file_fun
 
 @app.route('/cargarBD', methods=['POST'])
 def cargarBD():
-	if(session.get('logged_in')): return sist_gest_functs.cargarBD_funct(request.files['archivo'], db.connect(host="localhost", user="root", passwd=""), conn.cursor())
+	if(session.get('logged_in')): return sist_gest_functs.cargarBD_funct(request.files['archivo'], db.connect(host="localhost", user="root", passwd="1234"))
 	return redirect(url_for('index'))
 
 @app.route('/cerrar_sesion', methods=['GET'])

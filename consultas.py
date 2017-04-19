@@ -124,7 +124,7 @@ def select_estudiante_where(busqueda, cursor):
 		"correo LIKE '%"+busqueda+"%' OR numero_de_telefono LIKE '%"+busqueda+"%'")
 
 #Inserta en la tabla estudiantes, la tabla tiene informacion personal
-def insert_estudiante():
+def insert_estudiante(nombres, apellidos, cedula, dateFechaNac, correo, direccion, telefono, cursor):
 	return cursor.execute("INSERT INTO estudiante (cedula, nombres, apellidos, direccion, correo, numero_de_telefono, fecha_de_nacimiento) VALUES ('"+cedula+"','"+nombres+"','"+apellidos+"','"+direccion+"','"+correo+"','"+telefono+"','"+dateFechaNac+"')")
 
 #Actualiza informacion personal
@@ -194,7 +194,7 @@ def insert_seccion(i, ID, cursor):
 #-------Consultas Periodo Academico-------#
 
 #Seleccion de ano escolar
-def select_periodo(cursor):
+def select_periodo_ano(cursor):
 	return cursor.execute("SELECT periodo_id, periodo_nombre from periodo WHERE eliminada='0'")
 
 #Opcion de recuperar ano
