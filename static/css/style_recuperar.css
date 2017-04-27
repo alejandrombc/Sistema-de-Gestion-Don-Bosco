@@ -105,10 +105,13 @@
 
 
 /* Demo purposes only */
-
 body {
-  background-color: #212121;
   background: url(/static/imagenes/fondo.jpg);
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  background-color: #464646;
   text-align: center;
   font-family: 'Roboto', sans-serif;
 }
