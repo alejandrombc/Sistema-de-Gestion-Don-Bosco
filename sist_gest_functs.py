@@ -379,10 +379,9 @@ def cargarBD_funct(file, conn):
 	file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 	conn = mysql.connect()
 	filepath = "upload/"+file.filename 
-	with open(filepath, encoding="utf8", errors='replace') as infile:
-		sucess = "¡Cargado realizado correctamente!"
-		run_sql_file_funct(infile, conn)
+	os.system('mysql -u root -p1234 don_bosco < '+filepath)
 	ruta_trabajo = os.getcwd()
+	sucess = "¡Cargado realizado correctamente!"
 	os.remove(ruta_trabajo + '/upload/' + filename)
 
 	return render_template("configuracion.html", sucess=sucess)
