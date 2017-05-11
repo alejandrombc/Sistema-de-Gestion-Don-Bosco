@@ -81,6 +81,22 @@
             </div>
 
             <div class="col-md-12 form-group">                                   
+                <label>Nombres y Apellidos del representante:</label>
+                <input class="form-control" name="nombresPadre" id="nombresPadre" type="text" required="true" autocomplete="off" value=""/><br>
+              
+            </div>
+
+            <div class="col-md-6 form-group"> 
+                <label>Teléfono celular del representante:</label>
+                <input class="form-control" name="telefonoPadre" id="telefonoPadre" type="text" autocomplete="off" value="" pattern="[0-9]{11}" title="Ingrese sólo números" placeholder="04142000000"/><br>
+            </div>
+
+            <div class="col-md-6 form-group"> 
+                <label>E-Mail del representante:</label>
+                <input class="form-control" name="correoPadre" id="correoPadre" type="email" autocomplete="off" value="" placeholder="representante@correo.com" />              
+            </div>
+
+            <div class="col-md-12 form-group">                                   
                 <label>Dirección:</label>
                 <textarea style="resize:vertical;" class="form-control" name="direccion" id="direccion" autocomplete="off"/></textarea><br>
             </div>
@@ -95,9 +111,11 @@
                 <button id="guardar" onclick="getIDCarrera()" class="btn btn-primary">
                     Guardar Cambios
                 </button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">
-                    Cancelar
-                </button> 
+                <a href="/estudiantes_ano" style="text-decoration: none;">
+                    <button type="button" class="btn btn-danger">
+                        Cancelar
+                    </button> 
+                </a>
                 </br></br>
             </div>
  </div>
