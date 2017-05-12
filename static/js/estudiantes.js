@@ -502,7 +502,7 @@
 
                     element = document.createElement('td');
                     element.setAttribute('id', 'inasistencia'+ new_estudiantes[j][0]);
-                    element.innerHTML = new_estudiantes[j][7];
+                    element.innerHTML = new_estudiantes[j][10];
                     tag.appendChild(element);
 
                     element = document.createElement('td');
