@@ -312,7 +312,6 @@
     function cambiarValor(valor, id) 
     {
       var curso_actual, clase;
-        
         curso_actual = $("#curso_actual").text();
     
         if(curso_actual != valor)
@@ -327,7 +326,7 @@
             else clase = '6to';
             
             var id_carrera = createID_carrera(clase,valor);
-        
+
             $.ajax
             ({
                 type:"GET" ,
@@ -417,7 +416,6 @@
         new_estudiantes = jQuery.parseJSON(str_secciones.substring(2));
         array = ['A','B','C', 'D', 'E', 'F'];
         N = childList.length;
-        
 
         for (i = 0; i < N; i++) 
         {
@@ -472,7 +470,7 @@
 
             for (j = 0; j < cant_estudiantes; j++) 
             {
-                if (str_secciones.substring(2).length > 2 && array[i] == new_estudiantes[j][9]) 
+                if (str_secciones.substring(2).length > 2 && array[i] == new_estudiantes[j][12]) 
                 {   
                     tag = document.createElement('tr');
                     tag.setAttribute('id', (String(new_estudiantes[j][0])));
@@ -691,13 +689,16 @@
                     var telefono = array[0][5];
                     var direccion = array[0][3];
                     var email = array[0][4];
-                    var curso_for_id = array[0][9]; //Para la funcion de set cantidad
-                    if(array[0][9] == "Tecnologia_Grafica") var curso = (array[0][9]).replace('_',' ');
-                    else var curso = (array[0][9]);
-                    var inasistencias = array[0][7];
-                    var ano = array[0][10];
+                    var curso_for_id = array[0][12]; //Para la funcion de set cantidad
+                    if(array[0][12] == "Tecnologia_Grafica") var curso = (array[0][12]).replace('_',' ');
+                    else var curso = (array[0][12]);
+                    var inasistencias = array[0][10];
+                    var ano = array[0][13];
                     var ano_for_id = changeYearVal(ano); //Para la funcion de set cantidad
-                    seccion = array[0][8];
+                    seccion = array[0][11];
+                    var nombreRepresentante = array[0][7];
+                    var telefonoRepresentante = array[0][8];
+                    var emailRepresentante = array[0][9];
                     
 
                     setCantidadSecciones(ano, curso_for_id, seccion);
@@ -719,6 +720,10 @@
                     $('#direccion').val(direccion);
                     $('#correo').val(email);
                     $('#telefono').val(telefono);
+                    $('#nombresPadre').val(nombreRepresentante);
+                    $('#telefonoPadre').val(telefonoRepresentante);
+                    $('#correoPadre').val(emailRepresentante);
+
                 }
             });
 

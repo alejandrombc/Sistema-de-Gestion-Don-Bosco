@@ -126,7 +126,7 @@ def eliminarSeccion():
 
 @app.route('/editarEstudiante', methods=[ 'POST'])
 def editar_estudiantes():
-	if request.method == 'POST' and session.get('logged_in'): return sist_gest_functs.editar_estudiantes_funct(mysql.connect(), request.form['apellidos'], request.form['hiddenCedula'], request.form['seccion'], request.form['cedula'], request.form['nombres'], request.form['telefono'], request.form['id_carrera'], request.form['inasistencia'], request.form['direccion'], request.form['correo'])
+	if request.method == 'POST' and session.get('logged_in'): return sist_gest_functs.editar_estudiantes_funct(mysql.connect(), request.form['apellidos'], request.form['hiddenCedula'], request.form['seccion'], request.form['cedula'], request.form['nombres'], request.form['telefono'], request.form['id_carrera'], request.form['inasistencia'], request.form['direccion'], request.form['correo'], request.form['nombresPadre'], request.form['telefonoPadre'], request.form['correoPadre'])
 	return redirect(url_for('def_estudiantes'))
 
 #Agrega una seccion nueva a un curso
@@ -158,7 +158,7 @@ def getEstudiante():
 
 @app.route('/registrarEstudiante', methods=['GET', 'POST'])
 def registrarEstudiante():
-	if(session.get('logged_in')): return sist_gest_functs.registrarEstudiante_funct(request.form.get('nombres'), request.form.get('apellidos'), request.form.get('cedula'), request.form.get('fechaNac'), '1900-01-01', request.form.get('id_carrera'), request.form.get('seccion'), request.form.get('correo'), request.form.get('direccion'), request.form.get('telefono'), mysql.connect())
+	if(session.get('logged_in')): return sist_gest_functs.registrarEstudiante_funct(request.form.get('nombres'), request.form.get('apellidos'), request.form.get('cedula'), request.form.get('fechaNac'), '1900-01-01', request.form.get('id_carrera'), request.form.get('seccion'), request.form.get('correo'), request.form.get('direccion'), request.form.get('telefono'), request.form.get('nombresPadre'), request.form.get('telefonoPadre'), request.form.get('correoPadre'), mysql.connect())
 
 
 #--------FIN VISTA ESTUDIANTES--------#

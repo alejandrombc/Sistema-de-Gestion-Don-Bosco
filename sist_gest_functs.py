@@ -179,8 +179,8 @@ def def_estudiantes_funct(cursor):
 
 	consultas.select_cantidad(session, cursor)
 	secciones = cursor.fetchall()
-
 	cant_secciones = int(secciones[0][0])
+
 	return render_template("estudiantes.html", datos=data, cant_secciones=cant_secciones )
 
 #Escoger ano
@@ -237,13 +237,13 @@ def eliminarSeccion_funct(id_carrera, cedulas, conn, session):
 	return ""
 
 #Editar Estudiantes
-def editar_estudiantes_funct(conn, apellidos, hiddenCedula, seccion, cedula, nombres, telefono, id_carrera, inasistencia, direccion, email):
+def editar_estudiantes_funct(conn, apellidos, hiddenCedula, seccion, cedula, nombres, telefono, id_carrera, inasistencia, direccion, email, nombresPadre, telefonoPadre, emailPadre):
 	
 	cursor = conn.cursor()
 	cursor.execute("SET FOREIGN_KEY_CHECKS=0;")
 
 	#Se actualizan los datos ingresados 
-	consultas.update_estudiante(apellidos, hiddenCedula, cedula, nombres, telefono, inasistencia, direccion, email, cursor)
+	consultas.update_estudiante(apellidos, hiddenCedula, cedula, nombres, telefono, inasistencia, direccion, email, nombresPadre, telefonoPadre, emailPadre, cursor)
 
 	#Se actualiza los datos de la tabla cursa
 	consultas.update_cursa(hiddenCedula, seccion, cedula, id_carrera, inasistencia, session, cursor)
@@ -297,7 +297,7 @@ def getEstudiante_funct(cursor):
 	return '{}'.format(data)
 
 #Registrar Estudiante
-def registrarEstudiante_funct(nombres, apellidos, cedula, fechaNac, dateFechaNac, id_carrera, seccion, correo, direccion, telefono, conn):
+def registrarEstudiante_funct(nombres, apellidos, cedula, fechaNac, dateFechaNac, id_carrera, seccion, correo, direccion, telefono, nombresPadre, telefonoPadre, emailPadre, conn):
 	if(fechaNac != None ): dateFechaNac = datetime.datetime.strptime(fechaNac, "%d/%m/%Y").strftime("%Y-%m-%d")
 	cursor = conn.cursor()
 	consultas.select_estudiante_where_CI(cedula, cursor)
@@ -308,7 +308,7 @@ def registrarEstudiante_funct(nombres, apellidos, cedula, fechaNac, dateFechaNac
 		if(len(data) == 0):
 			consultas.insert_cursa(cedula, session, id_carrera, seccion, cursor)
 	else:
-		consultas.insert_estudiante(nombres, apellidos, cedula, dateFechaNac, correo, direccion, telefono, cursor)
+		consultas.insert_estudiante(nombres, apellidos, cedula, dateFechaNac, correo, direccion, telefono, nombresPadre, telefonoPadre, emailPadre, cursor)
 		
 		consultas.insert_cursa(cedula, session, id_carrera, seccion, cursor)
 

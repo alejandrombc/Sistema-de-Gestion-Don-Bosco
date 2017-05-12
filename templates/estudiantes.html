@@ -292,13 +292,13 @@
                                         <tbody id='body_select{{array[i]}}'>
                                             {% if datos %}
                                                 {% for estudiante in datos %}
-                                                    {% if estudiante[9] == array[i]  %}
+                                                    {% if estudiante[12] == array[i]  %}
                                                         <tr id='{{estudiante[0]}}' class="active"> 
                                                             <td class='cedulaEstudiante editarEstudiante ' onclick="mostrarDetalleEstudiante({{estudiante[0]}})">{{estudiante[0]}}</td>
                                                             <td class='editarEstudiante' onclick="mostrarDetalleEstudiante({{estudiante[0]}})">{{estudiante[1]}}</td>
                                                             <td class='editarEstudiante' onclick="mostrarDetalleEstudiante({{estudiante[0]}})">{{estudiante[2]}}</td>
                                                             <td class='editarEstudiante' onclick="mostrarDetalleEstudiante({{estudiante[0]}})">{{estudiante[4]}}</td>
-                                                            <td id="inasistencia{{estudiante[0]}}">{{estudiante[7]}}</td>
+                                                            <td id="inasistencia{{estudiante[0]}}">{{estudiante[10]}}</td>
                                                             <td><button id="add{{estudiante[0]}}" class="btn btn-warning" onclick="agregarInasistencia(this.id)">Agregar inasistencia</button></td>
                                                             <td><button id='del{{estudiante[0]}}' class="btn btn-danger botonDltEst" onclick="mostrarModalEliminarEstudiante(this.id)"><span class="glyphicon glyphicon-trash"></span></button></td>
                                                         </tr>

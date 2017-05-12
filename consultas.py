@@ -124,12 +124,12 @@ def select_estudiante_where(busqueda, cursor):
 		"correo LIKE '%"+busqueda+"%' OR numero_de_telefono LIKE '%"+busqueda+"%'")
 
 #Inserta en la tabla estudiantes, la tabla tiene informacion personal
-def insert_estudiante(nombres, apellidos, cedula, dateFechaNac, correo, direccion, telefono, cursor):
-	return cursor.execute("INSERT INTO estudiante (cedula, nombres, apellidos, direccion, correo, numero_de_telefono, fecha_de_nacimiento) VALUES ('"+cedula+"','"+nombres+"','"+apellidos+"','"+direccion+"','"+correo+"','"+telefono+"','"+dateFechaNac+"')")
+def insert_estudiante(nombres, apellidos, cedula, dateFechaNac, correo, direccion, telefono, nombresPadre, telefonoPadre, emailPadre, cursor):
+	return cursor.execute("INSERT INTO estudiante (cedula, nombres, apellidos, direccion, correo, numero_de_telefono, fecha_de_nacimiento, nombres_representante, numero_de_telefono_representante, correo_representante) VALUES ('"+cedula+"','"+nombres+"','"+apellidos+"','"+direccion+"','"+correo+"','"+telefono+"','"+dateFechaNac+"','"+nombresPadre+"','"+telefonoPadre+"','"+emailPadre+"')")
 
 #Actualiza informacion personal
-def update_estudiante(apellidos, hiddenCedula, cedula, nombres, telefono, inasistencia, direccion, email, cursor):
-	return cursor.execute("UPDATE estudiante SET apellidos='"+apellidos+"', cedula='"+cedula+"', nombres='"+nombres+"', numero_de_telefono='"+telefono+"', direccion='"+direccion+"', correo='"+email+"' WHERE cedula='"+hiddenCedula+"'")
+def update_estudiante(apellidos, hiddenCedula, cedula, nombres, telefono, inasistencia, direccion, email, nombresPadre, telefonoPadre, emailPadre, cursor):
+	return cursor.execute("UPDATE estudiante SET apellidos='"+apellidos+"', cedula='"+cedula+"', nombres='"+nombres+"', numero_de_telefono='"+telefono+"', direccion='"+direccion+"', correo='"+email+"', nombres_representante='"+nombresPadre+"', Numero_de_telefono_representante='"+telefonoPadre+"', correo_representante='"+emailPadre+"' WHERE cedula='"+hiddenCedula+"'")
 
 #Se obtienen la cantidad de secciones
 def select_cantidad(*args):
