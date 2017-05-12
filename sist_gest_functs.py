@@ -413,9 +413,11 @@ def send_mail_funct(conn, request, titulo, body, app, mail):
 			else: secciones.append('F')
 
 		for i in range(0, len(id_carreras)):
-			cursor.execute("SELECT estudiante.correo FROM (SELECT cedula FROM cursa WHERE carrera_id='"+id_carreras[i]+"' AND periodo_id='"+session['ano_esc']+"' AND seccion_actual='"+secciones[i]+"') estudiante_cursando, estudiante WHERE estudiante_cursando.cedula=estudiante.cedula ")
+			cursor.execute("SELECT estudiante.correo, estudiante.correo_representante FROM (SELECT cedula FROM cursa WHERE carrera_id='"+id_carreras[i]+"' AND periodo_id='"+session['ano_esc']+"' AND seccion_actual='"+secciones[i]+"') estudiante_cursando, estudiante WHERE estudiante_cursando.cedula=estudiante.cedula ")
 			correos = cursor.fetchall()
-			for correo in correos: receptores.append(correo[0])
+			for correo in correos: 
+				receptores.append(correo[0]) #Estudiante
+				receptores.append(correo[1]) #Representante
 
 	
 	# if user does not select file, browser also

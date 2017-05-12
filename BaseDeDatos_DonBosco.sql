@@ -1,8 +1,8 @@
--- MySQL dump 10.12
+-- MySQL dump 10.13  Distrib 5.7.15, for Win64 (x86_64)
 --
 -- Host: localhost    Database: don_bosco
 -- ------------------------------------------------------
--- Server version	5.2.3-falcon-alpha-community-nt
+-- Server version	5.7.15-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -20,12 +20,15 @@
 --
 
 DROP TABLE IF EXISTS `carrera`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `carrera` (
   `Carrera_ID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID de las carreras',
   `Carrera_Nombre` varchar(50) NOT NULL DEFAULT '0' COMMENT 'Nombre de las carreras',
   `Ano_escolar` tinyint(4) NOT NULL COMMENT 'Ano escolar ',
   PRIMARY KEY (`Carrera_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Todas las carreras de la escuela tecnica popular don bosco';
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COMMENT='Todas las carreras de la escuela tecnica popular don bosco';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `carrera`
@@ -42,11 +45,14 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `correo_enviado`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `correo_enviado` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `correo` varchar(64) NOT NULL DEFAULT '0',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Lista a los correos que se les han enviado algo';
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COMMENT='Lista a los correos que se les han enviado algo';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `correo_enviado`
@@ -63,6 +69,8 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `cursa`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `cursa` (
   `Cedula` int(11) NOT NULL COMMENT 'Cedula de los estudiantes',
   `Periodo_ID` int(11) NOT NULL COMMENT 'ID del periodo lectivo',
@@ -76,6 +84,7 @@ CREATE TABLE `cursa` (
   CONSTRAINT `Cedula` FOREIGN KEY (`Cedula`) REFERENCES `estudiante` (`Cedula`),
   CONSTRAINT `Periodo` FOREIGN KEY (`Periodo_ID`) REFERENCES `periodo` (`Periodo_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Relacion entre estudiantes, periodo y carrera';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `cursa`
@@ -92,6 +101,8 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `estudiante`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `estudiante` (
   `Cedula` int(11) NOT NULL COMMENT 'Cedula del estudiante',
   `Nombres` varchar(50) NOT NULL COMMENT 'Nombre del estudiante',
@@ -105,6 +116,7 @@ CREATE TABLE `estudiante` (
   `Correo_representante` varchar(50) DEFAULT NULL COMMENT 'Correo del representante del estudiante',
   PRIMARY KEY (`Cedula`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Informacion de estudiantes de la escuela tecnica popular don';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `estudiante`
@@ -121,12 +133,15 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `periodo`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `periodo` (
   `Periodo_ID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID del periodo',
   `Periodo_nombre` varchar(10) NOT NULL DEFAULT '0' COMMENT 'Periodo ',
   `Eliminada` tinyint(4) NOT NULL DEFAULT '0' COMMENT 'Si el periodo esta eliminado o no',
   PRIMARY KEY (`Periodo_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Periodos en la escuela tecnica popular don bosco';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='Periodos en la escuela tecnica popular don bosco';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `periodo`
@@ -143,6 +158,8 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `personal`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `personal` (
   `Cedula` int(11) NOT NULL COMMENT 'Cedula del trabajador',
   `Nombres` varchar(50) NOT NULL COMMENT 'Nombre del trabajador',
@@ -152,6 +169,7 @@ CREATE TABLE `personal` (
   `Numero_de_telefono` varchar(50) DEFAULT NULL COMMENT 'Numero de telefono del trabajador',
   PRIMARY KEY (`Cedula`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Informacion de trabajadores de la escuela tecnica popular do';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `personal`
@@ -168,6 +186,8 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `seccion`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `seccion` (
   `Carrera_ID` int(11) NOT NULL COMMENT 'ID de la carrera ',
   `Periodo_ID` int(11) NOT NULL COMMENT 'ID del periodo lectivo',
@@ -177,6 +197,7 @@ CREATE TABLE `seccion` (
   CONSTRAINT `Carrera_ID` FOREIGN KEY (`Carrera_ID`) REFERENCES `carrera` (`Carrera_ID`),
   CONSTRAINT `Periodo_ID` FOREIGN KEY (`Periodo_ID`) REFERENCES `periodo` (`Periodo_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Cantidad de secciones segun periodo y carrera';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `seccion`
@@ -193,11 +214,14 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `tipo_trabajador`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `tipo_trabajador` (
   `id_tipo` int(1) NOT NULL,
   `cargo` varchar(255) NOT NULL,
   PRIMARY KEY (`id_tipo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `tipo_trabajador`
@@ -214,6 +238,8 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `trabaja`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `trabaja` (
   `Cedula` int(11) NOT NULL COMMENT 'Cedula de los trabajadores',
   `Tipo` int(1) NOT NULL COMMENT 'Tipo de trabajador',
@@ -226,6 +252,7 @@ CREATE TABLE `trabaja` (
   CONSTRAINT `Periodo_Trabajador` FOREIGN KEY (`Periodo_ID`) REFERENCES `periodo` (`Periodo_ID`),
   CONSTRAINT `fk_trabaja_tipo` FOREIGN KEY (`Tipo`) REFERENCES `tipo_trabajador` (`id_tipo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Relacion entre los trabajadores y el periodo';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `trabaja`
@@ -246,4 +273,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-05-12  6:38:29
+-- Dump completed on 2017-05-11 23:18:24
