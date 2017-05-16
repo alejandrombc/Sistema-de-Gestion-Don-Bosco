@@ -2,6 +2,7 @@
  <!-- enviar_correo.css -->
 <head>
 	<meta charset="UTF-8">
+    <title>Enviar Correo - Escuela Técnica Popular Don Bosco</title>
 	<!--  Importando estilos-->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/enviar_correo.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
@@ -54,7 +55,7 @@
                                     </div>
                                     <!-- Asunto -->
                                     <div class="form-group">
-                                    	<input type="text" name="asunto" id="subject" required="required" class="form-control" placeholder="Asunto del correo"  style=" z-index: 0" />
+                                    	<input type="text" name="asunto" id="subject" required="required" class="form-control" placeholder="Asunto del correo"  style=" z-index: 0" autocomplete="off"/>
                                     </div>
                                     <!-- Area de texto donde contendra el mensaje-->
                                     <div class="form-group">
