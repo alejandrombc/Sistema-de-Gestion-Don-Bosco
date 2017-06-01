@@ -1,6 +1,11 @@
 from flask import Flask
+import os
 
-UPLOAD_FOLDER = 'upload'
+#UPLOAD_FOLDER = '.'
+
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+UPLOAD_FOLDER = os.path.join(APP_ROOT, 'upload')
+
 
 def app_conf():
 	app = Flask(__name__)

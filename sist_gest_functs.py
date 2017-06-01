@@ -25,7 +25,7 @@ def index_funct(*args):
 		hashinput_user = hashlib.sha256(str(args[0]).encode('utf-8')).hexdigest() #Le hice encriptacion sha256
 		hashinput_password = hashlib.sha256(str(args[1]).encode('utf-8')).hexdigest() #Le hice encriptacion sha256
 		#Si entra un usuario comun
-		if ("b20b0f63ce2ed361e8845d6bf2e59811aaa06ec96bcdb92f9bc0c5a25e83c9a6" != hashinput_user) or ("a280f9c1266fc6a4aea482b8206f367bbd96a76a075140cd67ef4e92c01e3142" != hashinput_password) :
+		if ("b20b0f63ce2ed361e8845d6bf2e59811aaa06ec96bcdb92f9bc0c5a25e83c9a6" != hashinput_user) or ("84f314a9e51934fcb70eb44c5d6c4b4f135a8bdf4cbc37a833ae388324612375" != hashinput_password) :
 			bad_user = "Usuario o contraseña erróneos. Por favor, intente de nuevo.";
 		else:
 			args[2]['logged_in'] = args[0] 
@@ -357,7 +357,7 @@ def recuperar_anos_funct(real_id, ano, conn):
 def exportarBD_funct():
 	#DEBE ESTAR EN EL PATH DE WINDOWS EL MYSQLDUMP
 	password = 1234 #Clave de la BD
-	os.system('mysqldump -u root -p%s don_bosco > BaseDeDatos_DonBosco.sql' % password)
+	os.system('mysqldump -u root -p1234 don_bosco > '+ app.config['UPLOAD_FOLDER'] +  '\\' + 'BaseDeDatos_DonBosco.sql')
 	sucess = "¡Exportado realizado correctamente!"
 	return render_template("configuracion.html", sucess=sucess)
 
@@ -376,13 +376,13 @@ def cargarBD_funct(file, conn):
 	cursor.execute("CREATE DATABASE don_bosco")
 
 	filename = secure_filename(file.filename)
-	file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+	file.save(app.config['UPLOAD_FOLDER'] + '\\' + filename)
 	conn = mysql.connect()
-	filepath = "upload/"+file.filename 
+	filepath = app.config['UPLOAD_FOLDER'] + '\\' + file.filename
 	os.system('mysql -u root -p1234 don_bosco < '+filepath)
 	ruta_trabajo = os.getcwd()
 	sucess = "¡Cargado realizado correctamente!"
-	os.remove(ruta_trabajo + '/upload/' + filename)
+	os.remove(app.config['UPLOAD_FOLDER'] + '\\' + filename)
 
 	return render_template("configuracion.html", sucess=sucess)
 
@@ -422,45 +422,45 @@ def send_mail_funct(conn, request, titulo, body, app, mail):
 	
 	# if user does not select file, browser also
 	# submit a empty part without filename
-	
-	msg = Message(
-	              titulo, #Asunto
-		       sender='escuelatecnicadonbosco@gmail.com', #Emisor
-		       bcc=receptores)
-	msg.body = body #El body del mensaje en caso de no soportar html
-	if (request.files['filetype'] != None): 
-		file = request.files['filetype']
-		if file.filename != '':
-			if file and allowed_file(file.filename):
-				filename = secure_filename(file.filename)
-				file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-				with app.open_resource('upload/' + filename) as fp:
-					msg.attach(filename, "application/x-rar-compressed", fp.read()) #El attachment si hay
-				ruta_trabajo = os.getcwd()
-				os.remove(ruta_trabajo + '/upload/' + filename)
-	msg.html = render_template("correo_template.htm", body=body, titulo=titulo)
-	mail.send(msg)
+	try:
+		msg = Message(titulo,sender='escuelatecnicadonbosco@gmail.com',bcc=receptores)
+		msg.body = body #El body del mensaje en caso de no soportar html
+		if (request.files['filetype'] != None): 
+			file = request.files['filetype']
+			if file.filename != '':
+				if file and allowed_file(file.filename):
+					filename = secure_filename(file.filename)
 
-	# Luego de enviar el correo actualizo la tabla de correos enviados
-	receptores = [x.strip(' ') for x in receptores] #Le quito los espacios a los elementos
+					file.save(app.config['UPLOAD_FOLDER'] + '\\' + filename)
+					with app.open_resource('upload' + '\\' + filename) as fp:
+						msg.attach(app.config['UPLOAD_FOLDER'] + '\\' + filename, "application/x-rar-compressed", fp.read()) #El attachment si hay
+					
+					os.remove(app.config['UPLOAD_FOLDER'] + '\\' + filename)
+		msg.html = render_template("correo_template.htm", body=body, titulo=titulo)
+		mail.send(msg)
 
-	sql='SELECT correo FROM correo_enviado WHERE correo IN (%s)' 
-	in_p=', '.join(list(map(lambda x: '%s', receptores)))
-	sql = sql % in_p
-	cursor.execute(sql, receptores)
-	lista_correos = cursor.fetchall()
-	correos_usados = []
-	for correo in lista_correos: 
-		correo_sin_espacio = correo[0].replace(' ','')
-		correos_usados.append(correo_sin_espacio)
+		# Luego de enviar el correo actualizo la tabla de correos enviados
+		receptores = [x.strip(' ') for x in receptores] #Le quito los espacios a los elementos
 
-	correos_a_insertar = list(set(receptores).difference(correos_usados))
-	correos_a_insertar = [x.strip(' ') for x in correos_a_insertar] #Le quito los espacios a los elementos
+		sql='SELECT correo FROM correo_enviado WHERE correo IN (%s)' 
+		in_p=', '.join(list(map(lambda x: '%s', receptores)))
+		sql = sql % in_p
+		cursor.execute(sql, receptores)
+		lista_correos = cursor.fetchall()
+		correos_usados = []
+		for correo in lista_correos: 
+			correo_sin_espacio = correo[0].replace(' ','')
+			correos_usados.append(correo_sin_espacio)
 
-	for correo in correos_a_insertar: cursor.execute("INSERT INTO correo_enviado (correo) VALUES (%s)", (correo))
-	conn.commit()
+		correos_a_insertar = list(set(receptores).difference(correos_usados))
+		correos_a_insertar = [x.strip(' ') for x in correos_a_insertar] #Le quito los espacios a los elementos
 
-	return redirect(url_for('enviar_correo'))
+		for correo in correos_a_insertar: cursor.execute("INSERT INTO correo_enviado (correo) VALUES (%s)", (correo))
+		conn.commit()
+
+		return redirect(url_for('enviar_correo'))
+	except ValueError as error:
+		return error
 
 #Enviar Correo 2
 def enviar_correo_funct(cursor):
@@ -539,11 +539,11 @@ def send_mail_personal_funct(conn, request, titulo, body, app, mail):
 		if file.filename != '':
 			if file and allowed_file(file.filename):
 				filename = secure_filename(file.filename)
-				file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-				with app.open_resource('upload/' + filename) as fp:
-					msg.attach(filename, "application/x-rar-compressed", fp.read()) #El attachment si hay
-				ruta_trabajo = os.getcwd()
-				os.remove(ruta_trabajo + '/upload/' + filename)
+				file.save(app.config['UPLOAD_FOLDER'] + '\\' + filename)
+				with app.open_resource('upload' + '\\' + filename) as fp:
+					msg.attach(app.config['UPLOAD_FOLDER'] + '\\' + filename, "application/x-rar-compressed", fp.read()) #El attachment si hay
+					
+				os.remove(app.config['UPLOAD_FOLDER'] + '\\' + filename)
 	msg.html = render_template("correo_template.htm", body=body, titulo=titulo)
 	mail.send(msg)
 
